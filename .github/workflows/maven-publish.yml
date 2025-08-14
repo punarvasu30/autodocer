@@ -8,7 +8,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    # ADD THIS PERMISSIONS BLOCK 🔑
     permissions:
       contents: read
       packages: write

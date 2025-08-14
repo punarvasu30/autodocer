@@ -8,9 +8,7 @@ public class DocumentationParser {
 
     public void parse(ApplicationContext context) {
         System.out.println("--- [AutoDocER] Starting Scan ---");
-        //System.out.println("Punarvasu Says Hiiiiiiiiiiiiiiiiiiiii");
 
-        // Find all beans that are REST controllers
         Map<String, Object> controllers = context.getBeansWithAnnotation(RestController.class);
 
         if (controllers.isEmpty()) {
@@ -20,9 +18,22 @@ public class DocumentationParser {
 
         System.out.println("--- [AutoDocER] Found " + controllers.size() + " controllers:");
 
-        // Loop through each controller found and print its class name
         for (Object controllerBean : controllers.values()) {
-            System.out.println("  -> Found Controller: " + controllerBean.getClass().getSimpleName());
+
+            Class<?> controllerClass = controllerBean.getClass();
+            System.out.println("  -> Scanning Controller: " + controllerClass.getSimpleName());
+
+            for (java.lang.reflect.Method method : controllerClass.getDeclaredMethods()) {
+
+                if (method.isAnnotationPresent(org.springframework.web.bind.annotation.GetMapping.class)) {
+                    System.out.println("    - Found GET Endpoint: " + method.getName());
+                }
+                else if(method.isAnnotationPresent(org.springframework.web.bind.annotation.PostMapping.class)){
+                    System.out.println("    - Found POST EndPoint: " + method.getName());
+                }
+
+
+            }
         }
 
         System.out.println("--- [AutoDocER] Scan Complete ---");
