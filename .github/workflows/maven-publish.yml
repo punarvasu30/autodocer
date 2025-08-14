@@ -24,6 +24,7 @@ jobs:
           server-id: github
 
       - name: Publish to GitHub Packages
+        working-directory: ./autodocer-parent
         run: mvn -B clean deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
