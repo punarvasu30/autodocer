@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.autodocer</groupId>
 	<artifactId>autodocer-parent</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>autodocer-parent</name>
 	<description>API AND ER DOCUMENTATION </description>
