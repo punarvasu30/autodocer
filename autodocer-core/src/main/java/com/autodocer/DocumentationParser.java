@@ -8,7 +8,7 @@ public class DocumentationParser {
 
     public void parse(ApplicationContext context) {
         System.out.println("--- [AutoDocER] Starting Scan ---");
-        System.out.println("Punarvasu Says Hiiiiiiiiiiiiiiiiiiiii");
+        //System.out.println("Punarvasu Says Hiiiiiiiiiiiiiiiiiiiii");
 
         // Find all beans that are REST controllers
         Map<String, Object> controllers = context.getBeansWithAnnotation(RestController.class);
