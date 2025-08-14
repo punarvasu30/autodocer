@@ -1,40 +1,30 @@
-# A descriptive name for your workflow
-name: Publish Java Package to GitHub Packages
+name: Java CI-CD with Maven
 
-# This section defines the trigger for the workflow.
 on:
-  # It runs on every push to the repository.
   push:
-    # Specifically, only when pushing to the "main" branch.
     branches: [ "main" ]
 
-# This section defines the jobs (tasks) to be performed.
 jobs:
-  # We'll name our job "publish".
-  publish:
-    # This specifies that the job will run on a fresh virtual machine using the latest Ubuntu.
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    # This is the sequence of steps the virtual machine will execute.
+    # ADD THIS PERMISSIONS BLOCK 🔑
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      # Step 1: Check out your repository's code onto the virtual machine.
-      - name: Checkout code
+      - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Step 2: Set up the Java 17 environment. This action also automatically
-      # configures Maven to authenticate with GitHub Packages for you.
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          # This ID must match the server ID in your pom.xml.
           server-id: github
 
-      # Step 3: Run the Maven deploy command to build and publish the package.
-      - name: Publish package
+      - name: Publish to GitHub Packages
         run: mvn -B clean deploy
         env:
-          # This provides a secure, temporary token for the workflow to use for authentication.
-          # You do not need to use your own Personal Access Token here.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
