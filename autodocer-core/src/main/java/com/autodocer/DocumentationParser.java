@@ -180,8 +180,6 @@
 //
 
 
-
-
 package com.autodocer;
 
 import com.autodocer.DTO.*;
@@ -198,16 +196,10 @@ public class DocumentationParser {
 
     private final SchemaParser schemaParser;
 
-    // Create an instance of the new SchemaParser when this class is created.
     public DocumentationParser() {
         this.schemaParser = new SchemaParser();
     }
 
-    /**
-     * Parses the application context to find all REST controllers and their endpoints.
-     * @param context The Spring ApplicationContext.
-     * @return A list of ControllerInfo objects containing the structured API documentation.
-     */
     public List<ControllerInfo> parse(ApplicationContext context) {
         System.out.println("--- [AutoDocER] Starting Enhanced Scan ---");
         List<ControllerInfo> controllerInfos = new ArrayList<>();
@@ -244,9 +236,6 @@ public class DocumentationParser {
         return controllerInfos;
     }
 
-    /**
-     * Helper method to parse a single method for endpoint details.
-     */
     private Optional<EndpointInfo> parseMethod(Method method, String basePath) {
         String httpMethod = null;
         String path = "";
@@ -259,7 +248,7 @@ public class DocumentationParser {
             httpMethod = "POST";
             PostMapping annotation = method.getAnnotation(PostMapping.class);
             if (annotation.value().length > 0) path = annotation.value()[0];
-        } // ... add other mappings (PUT, DELETE, etc.) ...
+        } // ... add other mappings ...
 
         if (httpMethod == null) {
             return Optional.empty();
@@ -269,11 +258,16 @@ public class DocumentationParser {
 
         List<ParameterInfo> parameterInfos = new ArrayList<>();
         for (Parameter parameter : method.getParameters()) {
+            Object paramType;
+            // THE FIX: Decide whether to do a deep scan or just get the name
+            if (isSimpleType(parameter.getType())) {
+                paramType = parameter.getType().getSimpleName();
+            } else {
+                paramType = schemaParser.parseSchema(parameter.getType());
+            }
+
             String sourceType = "Unknown";
             boolean isRequired = true;
-
-            // Delegate the schema parsing to the new SchemaParser class
-            Object paramType = schemaParser.parseSchema(parameter.getType());
 
             if (parameter.isAnnotationPresent(RequestBody.class)) {
                 sourceType = "RequestBody";
@@ -287,12 +281,25 @@ public class DocumentationParser {
             parameterInfos.add(new ParameterInfo(parameter.getName(), paramType, sourceType, isRequired));
         }
 
-        // Delegate the schema parsing for the response type
-        Object responseType = schemaParser.parseSchema(method.getReturnType());
+        Object responseType;
+        // THE FIX: Decide whether to do a deep scan for the response type
+        if (isSimpleType(method.getReturnType())) {
+            responseType = method.getReturnType().getSimpleName();
+        } else {
+            responseType = schemaParser.parseSchema(method.getReturnType());
+        }
+
         EndpointInfo endpointInfo = new EndpointInfo(method.getName(), httpMethod, fullPath, parameterInfos, responseType);
         return Optional.of(endpointInfo);
     }
 
-    // The old getSchemaForType method has been removed from this class.
+    /**
+     * Helper method to determine if a type is simple (and should not be scanned).
+     */
+    private boolean isSimpleType(Class<?> type) {
+        return type.isPrimitive()
+                || type.getPackageName().startsWith("java.")
+                || type.equals(Void.TYPE);
+    }
 }
 
