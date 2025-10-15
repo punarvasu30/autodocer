@@ -70,10 +70,7 @@
 //        System.out.println("--- [AutoDocER] Scan Complete ---");
 //    }
 //}
-//
-
 //package com.autodocer;
-//
 //import com.autodocer.DTO.ControllerInfo;
 //import com.autodocer.DTO.EndpointInfo;
 //import com.autodocer.DTO.ParameterInfo;
@@ -86,7 +83,6 @@
 //import java.util.Map;
 //
 //public class DocumentationParser {
-//
 //    /**
 //     * Parses the application context to find all REST controllers and their endpoints.
 //     * @param context The Spring ApplicationContext.
@@ -102,7 +98,6 @@
 //            System.out.println("--- [AutoDocER] No @RestController beans found.");
 //            return controllerInfos;
 //        }
-//
 //        System.out.println("--- [AutoDocER] Found " + controllers.size() + " controllers.");
 //
 //        for (Object controllerBean : controllers.values()) {
@@ -187,10 +182,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class DocumentationParser {
 
@@ -296,10 +288,19 @@ public class DocumentationParser {
     /**
      * Helper method to determine if a type is simple (and should not be scanned).
      */
+    private static final Set<Class<?>> SIMPLE_TYPES = Set.of(
+            String.class,
+            Integer.class, Long.class, Short.class,
+            Double.class, Float.class, Byte.class,
+            Boolean.class, Character.class,
+            Void.class
+    );
+
     private boolean isSimpleType(Class<?> type) {
         return type.isPrimitive()
-                || type.getPackageName().startsWith("java.")
-                || type.equals(Void.TYPE);
+                || SIMPLE_TYPES.contains(type)
+                || type.getPackageName().startsWith("java.");
     }
+
 }
 
