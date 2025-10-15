@@ -1,7 +1,7 @@
 package com.autodocer;
+
 import com.autodocer.DTO.FieldInfo;
 import com.autodocer.DTO.SchemaInfo;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -9,44 +9,45 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A specialized parser responsible for recursively analyzing a class
- * and generating a structured schema for it.
+ * A specialist class responsible for recursively parsing a Java Class
+ * to build a structured SchemaInfo object. It handles nested DTOs
+ * and prevents infinite loops from circular dependencies.
  */
 public class SchemaParser {
 
     /**
      * The main entry point for parsing a schema.
-     * @param type The class to analyze.
-     * @return A SchemaInfo object representing the class structure.
+     * @param type The class to parse.
+     * @return An Object which is either a simple String (for basic types) or a SchemaInfo object.
      */
-    public SchemaInfo parseSchema(Class<?> type) {
-        // We pass a new Set to track visited classes to prevent infinite loops.
+    public Object parseSchema(Class<?> type) {
+        // We pass a new Set to track visited classes for this top-level call.
         return parseSchemaRecursive(type, new HashSet<>());
     }
 
     /**
-     * The recursive method that does the heavy lifting.
+     * The recursive helper method that does the actual parsing.
+     * @param type The class to parse.
+     * @param visited A set of classes already seen in the current parsing path to prevent infinite loops.
+     * @return An Object which is either a simple String or a SchemaInfo object.
      */
-    private SchemaInfo parseSchemaRecursive(Class<?> type, Set<Class<?>> visitedClasses) {
-        // CRITICAL: Cycle detection to prevent infinite loops.
-        // If we have already seen this class in this parsing path, stop here.
-        if (visitedClasses.contains(type)) {
-            return new SchemaInfo(type.getSimpleName() + " (Recursive reference)", new ArrayList<>());
+    private Object parseSchemaRecursive(Class<?> type, Set<Class<?>> visited) {
+        // 1. THE GATEKEEPER: If it's a simple type, stop immediately and return its name.
+        if (isSimpleType(type)) {
+            return type.getSimpleName();
         }
 
-        // Add the current class to the set of visited classes for this path.
-        visitedClasses.add(type);
+        // 2. Infinite Loop Prevention: If we have already seen this class in this path, stop here.
+        if (visited.contains(type)) {
+            return "Circular Reference to " + type.getSimpleName();
+        }
+        visited.add(type); // Mark this class as visited for the current path
 
+        // 3. Recursive Step: It's a complex DTO/Entity, so inspect its fields.
         List<FieldInfo> fields = new ArrayList<>();
         for (Field field : type.getDeclaredFields()) {
-            Object fieldType;
-            // Check if the field's type is a simple, standard Java class or another DTO.
-            if (isSimpleType(field.getType())) {
-                fieldType = field.getType().getSimpleName();
-            } else {
-                // It's a complex type, so we recurse.
-                fieldType = parseSchemaRecursive(field.getType(), new HashSet<>(visitedClasses));
-            }
+            // For each field, we make a recursive call to find its type.
+            Object fieldType = parseSchemaRecursive(field.getType(), new HashSet<>(visited));
             fields.add(new FieldInfo(field.getName(), fieldType));
         }
 
@@ -54,10 +55,13 @@ public class SchemaParser {
     }
 
     /**
-     * Helper method to determine if a type is simple (e.g., String, Long, int)
-     * or complex (a DTO or Entity that needs further inspection).
+     * Helper method to determine if a type is simple and should not be scanned.
+     * This is the "gatekeeper" logic.
      */
     private boolean isSimpleType(Class<?> type) {
-        return type.isPrimitive() || type.getPackageName().startsWith("java.");
+        return type.isPrimitive()
+                || type.getPackageName().startsWith("java.")
+                || type.isEnum();
     }
 }
+
