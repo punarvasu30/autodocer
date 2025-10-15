@@ -5,8 +5,8 @@ package com.autodocer.DTO;
  */
 public record ParameterInfo(
         String name,
-        String type,
-        String sourceType, // e.g., "RequestBody", "PathVariable", "RequestParam"
+        Object type, // Changed from String to Object
+        String sourceType,
         boolean isRequired
 ) {}
 
