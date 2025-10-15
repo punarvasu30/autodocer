@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.autodocer</groupId>
         <artifactId>autodocer-parent</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>autodocer-spring-boot-starter</artifactId>
