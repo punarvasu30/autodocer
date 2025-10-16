@@ -226,10 +226,10 @@ public class AutoDocerAutoConfiguration {
 
     // NEW: This bean creates and registers our documentation controller
     // so its endpoints become active in the host application.
-    @Bean
-    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
-        return new DocumentationController(context, parser, generator);
-    }
+//    @Bean
+//    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
+//        return new DocumentationController(context, parser, generator);
+//    }
 
     // The CommandLineRunner has been removed to stop printing to the console on startup.
 }
