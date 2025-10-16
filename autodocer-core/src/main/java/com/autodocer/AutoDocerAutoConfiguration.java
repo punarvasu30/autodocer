@@ -204,12 +204,14 @@ package com.autodocer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * The main auto-configuration class for the AutoDocER library.
  * It creates and registers all the necessary beans.
  */
 @AutoConfiguration
+@ComponentScan(basePackages = "com.autodocer")
 public class AutoDocerAutoConfiguration {
 
     @Bean
