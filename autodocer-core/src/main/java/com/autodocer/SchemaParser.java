@@ -58,8 +58,19 @@ public class SchemaParser {
      * Helper method to determine if a type is simple and should not be scanned.
      * This is the "gatekeeper" logic.
      */
+
+    private static final Set<Class<?>> SIMPLE_TYPES = Set.of(
+            String.class,
+            Integer.class, Long.class, Short.class,
+            Double.class, Float.class, Byte.class,
+            Boolean.class, Character.class,
+            Void.class
+    );
+
+
     private boolean isSimpleType(Class<?> type) {
         return type.isPrimitive()
+                || SIMPLE_TYPES.contains(type)
                 || type.getPackageName().startsWith("java.")
                 || type.isEnum();
     }
