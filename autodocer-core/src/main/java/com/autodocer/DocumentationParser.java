@@ -174,7 +174,6 @@
 //}
 //
 
-
 package com.autodocer;
 
 import com.autodocer.DTO.*;
@@ -182,7 +181,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class DocumentationParser {
 
@@ -254,13 +256,18 @@ public class DocumentationParser {
             if (annotation.value().length > 0) path = annotation.value()[0];
         }
 
-
-
         if (httpMethod == null) {
             return Optional.empty();
         }
 
         String fullPath = (basePath + "/" + path).replaceAll("/+", "/");
+        if (fullPath.length() > 1 && fullPath.endsWith("/")) {
+            fullPath = fullPath.substring(0, fullPath.length() - 1);
+        }
+        if (fullPath.isEmpty()) {
+            fullPath = "/";
+        }
+
 
         List<ParameterInfo> parameterInfos = new ArrayList<>();
         for (Parameter parameter : method.getParameters()) {
@@ -302,18 +309,10 @@ public class DocumentationParser {
     /**
      * Helper method to determine if a type is simple (and should not be scanned).
      */
-    private static final Set<Class<?>> SIMPLE_TYPES = Set.of(
-            String.class,
-            Integer.class, Long.class, Short.class,
-            Double.class, Float.class, Byte.class,
-            Boolean.class, Character.class,
-            Void.class
-    );
-
     private boolean isSimpleType(Class<?> type) {
         return type.isPrimitive()
-                || SIMPLE_TYPES.contains(type);
+                || type.getPackageName().startsWith("java.")
+                || type.equals(Void.TYPE);
     }
-
 }
 
