@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * It creates and registers all the necessary beans.
  */
 @AutoConfiguration
-//@ComponentScan(basePackages = "com.autodocer")
+@ComponentScan(basePackages = "com.autodocer")
 public class AutoDocerAutoConfiguration {
 
     @Bean
@@ -23,17 +23,17 @@ public class AutoDocerAutoConfiguration {
         return new OpenApiGenerator();
     }
 
-    // NEW: This bean creates and registers our documentation controller
-    // so its endpoints become active in the host application.
-    @Bean
-    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
-        return new DocumentationController(context, parser, generator);
-    }
-
-    @Bean
-    public SwaggerController swaggerController(){
-        return new SwaggerController();
-    }
+//    // NEW: This bean creates and registers our documentation controller
+//    // so its endpoints become active in the host application.
+//    @Bean
+//    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
+//        return new DocumentationController(context, parser, generator);
+//    }
+//
+//    @Bean
+//    public SwaggerController swaggerController(){
+//        return new SwaggerController();
+//    }
 
     // The CommandLineRunner has been removed to stop printing to the console on startup.
 }
