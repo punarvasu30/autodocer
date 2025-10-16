@@ -240,7 +240,21 @@ public class DocumentationParser {
             httpMethod = "POST";
             PostMapping annotation = method.getAnnotation(PostMapping.class);
             if (annotation.value().length > 0) path = annotation.value()[0];
-        } // ... add other mappings ...
+        } else if (method.isAnnotationPresent(PutMapping.class)) {
+            httpMethod = "PUT";
+            PutMapping annotation = method.getAnnotation(PutMapping.class);
+            if (annotation.value().length > 0) path = annotation.value()[0];
+        } else if (method.isAnnotationPresent(DeleteMapping.class)) {
+            httpMethod = "DELETE";
+            DeleteMapping annotation = method.getAnnotation(DeleteMapping.class);
+            if (annotation.value().length > 0) path = annotation.value()[0];
+        } else if (method.isAnnotationPresent(PatchMapping.class)) {
+            httpMethod = "PATCH";
+            PatchMapping annotation = method.getAnnotation(PatchMapping.class);
+            if (annotation.value().length > 0) path = annotation.value()[0];
+        }
+
+
 
         if (httpMethod == null) {
             return Optional.empty();
@@ -298,8 +312,7 @@ public class DocumentationParser {
 
     private boolean isSimpleType(Class<?> type) {
         return type.isPrimitive()
-                || SIMPLE_TYPES.contains(type)
-                || type.getPackageName().startsWith("java.");
+                || SIMPLE_TYPES.contains(type);
     }
 
 }
