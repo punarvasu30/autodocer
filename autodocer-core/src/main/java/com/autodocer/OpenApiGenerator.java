@@ -39,8 +39,6 @@ public class OpenApiGenerator {
         // 2. Create the 'paths' object and populate it
         ObjectNode pathsNode = root.putObject("paths");
         for (ControllerInfo controller : apiInfo) {
-            System.out.println("\n[CONTROLLER] " + controller.className());
-            System.out.println("  Base Path: " + (controller.basePath().isEmpty() ? "/" : controller.basePath()));
             for (EndpointInfo endpoint : controller.endpoints()) {
                 // Get or create the JSON object for this specific path (e.g., /api/users/{id})
                 ObjectNode pathItemNode = pathsNode.withObject(endpoint.path());
