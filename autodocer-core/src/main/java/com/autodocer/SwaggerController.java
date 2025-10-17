@@ -16,6 +16,8 @@ public class SwaggerController {
      */
     @GetMapping("/autodocer/ui")
     public String getSwaggerUi() {
+
+        System.out.println("Heloooooooooooooooooooooooooooooooooooooooo Hooooooooooooooooo" );
         return "autodocer-ui/index.html";
     }
 }
