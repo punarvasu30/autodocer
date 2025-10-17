@@ -15,8 +15,8 @@ public class SwaggerController {
      * existing endpoint.
      */
     @GetMapping("/autodocer/ui")
-    public RedirectView getSwaggerUi() {
-        return new RedirectView("/webjars/swagger-ui/index.html?url=/autodocer/api-docs");
+    public String getSwaggerUi() {
+        return "autodocer-ui/index.html";
     }
 }
 
