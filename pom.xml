@@ -31,7 +31,6 @@
         <module>autodocer-core</module>
 		<module>autodocer-spring-boot-starter</module>
 		<module>autodocer-aggregator</module>
-		<module>autodocer-aggregator</module>
 	</modules>
     <scm>
 		<connection/>
