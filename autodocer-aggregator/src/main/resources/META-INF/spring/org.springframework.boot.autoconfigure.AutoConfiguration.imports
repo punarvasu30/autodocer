@@ -1,2 +1,2 @@
 # This line tells Spring Boot to load our aggregator configuration
-com.autodocer.aggregator.AggregatorAutoConfiguration
+com.autodocer.AggregatorAutoConfiguration
