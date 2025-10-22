@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Define the parent project -->
+    <parent>
+        <groupId>com.autodocer</groupId>
+        <artifactId>autodocer-parent</artifactId>
+        <version>1.0.2-SNAPSHOT</version> <!-- Make sure this matches your parent's version -->
+        <relativePath>../pom.xml</relativePath> <!-- Points to the parent pom -->
+    </parent>
+
+    <!-- Define this specific module -->
+    <artifactId>autodocer-aggregator</artifactId>
+    <packaging>jar</packaging> <!-- Libraries should be packaged as jar -->
+
+    <name>autodocer-aggregator</name>
+    <description>Auto-configuring library to aggregate API docs via Eureka.</description>
+
+    <properties>
+        <!-- Set Java version required by Spring Boot 3.2.x -->
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Ensure Spring Cloud version is managed correctly, assuming 2023.0.0 for Boot 3.2.x -->
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
+    </properties>
+
+    <!-- ADDED: Manage Spring Cloud dependency versions -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Spring Boot Starter (usually inherited, but good to include) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- ADDED: Spring Web for controllers -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ADDED: Eureka Client for discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <!-- ADDED: Jackson for JSON processing -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <!-- Version managed by Spring Boot parent -->
+        </dependency>
+
+        <!-- ADDED: Dependency on your core library to reuse DTOs -->
+        <dependency>
+            <groupId>com.autodocer</groupId>
+            <artifactId>autodocer-core</artifactId>
+            <version>${project.version}</version> <!-- Inherits version from parent -->
+        </dependency>
+
+
+        <!-- Spring Boot Test (optional for libraries) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- ADDED: Ensure repackage is skipped for libraries -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- Ensure correct compiler plugin configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Version might be inherited from parent -->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+

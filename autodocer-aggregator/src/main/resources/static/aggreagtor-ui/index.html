@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggregated API Documentation</title>
+    <!-- Load Swagger UI CSS from CDN -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #f7f7f7;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            font-size: 16px;
+        }
+        #swagger-ui {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Aggregated Microservice API Documentation</h1>
+
+    <label for="service-select">Select a Service:</label>
+    <select id="service-select">
+        <option value="">-- Loading Services --</option>
+    </select>
+
+    <!-- This div will host the Swagger UI -->
+    <div id="swagger-ui"></div>
+</div>
+
+<!-- Load Swagger UI JavaScript from CDN -->
+<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+
+<script>
+    // Store the fetched definitions globally for easy access
+    let apiDefinitions = {};
+    let swaggerUiInstance = null;
+
+    // Function to initialize Swagger UI for a selected service
+    function loadSwaggerUI(serviceName) {
+        if (!serviceName || !apiDefinitions[serviceName]) {
+            // Clear the UI if no service is selected or definition is missing
+            if (swaggerUiInstance) {
+                // Find a way to clear or hide the instance if needed
+                document.getElementById('swagger-ui').innerHTML = '';
+            }
+            console.log("No service selected or definition not found.");
+            return;
+        }
+
+        try {
+            // Parse the JSON string for the selected service
+            const spec = JSON.parse(apiDefinitions[serviceName]);
+
+            // Initialize Swagger UI
+            swaggerUiInstance = SwaggerUIBundle({
+                spec: spec, // Use the parsed JSON spec
+                dom_id: '#swagger-ui', // Target the div
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+            });
+        } catch (e) {
+            console.error("Error parsing JSON spec or initializing Swagger UI:", e);
+            document.getElementById('swagger-ui').innerHTML = '<p style="color: red;">Error loading API definition. Is the JSON valid?</p>';
+        }
+    }
+
+    // Function to fetch definitions and populate the dropdown
+    async function fetchAndPopulateServices() {
+        const selectElement = document.getElementById('service-select');
+        try {
+            // Fetch the aggregated definitions from our backend endpoint
+            const response = await fetch('/autodocer-aggregator/definitions');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            apiDefinitions = await response.json();
+
+            // Clear existing options except the placeholder
+            selectElement.innerHTML = '<option value="">-- Select a Service --</option>';
+
+            // Populate the dropdown
+            const serviceNames = Object.keys(apiDefinitions);
+            if (serviceNames.length === 0) {
+                 selectElement.innerHTML = '<option value="">-- No Services Found --</option>';
+                 return;
+            }
+
+            serviceNames.sort().forEach(serviceName => {
+                const option = document.createElement('option');
+                option.value = serviceName;
+                option.textContent = serviceName.toUpperCase(); // Display in uppercase
+                selectElement.appendChild(option);
+            });
+
+            // Add event listener to load Swagger UI when a service is selected
+            selectElement.addEventListener('change', (event) => {
+                loadSwaggerUI(event.target.value);
+            });
+
+        } catch (error) {
+            console.error('Error fetching API definitions:', error);
+            selectElement.innerHTML = '<option value="">-- Error Loading Services --</option>';
+            document.getElementById('swagger-ui').innerHTML = '<p style="color: red;">Could not fetch API definitions from the server.</p>';
+        }
+    }
+
+    // Run the fetch function when the page loads
+    window.onload = fetchAndPopulateServices;
+</script>
+
+</body>
+</html>
