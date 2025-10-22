@@ -22,7 +22,7 @@ public class AggregatorUiController {
     @GetMapping("/autodocer-aggregator/ui")
     public ResponseEntity<Resource> getAggregatorUi() {
         // Load the HTML file as a resource from the classpath.
-        Resource resource = new ClassPathResource("static/autodocer-ui/index.html");
+        Resource resource = new ClassPathResource("static/aggreagtor-ui/index.html");
 
         // If the resource doesn't exist, return a 404.
         if (!resource.exists()) {
