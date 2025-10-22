@@ -5,6 +5,7 @@ import com.autodocer.Controller.AggregatorUiController;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
  * Creates the necessary beans to discover services and serve the aggregated UI.
  */
 @AutoConfiguration
+@ComponentScan(basePackages = "com.autodocer")
 public class AggregatorAutoConfiguration {
 
     // Bean to create the controller that provides the aggregated data
