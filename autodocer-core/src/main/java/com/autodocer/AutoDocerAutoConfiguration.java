@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * It creates and registers all the necessary beans.
  */
 @AutoConfiguration
-@ComponentScan(basePackages = "com.autodocer")
+@ComponentScan(basePackages = "com.autodocer.Controller")
 public class AutoDocerAutoConfiguration {
 
     @Bean
