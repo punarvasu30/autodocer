@@ -35,6 +35,8 @@ public class AggregatorDataController {
      */
     @GetMapping("/autodocer-aggregator/definitions")
     public Map<String, String> getAggregatedDefinitions() {
+
+        System.out.println("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         log.info("Fetching aggregated API definitions...");
         Map<String, String> definitions = new HashMap<>();
 
