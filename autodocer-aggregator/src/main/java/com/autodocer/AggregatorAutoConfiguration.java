@@ -1,25 +1,23 @@
 package com.autodocer;
 
+// Change 1: Import @Configuration and @ComponentScan
 import com.autodocer.Controller.AggregatorDataController;
 import com.autodocer.Controller.AggregatorUiController;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Configuration; // Use this
+import org.springframework.context.annotation.ComponentScan; // Use this
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Auto-configuration for the AutoDocER Aggregator.
- * Creates the necessary beans to discover services and serve the aggregated UI.
- */
-@AutoConfiguration
-@ComponentScan(basePackages = "com.autodocer")
+// Change 2: Use @Configuration instead of @AutoConfiguration
+@Configuration
+// Change 3: Add a ComponentScan for your controller package
+@ComponentScan(basePackages = "com.autodocer.Controller")
 public class AggregatorAutoConfiguration {
 
     // Bean to create the controller that provides the aggregated data
     @Bean
     public AggregatorDataController aggregatorDataController(DiscoveryClient discoveryClient) {
-        // We'll also need a RestTemplate to make HTTP calls
         RestTemplate restTemplate = new RestTemplate();
         return new AggregatorDataController(discoveryClient, restTemplate);
     }
@@ -30,10 +28,9 @@ public class AggregatorAutoConfiguration {
         return new AggregatorUiController();
     }
 
-    // We can add the RestTemplate as a bean too if needed elsewhere,
-    // but creating it directly in the controller bean is fine for now.
-    // @Bean
-    // public RestTemplate restTemplate() {
-    //     return new RestTemplate();
-    // }
+    // Bean for the RestTemplate
+    @Bean
+    public RestTemplate autodocerRestTemplate() {
+        return new RestTemplate();
+    }
 }
