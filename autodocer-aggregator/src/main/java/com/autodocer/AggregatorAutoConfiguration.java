@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 // Change 2: Use @Configuration instead of @AutoConfiguration
 @Configuration
 // Change 3: Add a ComponentScan for your controller package
-@ComponentScan(basePackages = "com.autodocer.Controller")
+//@ComponentScan(basePackages = "com.autodocer.Controller")
 public class AggregatorAutoConfiguration {
 
     // Bean to create the controller that provides the aggregated data
