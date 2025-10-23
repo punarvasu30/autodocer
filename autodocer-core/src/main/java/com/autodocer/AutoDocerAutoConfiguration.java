@@ -1,41 +1,48 @@
 package com.autodocer;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContext; // Required import
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+// Removed ComponentScan import
 
 /**
  * The main auto-configuration class for the AutoDocER library.
- * It creates and registers all the necessary beans.
+ * It explicitly creates and registers all the necessary beans.
  */
 @AutoConfiguration
-@ComponentScan(basePackages = "com.autodocer.Controller")
+// REMOVED: @ComponentScan(basePackages = "com.autodocer.Controller")
 public class AutoDocerAutoConfiguration {
 
     @Bean
     public DocumentationParser documentationParser() {
+        System.out.println("--- [AutoDocER] Creating DocumentationParser bean ---"); // Added debug
         return new DocumentationParser();
     }
 
     @Bean
     public OpenApiGenerator openApiGenerator() {
+        System.out.println("--- [AutoDocER] Creating OpenApiGenerator bean ---"); // Added debug
         return new OpenApiGenerator();
     }
 
-//    // NEW: This bean creates and registers our documentation controller
-//    // so its endpoints become active in the host application.
-//    @Bean
-//    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
-//        return new DocumentationController(context, parser, generator);
-//    }
-//
-//    @Bean
-//    public SwaggerController swaggerController(){
-//        return new SwaggerController();
-//    }
+    /**
+     * THE FIX: Explicitly create the DocumentationController as a bean.
+     * Spring will automatically provide the other beans this method needs
+     * (context, parser, generator) because they are also defined here.
+     */
+    @Bean
+    public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
+        System.out.println("--- [AutoDocER] Creating DocumentationController bean ---"); // Added debug
+        return new DocumentationController(context, parser, generator);
+    }
 
-    // The CommandLineRunner has been removed to stop printing to the console on startup.
+    /**
+     * THE FIX: Explicitly create the SwaggerController as a bean.
+     * This ensures the /autodocer/ui endpoint is always registered.
+     */
+    @Bean
+    public SwaggerController swaggerController() {
+        System.out.println("--- [AutoDocER] Creating SwaggerController bean ---"); // Added debug
+        return new SwaggerController();
+    }
 }
-
-
