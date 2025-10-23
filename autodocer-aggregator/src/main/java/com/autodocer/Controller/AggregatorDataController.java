@@ -184,6 +184,7 @@ public class AggregatorDataController {
                     .orElse(null);
 
             if (instance == null) {
+                System.out.println("No UP instances found for service: {}" + serviceId);
                 log.warn("No UP instances found for service: {}", serviceId);
                 return; // Use return instead of continue in lambda
             }
