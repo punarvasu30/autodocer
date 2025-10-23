@@ -141,7 +141,6 @@
 //}
 //
 
-
 package com.autodocer;
 
 // Import necessary classes for annotations and Spring Boot App detection
@@ -149,8 +148,11 @@ import com.autodocer.annotations.ApiServers;
 import com.autodocer.annotations.ServerInfo;
 // Ensure your DTO/API package is imported correctly
 import com.autodocer.DTO.*; // Assuming this is your DTO package
+import org.springframework.beans.factory.config.BeanDefinition; // Import this
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory; // Import this
 import org.springframework.boot.autoconfigure.SpringBootApplication; // Import this
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext; // Import this
 import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -218,34 +220,58 @@ public class DocumentationParser {
     }
 
     /**
-     * NEW & UPDATED: Helper method to find the @SpringBootApplication bean and read @ApiServers annotation,
-     * handling potential proxies correctly.
+     * UPDATED: Helper method to find the @SpringBootApplication bean and read @ApiServers annotation,
+     * handling potential proxies robustly by checking the bean definition.
      */
     private List<ServerData> extractServerInfo(ApplicationContext context) {
         List<ServerData> servers = new ArrayList<>();
-        Map<String, Object> mainAppBeans = context.getBeansWithAnnotation(SpringBootApplication.class);
+        // Find bean names annotated with @SpringBootApplication
+        String[] mainAppBeanNames = context.getBeanNamesForAnnotation(SpringBootApplication.class);
 
-        if (!mainAppBeans.isEmpty()) {
-            // Get the name and instance of the first main application bean found
-            String mainAppBeanName = mainAppBeans.keySet().iterator().next();
-            Object mainAppBean = mainAppBeans.get(mainAppBeanName);
+        if (mainAppBeanNames.length > 0) {
+            String mainAppBeanName = mainAppBeanNames[0]; // Usually only one
+            Class<?> mainAppClass = null;
 
-            // Reliably get the original user-defined class, bypassing potential Spring proxies
-            Class<?> mainAppClass = org.springframework.aop.support.AopUtils.getTargetClass(mainAppBean);
+            // Try to get the original class from the bean definition (more reliable)
+            if (context instanceof ConfigurableApplicationContext configurableContext) {
+                ConfigurableListableBeanFactory beanFactory = configurableContext.getBeanFactory();
+                try {
+                    BeanDefinition beanDefinition = beanFactory.getBeanDefinition(mainAppBeanName);
+                    String originalClassName = beanDefinition.getBeanClassName();
+                    if (originalClassName != null) {
+                        // Use the application context's classloader
+                        mainAppClass = Class.forName(originalClassName, true, context.getClassLoader());
+                        System.out.println("--- [AutoDocER] Found original class from BeanDefinition: " + mainAppClass.getName());
+                    }
+                } catch (Exception e) {
+                    System.err.println("--- [AutoDocER] Error getting original class from BeanDefinition: " + e.getMessage() + ". Falling back...");
+                    mainAppClass = null; // Ensure fallback is triggered
+                }
+            }
+
+            // Fallback: If getting from bean definition failed, try AopUtils on the instance
+            if (mainAppClass == null) {
+                try {
+                    Object mainAppBean = context.getBean(mainAppBeanName);
+                    mainAppClass = org.springframework.aop.support.AopUtils.getTargetClass(mainAppBean);
+                    System.out.println("--- [AutoDocER] Found class using AopUtils fallback: " + (mainAppClass != null ? mainAppClass.getName() : "null"));
+                } catch (Exception e) {
+                    System.err.println("--- [AutoDocER] Error during AopUtils fallback for bean " + mainAppBeanName + ": " + e.getMessage());
+                    mainAppClass = null;
+                }
+            }
+
 
             if (mainAppClass != null) {
-                System.out.println("--- [AutoDocER] Found main application class: " + mainAppClass.getName()); // Debug log
-
                 if (mainAppClass.isAnnotationPresent(ApiServers.class)) {
                     ApiServers apiServersAnnotation = mainAppClass.getAnnotation(ApiServers.class);
-                    System.out.println("--- [AutoDocER] Found @ApiServers annotation on " + mainAppClass.getSimpleName());
+                    System.out.println("--- [AutoDocER] Found @ApiServers annotation on target class: " + mainAppClass.getSimpleName());
                     for (ServerInfo serverInfoAnnotation : apiServersAnnotation.value()) {
                         servers.add(new ServerData(serverInfoAnnotation.url(), serverInfoAnnotation.description()));
                         System.out.println("    -> Server Added: URL=" + serverInfoAnnotation.url() + ", Desc=" + serverInfoAnnotation.description());
                     }
                 } else {
-                    System.out.println("--- [AutoDocER] No @ApiServers annotation found on main application class: " + mainAppClass.getSimpleName());
-                    // Add a default server if none are explicitly defined
+                    System.out.println("--- [AutoDocER] No @ApiServers annotation found on target class: " + mainAppClass.getSimpleName());
                     servers.add(new ServerData("/", "Default Server (Relative Path)"));
                 }
             } else {
@@ -254,8 +280,7 @@ public class DocumentationParser {
             }
 
         } else {
-            System.out.println("--- [AutoDocER] Could not find @SpringBootApplication class to scan for @ApiServers.");
-            // Add a default server if the main class wasn't found
+            System.out.println("--- [AutoDocER] Could not find bean annotated with @SpringBootApplication.");
             servers.add(new ServerData("/", "Default Server (Relative Path)"));
         }
         return servers;
@@ -266,6 +291,7 @@ public class DocumentationParser {
         String httpMethod = null;
         String path = "";
 
+        // Determine HTTP Method and Path from annotations
         if (method.isAnnotationPresent(GetMapping.class)) {
             httpMethod = "GET";
             GetMapping annotation = method.getAnnotation(GetMapping.class);
@@ -292,7 +318,7 @@ public class DocumentationParser {
             return Optional.empty(); // Not a web endpoint method
         }
 
-        // Robustly combine the base path and the method path
+        // Combine and normalize the path
         String fullPath = (basePath + "/" + path).replaceAll("/+", "/");
         if (fullPath.length() > 1 && fullPath.endsWith("/")) {
             fullPath = fullPath.substring(0, fullPath.length() - 1);
@@ -301,18 +327,16 @@ public class DocumentationParser {
             fullPath = "/";
         }
 
-
+        // Parse Parameters
         List<ParameterInfo> parameterInfos = new ArrayList<>();
         for (Parameter parameter : method.getParameters()) {
             Object paramType;
-            Type genericParamType = parameter.getParameterizedType(); // Use generic type
-            Class<?> rawParamType = parameter.getType(); // Get raw class
+            Type genericParamType = parameter.getParameterizedType();
+            Class<?> rawParamType = parameter.getType();
 
-            // Use isSimpleType on the raw class to decide
             if (isSimpleType(rawParamType)) {
                 paramType = rawParamType.getSimpleName();
             } else {
-                // Pass the potentially generic type to the schema parser
                 paramType = schemaParser.parseSchema(genericParamType);
             }
 
@@ -324,32 +348,29 @@ public class DocumentationParser {
                 isRequired = parameter.getAnnotation(RequestBody.class).required();
             } else if (parameter.isAnnotationPresent(PathVariable.class)) {
                 sourceType = "PathVariable";
-                // PathVariables are implicitly required
+                // PathVariables are implicitly required in Spring unless Optional/required=false
             } else if (parameter.isAnnotationPresent(RequestParam.class)) {
                 sourceType = "RequestParam";
                 isRequired = parameter.getAnnotation(RequestParam.class).required();
-                // We could also check defaultValue here later
             }
             // Ensure ParameterInfo constructor matches your record definition
-            // Assuming: ParameterInfo(String name, Object type, String sourceType, boolean isRequired)
             parameterInfos.add(new ParameterInfo(parameter.getName(), paramType, sourceType, isRequired));
         }
 
+        // Parse Response Type
         Object responseType;
-        Type genericReturnType = method.getGenericReturnType(); // Use generic type
-        Class<?> rawReturnType = method.getReturnType(); // Get raw class
+        Type genericReturnType = method.getGenericReturnType();
+        Class<?> rawReturnType = method.getReturnType();
 
-        // Use isSimpleType on the raw class to decide
         if (isSimpleType(rawReturnType)) {
             responseType = rawReturnType.getSimpleName();
         } else {
-            // Pass the potentially generic type to the schema parser
             responseType = schemaParser.parseSchema(genericReturnType);
         }
 
         // Ensure EndpointInfo constructor matches your record definition
-        // Assuming: EndpointInfo(String methodName, String httpMethod, String path, List<ParameterInfo> parameters, Object responseType, String summary, String description)
-        EndpointInfo endpointInfo = new EndpointInfo(method.getName(), httpMethod, fullPath, parameterInfos, responseType, null, null); // Pass nulls for summary/desc
+        // Pass null for summary/description for now
+        EndpointInfo endpointInfo = new EndpointInfo(method.getName(), httpMethod, fullPath, parameterInfos, responseType, null, null);
         return Optional.of(endpointInfo);
     }
 
@@ -358,21 +379,14 @@ public class DocumentationParser {
      * Includes check for standard Java library classes.
      */
     private boolean isSimpleType(Class<?> type) {
-        // Check for primitives (int, boolean, etc.)
         return type == null
                 || type.isPrimitive()
-                // Check common java.lang types (String, Long, Integer, Void)
-                || type.getPackageName().equals("java.lang")
-                // Check other common java.util types we want to treat as simple strings in OpenAPI
-                || type.getPackageName().equals("java.util") // e.g. List, Map - SchemaParser handles generics inside
+                || type.getPackageName().startsWith("java.lang") // Covers String, Long, Integer, Void, etc.
+                || type.getPackageName().startsWith("java.math") // BigDecimal, BigInteger
+                || type.getPackageName().startsWith("java.util") // List, Map, Set, Date, UUID etc. (SchemaParser handles generics inside)
                 || type.getPackageName().startsWith("java.time") // LocalDate, LocalDateTime etc.
-                || type.equals(Void.TYPE) // Special case for void primitive
-                || type.equals(Void.class)
-                || java.util.Date.class.isAssignableFrom(type)
-                || java.util.UUID.class.equals(type)
-                || java.math.BigDecimal.class.equals(type)
-                || java.math.BigInteger.class.equals(type)
-                || type.isEnum() // Consider enums simple
-                || (type.isArray() && isSimpleType(type.getComponentType())); // Simple arrays like String[]
+                || type.equals(Void.TYPE)
+                || type.isEnum()
+                || (type.isArray() && isSimpleType(type.getComponentType())); // Simple arrays
     }
 }
