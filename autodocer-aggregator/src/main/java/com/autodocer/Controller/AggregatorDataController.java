@@ -1,17 +1,131 @@
-package com.autodocer.Controller; // Make sure package is correct
+//package com.autodocer.Controller; // Make sure package is correct
+//
+//import com.netflix.discovery.shared.Applications;
+//import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
+//import com.netflix.eureka.registry.InstanceRegistry; // Import InstanceRegistry
+//import com.netflix.appinfo.InstanceInfo; // Import InstanceInfo
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.client.RestTemplate;
+//import org.springframework.beans.factory.annotation.Autowired; // Autowire
+//
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//@RestController
+//public class AggregatorDataController {
+//
+//    private static final Logger log = LoggerFactory.getLogger(AggregatorDataController.class);
+//
+//    // THE FIX: Inject Eureka's internal registry directly
+//    @Autowired
+//    private InstanceRegistry instanceRegistry; // Use InstanceRegistry interface
+//
+//    private final RestTemplate restTemplate;
+//
+//    // RestTemplate is injected by Spring via the AutoConfiguration
+//    public AggregatorDataController(RestTemplate restTemplate) {
+//        // We no longer need DiscoveryClient here
+//        this.restTemplate = restTemplate;
+//    }
+//
+//    @GetMapping("/autodocer-aggregator/definitions")
+//    public Map<String, String> getAggregatedDefinitions() {
+//        System.out.println("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//        log.info("Fetching aggregated API definitions using native Eureka registry...");
+//        Map<String, String> definitions = new HashMap<>();
+//
+//        // 1. Get applications directly from Eureka's internal registry
+//        Applications applications = instanceRegistry.getApplications();
+//
+//        log.info("Found {} applications in the registry.", applications.getRegisteredApplications().size());
+//
+//        applications.getRegisteredApplications().forEach(app -> {
+//            String serviceId = app.getName().toLowerCase(); // Eureka stores names in UPPERCASE
+//
+//            log.debug("Processing application: {}", serviceId);
+//
+//            // Exclude the Eureka server itself
+//            if ("eureka-server".equalsIgnoreCase(serviceId)) {
+//                log.debug("Skipping eureka-server.");
+//                return; // Use return instead of continue in lambda
+//            }
+//
+//            // 2. Get the instances for this service
+//            List<InstanceInfo> instances = app.getInstances();
+//            if (instances.isEmpty()) {
+//                log.warn("No instances found for service: {}", serviceId);
+//                return; // Use return instead of continue in lambda
+//            }
+//
+//            // 3. Just use the first UP instance found
+//            InstanceInfo instance = instances.stream()
+//                    .filter(info -> info.getStatus() == InstanceInfo.InstanceStatus.UP)
+//                    .findFirst()
+//                    .orElse(null);
+//
+//            if (instance == null) {
+//                log.warn("No UP instances found for service: {}", serviceId);
+//                return; // Use return instead of continue in lambda
+//            }
+//
+//            // Use getHomePageUrl() which usually resolves correctly
+//            String serviceUrl = instance.getHomePageUrl();
+//            // Fallback if homePageUrl is not set (less common for Spring Boot apps)
+//            if (serviceUrl == null || serviceUrl.isBlank()) {
+//                serviceUrl = instance.getIPAddr() + ":" + instance.getPort();
+//                if (!serviceUrl.startsWith("http")) {
+//                    serviceUrl = (instance.isPortEnabled(InstanceInfo.PortType.SECURE) ? "https://" : "http://") + serviceUrl;
+//                }
+//            }
+//
+//            String docsUrl = serviceUrl + "/autodocer/api-docs"; // Assuming the path from autodocer-core
+//
+//            try {
+//                // 4. Fetch the OpenAPI JSON from the service
+//                log.info("Fetching docs for {} from {}", serviceId, docsUrl);
+//                String openApiJson = restTemplate.getForObject(docsUrl, String.class);
+//                if (openApiJson != null && !openApiJson.isBlank()) {
+//                    definitions.put(serviceId, openApiJson); // Use lowercase serviceId as key
+//                    log.info("Successfully fetched docs for {}", serviceId);
+//                } else {
+//                    log.warn("Received empty response for docs from {}", serviceId);
+//                }
+//            } catch (Exception e) {
+//                log.error("Error fetching docs for service {}: {}", serviceId, e.getMessage(), e); // Log exception details
+//                definitions.put(serviceId, "{\"error\": \"Could not fetch docs: " + e.getMessage() + "\"}");
+//            }
+//        });
+//
+//        log.info("Finished fetching definitions. Found docs for {} services.", definitions.size());
+//        return definitions;
+//    }
+//}
 
+
+
+
+
+package com.autodocer.Controller; // Ensure correct package
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.shared.Applications;
-import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
-import com.netflix.eureka.registry.InstanceRegistry; // Import InstanceRegistry
-import com.netflix.appinfo.InstanceInfo; // Import InstanceInfo
+import com.netflix.eureka.registry.InstanceRegistry; // Use InstanceRegistry
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.beans.factory.annotation.Autowired; // Autowire
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,32 +134,40 @@ public class AggregatorDataController {
 
     private static final Logger log = LoggerFactory.getLogger(AggregatorDataController.class);
 
-    // THE FIX: Inject Eureka's internal registry directly
     @Autowired
-    private InstanceRegistry instanceRegistry; // Use InstanceRegistry interface
+    private InstanceRegistry instanceRegistry; // Use Eureka's internal registry
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper; // Jackson's JSON processor
 
-    // RestTemplate is injected by Spring via the AutoConfiguration
+    // Inject RestTemplate via constructor
     public AggregatorDataController(RestTemplate restTemplate) {
-        // We no longer need DiscoveryClient here
         this.restTemplate = restTemplate;
+        this.objectMapper = new ObjectMapper();
     }
 
-    @GetMapping("/autodocer-aggregator/definitions")
-    public Map<String, String> getAggregatedDefinitions() {
-        System.out.println("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-        log.info("Fetching aggregated API definitions using native Eureka registry...");
-        Map<String, String> definitions = new HashMap<>();
+    // UPDATED: Endpoint now returns a single merged JSON string
+    @GetMapping(value = "/autodocer-aggregator/definitions", produces = "application/json")
+    public String getAggregatedDefinitions() {
+        System.out.println("--- [AutoDocER Aggregator] Unified Definitions Endpoint Called ---"); // Added specific debug
+        log.info("Fetching and merging API definitions...");
 
-        // 1. Get applications directly from Eureka's internal registry
+        // 1. Create the base structure for the merged OpenAPI document
+        ObjectNode mergedRoot = objectMapper.createObjectNode();
+        mergedRoot.put("openapi", "3.0.0");
+        ObjectNode infoNode = mergedRoot.putObject("info");
+        infoNode.put("title", "Aggregated API Documentation");
+        infoNode.put("version", "1.0.0"); // Consider making dynamic
+        infoNode.put("description", "Combined documentation from all registered services (generated by AutoDocER)");
+        ObjectNode mergedPathsNode = mergedRoot.putObject("paths");
+        // TODO: Add merging logic for components/schemas later if needed
+
+        // 2. Get applications directly from Eureka's internal registry
         Applications applications = instanceRegistry.getApplications();
-
         log.info("Found {} applications in the registry.", applications.getRegisteredApplications().size());
 
         applications.getRegisteredApplications().forEach(app -> {
             String serviceId = app.getName().toLowerCase(); // Eureka stores names in UPPERCASE
-
             log.debug("Processing application: {}", serviceId);
 
             // Exclude the Eureka server itself
@@ -54,14 +176,8 @@ public class AggregatorDataController {
                 return; // Use return instead of continue in lambda
             }
 
-            // 2. Get the instances for this service
-            List<InstanceInfo> instances = app.getInstances();
-            if (instances.isEmpty()) {
-                log.warn("No instances found for service: {}", serviceId);
-                return; // Use return instead of continue in lambda
-            }
-
-            // 3. Just use the first UP instance found
+            // Get UP instances
+            List<InstanceInfo> instances = app.getInstancesAsIsFromEureka(); // More direct way
             InstanceInfo instance = instances.stream()
                     .filter(info -> info.getStatus() == InstanceInfo.InstanceStatus.UP)
                     .findFirst()
@@ -72,35 +188,98 @@ public class AggregatorDataController {
                 return; // Use return instead of continue in lambda
             }
 
-            // Use getHomePageUrl() which usually resolves correctly
-            String serviceUrl = instance.getHomePageUrl();
-            // Fallback if homePageUrl is not set (less common for Spring Boot apps)
-            if (serviceUrl == null || serviceUrl.isBlank()) {
+            // Construct the documentation URL
+            String serviceUrl = instance.getHomePageUrl(); // Prefer homePageUrl
+            if (serviceUrl == null || serviceUrl.isBlank()) { // Fallback
                 serviceUrl = instance.getIPAddr() + ":" + instance.getPort();
                 if (!serviceUrl.startsWith("http")) {
                     serviceUrl = (instance.isPortEnabled(InstanceInfo.PortType.SECURE) ? "https://" : "http://") + serviceUrl;
                 }
             }
-
-            String docsUrl = serviceUrl + "/autodocer/api-docs"; // Assuming the path from autodocer-core
+            // Ensure serviceUrl doesn't end with '/' before appending
+            if (serviceUrl.endsWith("/")) {
+                serviceUrl = serviceUrl.substring(0, serviceUrl.length() -1);
+            }
+            // IMPORTANT: Ensure this path matches the endpoint in your autodocer-core library
+            String docsUrl = serviceUrl + "/autodocer/api-docs";
 
             try {
-                // 4. Fetch the OpenAPI JSON from the service
+                // 3. Fetch the individual OpenAPI JSON
                 log.info("Fetching docs for {} from {}", serviceId, docsUrl);
-                String openApiJson = restTemplate.getForObject(docsUrl, String.class);
-                if (openApiJson != null && !openApiJson.isBlank()) {
-                    definitions.put(serviceId, openApiJson); // Use lowercase serviceId as key
-                    log.info("Successfully fetched docs for {}", serviceId);
+                String openApiJsonString = restTemplate.getForObject(docsUrl, String.class);
+
+                if (openApiJsonString != null && !openApiJsonString.isBlank()) {
+                    // 4. Parse the fetched JSON
+                    JsonNode serviceRoot = objectMapper.readTree(openApiJsonString);
+                    JsonNode servicePaths = serviceRoot.path("paths");
+
+                    // 5. Merge paths into the main document
+                    if (servicePaths.isObject()) {
+                        Iterator<Map.Entry<String, JsonNode>> pathIterator = servicePaths.fields();
+                        while (pathIterator.hasNext()) {
+                            Map.Entry<String, JsonNode> pathEntry = pathIterator.next();
+                            String originalPath = pathEntry.getKey();
+                            JsonNode pathItem = pathEntry.getValue();
+
+                            // --- Merging Strategy Implemented ---
+                            // a) Prefix the path with the service ID
+                            String mergedPath = "/" + serviceId + originalPath;
+                            mergedPath = mergedPath.replaceAll("/+", "/"); // Clean up slashes
+
+                            // b) Add/Update operations within the path item
+                            // Use .withObject() which gets or creates the object node
+                            ObjectNode mergedPathItemNode = mergedPathsNode.withObject(mergedPath);
+                            Iterator<Map.Entry<String, JsonNode>> operationIterator = pathItem.fields();
+                            while (operationIterator.hasNext()) {
+                                Map.Entry<String, JsonNode> opEntry = operationIterator.next();
+                                String httpMethod = opEntry.getKey();
+                                // Ensure it's a valid HTTP method node before casting
+                                if (opEntry.getValue().isObject()) {
+                                    ObjectNode operationNode = (ObjectNode) opEntry.getValue().deepCopy(); // Work on a copy
+
+                                    // c) Prefix operationId if it exists
+                                    if (operationNode.has("operationId")) {
+                                        String originalOpId = operationNode.path("operationId").asText("");
+                                        operationNode.put("operationId", serviceId + "_" + originalOpId);
+                                    } else {
+                                        // Generate one if missing (optional but recommended)
+                                        String generatedOpId = serviceId + "_" + httpMethod + mergedPath.replaceAll("[^A-Za-z0-9_]", "_");
+                                        operationNode.put("operationId", generatedOpId);
+                                    }
+
+
+                                    // d) Add service name as the primary tag (replace existing tags)
+                                    operationNode.putArray("tags").removeAll().add(serviceId);
+
+                                    // e) Add the modified operation to the merged path item
+                                    mergedPathItemNode.set(httpMethod, operationNode);
+                                }
+                            }
+                            // --- End Merging Strategy ---
+                        }
+                    }
+                    log.info("Successfully merged docs for {}", serviceId);
                 } else {
                     log.warn("Received empty response for docs from {}", serviceId);
                 }
+            } catch (RestClientException e) {
+                log.error("Network error fetching docs for service {}: {}", serviceId, e.getMessage());
+                // Optionally add info about the failure to the main spec?
             } catch (Exception e) {
-                log.error("Error fetching docs for service {}: {}", serviceId, e.getMessage(), e); // Log exception details
-                definitions.put(serviceId, "{\"error\": \"Could not fetch docs: " + e.getMessage() + "\"}");
+                log.error("Error processing/merging docs for service {}: {}", serviceId, e.getMessage(), e);
+                // Optionally add info about the failure to the main spec?
             }
         });
 
-        log.info("Finished fetching definitions. Found docs for {} services.", definitions.size());
-        return definitions;
+        log.info("Finished merging definitions.");
+
+        // 6. Convert the final merged JSON object back to a string
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(mergedRoot);
+        } catch (Exception e) {
+            log.error("Error generating final merged OpenAPI spec: {}", e.getMessage(), e);
+            // Return a minimal valid spec with an error message
+            return "{\"openapi\": \"3.0.0\", \"info\": {\"title\": \"Error Generating Aggregated Spec\", \"version\":\"1.0.0\", \"description\": \"" + e.getMessage().replace("\"", "'") + "\"}, \"paths\": {}}";
+        }
     }
 }
