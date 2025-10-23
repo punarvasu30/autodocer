@@ -32,6 +32,8 @@ public class DocumentationController {
     @GetMapping(value = "/autodocer/api-docs", produces = "application/json")
     public String getApiDocs() {
         // 1. Parse the application to get the combined result
+
+        System.out.println("Hiiiiiiiiiiiiiiiiiiiiiiiiii");
         ApiDocumentationResult documentationResult = parser.parse(context);
 
         // 2. Generate the OpenAPI JSON string from the combined result
