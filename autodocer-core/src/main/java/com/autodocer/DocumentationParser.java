@@ -142,14 +142,13 @@
 //
 
 
-
 package com.autodocer;
 
 // Import necessary classes for annotations and Spring Boot App detection
 import com.autodocer.annotations.ApiServers;
 import com.autodocer.annotations.ServerInfo;
 // Ensure your DTO/API package is imported correctly
-import com.autodocer.DTO.*; // Or import com.autodocer.DTO.*;
+import com.autodocer.DTO.*; // Assuming this is your DTO package
 import org.springframework.boot.autoconfigure.SpringBootApplication; // Import this
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.*;
@@ -219,32 +218,41 @@ public class DocumentationParser {
     }
 
     /**
-     * NEW: Helper method to find the @SpringBootApplication bean and read @ApiServers annotation.
+     * NEW & UPDATED: Helper method to find the @SpringBootApplication bean and read @ApiServers annotation,
+     * handling potential proxies correctly.
      */
     private List<ServerData> extractServerInfo(ApplicationContext context) {
         List<ServerData> servers = new ArrayList<>();
-        // Find beans annotated with @SpringBootApplication (usually only one)
         Map<String, Object> mainAppBeans = context.getBeansWithAnnotation(SpringBootApplication.class);
 
         if (!mainAppBeans.isEmpty()) {
-            // Get the class of the first main application bean found
-            Object mainAppBean = mainAppBeans.values().iterator().next();
-            // Need to get the original class if it's a Spring proxy
+            // Get the name and instance of the first main application bean found
+            String mainAppBeanName = mainAppBeans.keySet().iterator().next();
+            Object mainAppBean = mainAppBeans.get(mainAppBeanName);
+
+            // Reliably get the original user-defined class, bypassing potential Spring proxies
             Class<?> mainAppClass = org.springframework.aop.support.AopUtils.getTargetClass(mainAppBean);
 
+            if (mainAppClass != null) {
+                System.out.println("--- [AutoDocER] Found main application class: " + mainAppClass.getName()); // Debug log
 
-            if (mainAppClass.isAnnotationPresent(ApiServers.class)) {
-                ApiServers apiServersAnnotation = mainAppClass.getAnnotation(ApiServers.class);
-                System.out.println("--- [AutoDocER] Found @ApiServers annotation on " + mainAppClass.getSimpleName());
-                for (ServerInfo serverInfoAnnotation : apiServersAnnotation.value()) {
-                    servers.add(new ServerData(serverInfoAnnotation.url(), serverInfoAnnotation.description()));
-                    System.out.println("    -> Server Added: URL=" + serverInfoAnnotation.url() + ", Desc=" + serverInfoAnnotation.description());
+                if (mainAppClass.isAnnotationPresent(ApiServers.class)) {
+                    ApiServers apiServersAnnotation = mainAppClass.getAnnotation(ApiServers.class);
+                    System.out.println("--- [AutoDocER] Found @ApiServers annotation on " + mainAppClass.getSimpleName());
+                    for (ServerInfo serverInfoAnnotation : apiServersAnnotation.value()) {
+                        servers.add(new ServerData(serverInfoAnnotation.url(), serverInfoAnnotation.description()));
+                        System.out.println("    -> Server Added: URL=" + serverInfoAnnotation.url() + ", Desc=" + serverInfoAnnotation.description());
+                    }
+                } else {
+                    System.out.println("--- [AutoDocER] No @ApiServers annotation found on main application class: " + mainAppClass.getSimpleName());
+                    // Add a default server if none are explicitly defined
+                    servers.add(new ServerData("/", "Default Server (Relative Path)"));
                 }
             } else {
-                System.out.println("--- [AutoDocER] No @ApiServers annotation found on main application class: " + mainAppClass.getSimpleName());
-                // Add a default server if none are explicitly defined
+                System.out.println("--- [AutoDocER] Could not determine type for main application bean: " + mainAppBeanName);
                 servers.add(new ServerData("/", "Default Server (Relative Path)"));
             }
+
         } else {
             System.out.println("--- [AutoDocER] Could not find @SpringBootApplication class to scan for @ApiServers.");
             // Add a default server if the main class wasn't found
