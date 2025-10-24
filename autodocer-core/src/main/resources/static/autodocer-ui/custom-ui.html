@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDocER Custom UI</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; }
+        #left-panel { width: 300px; border-right: 1px solid #ccc; padding: 15px; overflow-y: auto; background-color: #f9f9f9; }
+        #right-panel { flex-grow: 1; padding: 15px; overflow-y: auto; }
+        h2 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { padding: 8px 5px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.9em; word-break: break-all; }
+        li:hover { background-color: #eee; }
+        li.selected { background-color: #ddd; font-weight: bold;}
+        pre { background-color: #eee; padding: 10px; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85em; }
+        .error { color: red; font-weight: bold;}
+        .loading { color: #888; font-style: italic;}
+    </style>
+</head>
+<body>
+
+<div id="left-panel">
+    <h2>API Paths</h2>
+    <ul id="paths-list">
+        <li class="loading">Loading Paths...</li>
+    </ul>
+</div>
+
+<div id="right-panel">
+    <h2>Details</h2>
+    <div id="details-content">
+        <p>Select a path from the left panel.</p>
+    </div>
+</div>
+
+<script>
+    let fullApiSpec = null; // Store the fetched spec
+
+    // Function to display details for a selected path
+    function displayDetails(pathKey) {
+        const detailsDiv = document.getElementById('details-content');
+        // Clear previous selection highlight
+        document.querySelectorAll('#paths-list li.selected').forEach(el => el.classList.remove('selected'));
+        // Highlight the clicked item
+        event.target.classList.add('selected');
+
+
+        if (fullApiSpec && fullApiSpec.paths && fullApiSpec.paths[pathKey]) {
+            // Display raw JSON of the path item for now
+            detailsDiv.innerHTML = `<h3>${pathKey}</h3><pre>${JSON.stringify(fullApiSpec.paths[pathKey], null, 2)}</pre>`;
+        } else {
+            detailsDiv.innerHTML = '<p class="error">Details not found for this path.</p>';
+        }
+    }
+
+    // Function to fetch the OpenAPI spec and populate the left panel
+    async function loadApiPaths() {
+        const pathsList = document.getElementById('paths-list');
+        try {
+            // Fetch from the local API docs endpoint
+            const response = await fetch('/autodocer/api-docs'); // Fetch THIS service's docs
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            fullApiSpec = await response.json(); // Store the full spec
+            console.log("Fetched Spec:", fullApiSpec); // Debug log
+
+            pathsList.innerHTML = ''; // Clear loading message
+
+            if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {
+                 pathsList.innerHTML = '<li>No paths found in API spec.</li>';
+                 return;
+            }
+
+            // Populate list with paths
+            const paths = Object.keys(fullApiSpec.paths).sort();
+            paths.forEach(pathKey => {
+                const listItem = document.createElement('li');
+                listItem.textContent = pathKey;
+                // Add click listener to display details
+                listItem.addEventListener('click', () => displayDetails(pathKey));
+                pathsList.appendChild(listItem);
+            });
+
+        } catch (error) {
+            console.error("Error loading API paths:", error);
+            pathsList.innerHTML = `<li class="error">Error loading data: ${error.message}</li>`;
+            document.getElementById('details-content').innerHTML = `<p class="error">Could not load API specification.</p>`
+        }
+    }
+
+    // Run on page load
+    window.onload = loadApiPaths;
+</script>
+
+</body>
+</html>
