@@ -45,4 +45,10 @@ public class AutoDocerAutoConfiguration {
         System.out.println("--- [AutoDocER] Creating SwaggerController bean ---"); // Added debug
         return new SwaggerController();
     }
+
+    @Bean
+    public CustomUiController customUiController() {
+        System.out.println("--- [AutoDocER] Creating CustomUiController bean ---"); // Added debug
+        return new CustomUiController();
+    }
 }
