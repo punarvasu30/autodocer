@@ -341,21 +341,16 @@
 <!--</body>-->
 <!--</html>-->
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoDocER API Reference</title>
-    <!-- Load Google Font: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Load Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Load Prism.js CSS (Okaidia theme) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" integrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* --- CSS Variables --- */
         :root {
@@ -366,11 +361,11 @@
             --dark-gray: #495057;
             --border-color: #dee2e6;
             --text-color: #212529;
-            --body-bg: #f1f3f5; /* Slightly darker body bg */
+            --body-bg: #f1f3f5;
             --panel-bg: #ffffff;
             --code-bg: #e9ecef;
             --code-color: #d63384;
-            --hover-bg: #f1f3f5;
+            --hover-bg: #f1f3f5; /* Use slightly darker hover */
             --selected-bg: var(--primary-color);
             --selected-text: #fff;
             --green: #198754;
@@ -379,15 +374,13 @@
             --yellow-text: #333;
             --red: #dc3545;
             --orange: #fd7e14;
-            --prism-bg: #2d2d2d;
-            --prism-text: #f8f8f2;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
         }
         /* --- General Styles --- */
         html { box-sizing: border-box; font-size: 16px; }
         *, *:before, *:after { box-sizing: inherit; }
-        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; background-color: var(--body-bg); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow: hidden; /* Prevent body scroll */ }
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; background-color: var(--body-bg); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow: hidden; }
         ::-webkit-scrollbar { width: 8px; height: 8px;}
         ::-webkit-scrollbar-track { background: var(--medium-gray); border-radius: 4px;}
         ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px;}
@@ -397,13 +390,13 @@
         #left-panel { width: 380px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background-color: var(--panel-bg); flex-shrink: 0; box-shadow: var(--shadow-md); z-index: 10;}
         #left-panel-header { padding: 20px; border-bottom: 1px solid var(--border-color); }
         #left-panel-content { padding: 15px 20px; overflow-y: auto; flex-grow: 1; }
-        #right-panel { flex-grow: 1; padding: 0; /* Padding moved to content */ overflow-y: auto; background-color: var(--light-gray); }
-        #details-content-wrapper { padding: 40px 45px; } /* Inner wrapper for padding */
+        #right-panel { flex-grow: 1; padding: 0; overflow-y: auto; background-color: var(--light-gray); }
+        #details-content-wrapper { padding: 40px 45px; }
 
         /* --- Headings --- */
         h1 { font-size: 1.5em; color: var(--primary-color); margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px;}
         h1 i { font-size: 0.9em; }
-        h2 { /* Right Panel Title */ margin-top: 0; border-bottom: 2px solid var(--primary-color); padding-bottom: 15px; color: var(--primary-color); font-size: 1.8em; font-weight: 600; margin-bottom: 30px;}
+        /* h2 removed, using h1 in left panel */
         h3 { /* Operation Header */ margin-top: 0; margin-bottom: 30px; font-size: 1.6em; font-weight: 600; display: flex; align-items: center; gap: 15px; background-color: var(--light-gray); padding: 15px 20px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);}
         h4 { /* Section Headers */ margin-top: 40px; margin-bottom: 20px; color: var(--primary-color); font-size: 1.25em; font-weight: 600; border-bottom: 1px solid var(--medium-gray); padding-bottom: 10px;}
         h5 { /* e.g., Request Body */ margin-top: 30px; margin-bottom: 15px; color: var(--dark-gray); font-size: 1.1em; font-weight: 600; }
@@ -412,14 +405,14 @@
         #search-box { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 1em; margin-bottom: 15px; transition: border-color 0.2s, box-shadow 0.2s;}
         #search-box:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25); outline: none; }
         .controller-group summary { font-weight: 600; font-size: 1.1em; color: var(--primary-color); margin-bottom: 10px; padding: 12px 10px; cursor: pointer; list-style: none; /* Hide default arrow */ position: relative; border-radius: 5px; transition: background-color 0.15s; user-select: none;}
-        .controller-group summary::before { content: '\\f0da'; /* Font Awesome Chevron Right */ font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; margin-right: 10px; font-size: 0.9em; transition: transform 0.2s ease-in-out; color: var(--secondary-color);}
+        .controller-group summary::before { content: '\\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; margin-right: 10px; font-size: 0.9em; transition: transform 0.2s ease-in-out; color: var(--secondary-color);}
         .controller-group[open] summary::before { transform: rotate(90deg); }
         .controller-group summary:hover { background-color: var(--hover-bg); }
         #navigation-list ul { list-style: none; padding-left: 20px; margin: 5px 0 20px 0; border-left: 2px solid var(--medium-gray); }
         #navigation-list li { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f8f9fa; font-size: 0.95em; word-break: break-all; border-radius: 5px; margin-bottom: 5px; transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out; display: flex; align-items: center; gap: 10px;}
         #navigation-list li:hover { background-color: var(--hover-bg); transform: translateX(2px); }
         #navigation-list li.selected { background-color: var(--selected-bg); color: var(--selected-text); font-weight: 500; transform: translateX(0); box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);}
-        #navigation-list li.selected code { color: var(--selected-text); background-color: rgba(255,255,255,0.2);} /* Adjust code color on selection */
+        #navigation-list li.selected code { color: var(--selected-text); background-color: rgba(255,255,255,0.2);}
         #navigation-list li.hidden { display: none; }
 
         /* --- HTTP Method Badges --- */
@@ -433,17 +426,16 @@
         .method-patch { background-color: var(--orange); }
 
         /* --- Right Panel Details --- */
-        #details-content-wrapper { background-color: var(--panel-bg); padding: 35px 40px; border-radius: 8px; box-shadow: var(--shadow-md); margin-bottom: 30px;} /* Wrap content */
+        #details-content-wrapper { background-color: var(--panel-bg); padding: 35px 40px; border-radius: 8px; box-shadow: var(--shadow-md); margin-bottom: 30px;}
         #details-content p { line-height: 1.7; color: var(--dark-gray); margin-bottom: 18px;}
         #details-content strong { color: var(--text-color); font-weight: 600; }
         code { background-color: var(--code-bg); padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.9em; color: var(--code-color); }
-        pre[class*="language-"] { background-color: var(--prism-bg) !important; padding: 1.2em !important; border: 1px solid var(--border-color); border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; max-height: 450px; overflow-y: auto; color: var(--prism-text); margin-top: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
-        pre[class*="language-"] code { background: none; color: inherit; font-size: inherit; padding: 0;}
-        .param-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 20px; font-size: 0.95em; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; }
+        /* Remove Prism block styling */
+        .param-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 20px; font-size: 0.95em; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; }
         .param-table th, .param-table td { border-bottom: 1px solid var(--border-color); padding: 12px 15px; text-align: left; vertical-align: top;}
         .param-table th { background-color: var(--light-gray); font-weight: 600; color: var(--dark-gray); border-top: none; }
         .param-table tr:last-child td { border-bottom: none; }
-        .param-table td:first-child code { color: var(--primary-color); font-weight: 600; background: none; padding: 0;} /* Highlight param name */
+        .param-table td:first-child code { color: var(--primary-color); font-weight: 600; background: none; padding: 0;}
         .schema-section { margin-top: 20px; margin-bottom: 20px; border-left: 4px solid var(--primary-color); padding-left: 20px; background-color: #fff; }
         .schema-title { font-weight: 600; margin-bottom: 12px; color: var(--dark-gray); display: block; font-size: 1.05em;}
         .response-block { margin-bottom: 30px; border: 1px solid var(--border-color); padding: 25px; border-radius: 6px; background-color: var(--light-gray); box-shadow: var(--shadow-sm);}
@@ -453,6 +445,17 @@
         .error { color: var(--red); font-weight: 600; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 12px 18px; border-radius: 5px;}
         .loading { color: var(--secondary-color); font-style: italic; padding: 20px; text-align: center; font-size: 1.1em;}
         .initial-message { color: var(--secondary-color); font-size: 1.1em; text-align: center; margin-top: 50px;}
+
+        /* --- NEW Schema Rendering Styles --- */
+        .schema-container { border: 1px solid var(--border-color); border-radius: 5px; padding: 15px; background-color: var(--light-gray); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 0.9em; margin-top: 10px;}
+        .schema-object, .schema-array { padding-left: 20px; border-left: 1px dashed var(--secondary-color); margin-left: 5px; }
+        .schema-property { margin-bottom: 8px; }
+        .schema-prop-name { color: var(--primary-color); font-weight: 600; }
+        .schema-prop-type { color: var(--green); margin-left: 8px; font-style: italic; }
+        .schema-prop-format { color: var(--secondary-color); font-size: 0.9em; margin-left: 5px; }
+        .schema-prop-desc { color: var(--dark-gray); font-size: 0.9em; margin-left: 25px; display: block;}
+        .schema-array-items { margin-left: 25px; }
+
     </style>
 </head>
 <body>
@@ -477,48 +480,62 @@
     </div>
 </div>
 
-<!-- Load Prism.js Core + Autoloader -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" integrity="sha512-9khQRAUBomGQVugrceK8ZOhtW5NkTOb97xl8Wq1Ok9oCFw8YhQcqCRHqmLG3QGq9j6d9umcsth9bkJkLnm/Y9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-SROmpNWfXWp6dUgyxZEIHvePOIUo4PTSTgZZqqc47/Y/2Y5F45Q2296rY8+Qjr4f37Ug8W1+5GjX8Kx19ptAbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <script>
     let fullApiSpec = null; // Store the fetched spec
 
-    // --- UPDATED: Function to render schema objects using Prism.js ---
-    function renderSchema(schema) {
+    // --- REVAMPED: Recursive function to render schema objects as structured HTML ---
+    function renderSchema(schema, isRoot = true) {
         if (!schema) return '<span class="error">Schema not available</span>';
-        try {
-            const jsonString = JSON.stringify(schema, null, 2);
-            // Added check for Prism and language-json
-            const langClass = Prism?.languages?.json ? 'language-json' : '';
-            return `<pre class="${langClass}"><code class="${langClass}">${escapeHtml(jsonString)}</code></pre>`;
-        } catch (e) {
-            console.error("Error rendering schema:", e);
-            return `<pre><code class="language-json error">Error rendering schema</code></pre>`;
+
+        let html = isRoot ? '<div class="schema-container">' : ''; // Wrap top-level call
+
+        if (schema.type === 'object' && schema.properties) {
+            html += `<div class="schema-object">`;
+            html += '<div><code>{</code></div>';
+            const entries = Object.entries(schema.properties);
+            entries.forEach(([propName, propSchema], index) => {
+                html += `<div class="schema-property">`;
+                html += `<span class="schema-prop-name">"${propName}"</span>: `;
+                html += renderSchema(propSchema, false); // Recursive call for nested schema
+                if (index < entries.length - 1) html += '<code>,</code>';
+                html += `</div>`; // Close schema-property
+            });
+            html += '<div><code>}</code></div>';
+            html += `</div>`; // Close schema-object
+        } else if (schema.type === 'array' && schema.items) {
+            html += `<div class="schema-array">`;
+            html += '<div><code>[</code> (List of items below)</div>';
+            html += '<div class="schema-array-items">';
+            html += renderSchema(schema.items, false); // Recursive call for item schema
+            html += '</div>';
+            html += '<div><code>]</code></div>';
+             html += `</div>`; // Close schema-array
+        } else {
+            // Simple type
+            html += `<span class="schema-prop-type">${schema.type || 'unknown'}</span>`;
+            if (schema.format) {
+                html += `<span class="schema-prop-format">(${schema.format})</span>`;
+            }
+             if (schema.description) {
+                html += `<span class="schema-prop-desc">// ${schema.description}</span>`;
+            }
         }
+
+         if (isRoot) html += '</div>'; // Close schema-container
+        return html;
     }
 
-    // Helper to escape HTML for placing JSON in code blocks
-    function escapeHtml(unsafe) {
-        if (typeof unsafe !== 'string') return ''; // Handle potential non-string input
-        return unsafe
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
-    }
+    // Helper to escape HTML - REMOVED as we are building HTML directly now
 
-    // --- UPDATED: Enhanced displayDetails Function ---
+    // --- displayDetails Function ---
+    // (No major changes needed here, it already calls the new renderSchema)
     function displayDetails(pathKey, httpMethod, listItemElement) {
         const detailsDiv = document.getElementById('details-content');
-        detailsDiv.innerHTML = ''; // Clear previous content
+        detailsDiv.innerHTML = '';
 
         document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));
         if (listItemElement) {
              listItemElement.classList.add('selected');
-             // Scroll the selected item into view if needed (optional)
-             // listItemElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {
@@ -529,6 +546,7 @@
         const operation = fullApiSpec.paths[pathKey][httpMethod];
         const methodUpper = httpMethod.toUpperCase();
 
+        // --- Build HTML for right panel ---
         let contentHtml = `
             <h3>
                 <span class="method method-${httpMethod}">${methodUpper}</span>
@@ -540,8 +558,7 @@
         if (operation.description) contentHtml += `<p>${operation.description}</p>`;
         if (operation.operationId) contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;
 
-
-        // --- Display Parameters ---
+        // Parameters Section
         if (operation.parameters && operation.parameters.length > 0) {
             contentHtml += `<h4>Parameters</h4>`;
             contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
@@ -558,7 +575,7 @@
              contentHtml += `<h4>Parameters</h4><p>No parameters required for this endpoint.</p>`;
         }
 
-        // --- Display Request Body ---
+        // Request Body Section
         if (operation.requestBody) {
             contentHtml += `<h4>Request Body</h4>`;
             contentHtml += `<p>Required: ${operation.requestBody.required ? '<strong>Yes</strong>' : 'No'}</p>`;
@@ -572,7 +589,7 @@
             }
         }
 
-        // --- Display Responses ---
+        // Responses Section
         if (operation.responses) {
             contentHtml += `<h4>Responses</h4>`;
             Object.entries(operation.responses).forEach(([statusCode, response]) => {
@@ -584,68 +601,60 @@
                                         <span class="schema-title">Schema (application/json):</span>
                                         ${renderSchema(response.content['application/json'].schema)}
                                     </div>`;
-                 } else if (statusCode !== '204') { // Don't show schema section if no content is expected
+                 } else if (statusCode !== '204' && statusCode !== '202' ) { // Common codes with no body expected
                      contentHtml += `<p><small>No response body schema defined.</small></p>`
                  }
-                 contentHtml += `</div>`; // Close response block
+                 contentHtml += `</div>`;
             });
         }
 
         detailsDiv.innerHTML = contentHtml;
-        // Check if Prism is loaded before highlighting
-        if (window.Prism) {
-            Prism.highlightAllUnder(detailsDiv);
-        } else {
-            console.warn("Prism.js not loaded, skipping syntax highlighting.");
-        }
+        // NO LONGER NEED Prism.highlightAllUnder(detailsDiv);
     }
 
 
-    // --- UPDATED: load Function to group by tags/controllers using <details> ---
+    // --- loadApiStructure Function (Remains mostly the same) ---
     async function loadApiStructure() {
         const navContainer = document.getElementById('navigation-list');
         const detailsDiv = document.getElementById('details-content');
         try {
-            const response = await fetch('/autodocer/api-docs'); // Fetch THIS service's docs
+            const response = await fetch('/autodocer/api-docs');
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            const responseText = await response.text(); // Get raw text first for debugging
-            console.log("Raw Response Text:", responseText); // Debug log
+            const responseText = await response.text();
+             console.log("Raw Response Text:", responseText);
 
-            try {
-                fullApiSpec = JSON.parse(responseText); // Parse manually for better error catching
+             try {
+                fullApiSpec = JSON.parse(responseText);
             } catch (parseError) {
                  throw new Error(`Invalid JSON received from API: ${parseError.message}`);
             }
 
             console.log("Fetched and Parsed Spec:", fullApiSpec);
-
-            navContainer.innerHTML = ''; // Clear loading message
+            navContainer.innerHTML = '';
 
             if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {
-                 navContainer.innerHTML = '<p class="error">No paths found in API spec.</p>';
-                 detailsDiv.innerHTML = '<p>Could not load API specification or no endpoints defined.</p>';
+                 navContainer.innerHTML = '<p class="error">No paths found.</p>';
+                 detailsDiv.innerHTML = '<p class="initial-message">Could not load API specification or no endpoints defined.</p>';
                  return;
             }
 
-            // Group paths by tag (controller name)
+            // Group paths by tag
             const pathsByTag = {};
             Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {
                 Object.entries(pathItem).forEach(([method, operation]) => {
                     const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default';
                     if (!pathsByTag[tag]) pathsByTag[tag] = [];
-                    // Store reference to the list item element for filtering
                     pathsByTag[tag].push({ pathKey, method, operation, element: null });
                 });
             });
 
-            // Sort tags alphabetically
             const sortedTags = Object.keys(pathsByTag).sort();
 
-            // Populate list grouped by controller using <details> and <summary>
+            // Populate list grouped by controller
             sortedTags.forEach(tag => {
                 const detailsElement = document.createElement('details');
                 detailsElement.classList.add('controller-group');
-                detailsElement.open = true; // Open all by default
+                detailsElement.open = true;
 
                 const summaryElement = document.createElement('summary');
                 summaryElement.classList.add('controller-name');
@@ -659,30 +668,28 @@
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> <span class="method-path">${pathKey}</span>`;
                     listItem.title = operation.summary || pathKey;
-                    listItem.dataset.path = pathKey; // Store data for filtering
+                    listItem.dataset.path = pathKey;
                     listItem.dataset.method = method;
-                    listItem.dataset.tag = tag; // Store tag for filtering
+                    listItem.dataset.tag = tag;
 
-                    // Add click listener
                     listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));
                     ul.appendChild(listItem);
-                    endpointData.element = listItem; // Store reference back
+                    endpointData.element = listItem;
                 });
                 detailsElement.appendChild(ul);
                 navContainer.appendChild(detailsElement);
             });
 
-             // Initial message in right panel
              detailsDiv.innerHTML = '<p class="initial-message">Select an endpoint from the left panel.</p>';
 
         } catch (error) {
             console.error("Error loading API structure:", error);
-            navContainer.innerHTML = `<p class="error">Error loading API data: ${error.message}</p>`;
+            navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;
             detailsDiv.innerHTML = `<p class="error">Could not load API specification: ${error.message}</p>`
         }
     }
 
-    // --- UPDATED: Function to filter paths in the left panel ---
+    // --- filterPaths Function (Remains the same) ---
     function filterPaths() {
         const filterText = document.getElementById('search-box').value.toLowerCase().trim();
         const listItems = document.querySelectorAll('#navigation-list li');
@@ -693,44 +700,41 @@
             const path = item.dataset.path || '';
             const method = item.dataset.method || '';
             const tag = item.dataset.tag || '';
-            const textContent = (tag + ' ' + method + ' ' + path).toLowerCase(); // Include tag in search
+            const textContent = (tag + ' ' + method + ' ' + path).toLowerCase();
             if (textContent.includes(filterText)) {
                 item.classList.remove('hidden');
-                hasVisibleItems = true; // Mark that at least one item is visible
+                hasVisibleItems = true;
             } else {
                 item.classList.add('hidden');
             }
         });
 
-        // Hide/show controller groups based on whether they have visible children
+        let noResultsMsg = document.querySelector('#navigation-list .no-results'); // Define here
         controllerGroups.forEach(group => {
             const visibleItems = group.querySelectorAll('li:not(.hidden)');
-            if (visibleItems.length === 0 && filterText !== '') { // Only hide if filtering and no matches
+            if (visibleItems.length === 0 && filterText !== '') {
                  group.style.display = 'none';
             } else {
                  group.style.display = '';
-                 // Expand groups with matches when filtering
                  if(filterText !== '' && visibleItems.length > 0) {
                      group.open = true;
                  }
             }
         });
 
-         // Show a message if no results are found
-        const navContainer = document.getElementById('navigation-list');
-        let noResultsMsg = navContainer.querySelector('.no-results');
+        // Show/hide "No results" message
         if (!hasVisibleItems && filterText !== '') {
             if (!noResultsMsg) {
                 noResultsMsg = document.createElement('p');
                 noResultsMsg.className = 'error no-results';
+                noResultsMsg.style.paddingLeft = '20px'; // Indent message slightly
                 noResultsMsg.textContent = 'No matching endpoints found.';
-                navContainer.appendChild(noResultsMsg);
+                document.getElementById('navigation-list').appendChild(noResultsMsg);
             }
         } else if (noResultsMsg) {
             noResultsMsg.remove();
         }
     }
-
 
     // Run on page load
     window.onload = loadApiStructure;
@@ -738,4 +742,3 @@
 
 </body>
 </html>
-
