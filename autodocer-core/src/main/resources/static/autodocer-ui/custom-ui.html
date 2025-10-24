@@ -5,165 +5,250 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoDocER Custom UI</title>
     <style>
-        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; font-size: 14px; }
-        #left-panel { width: 350px; border-right: 1px solid #ccc; padding: 15px; overflow-y: auto; background-color: #f9f9f9; flex-shrink: 0;}
-        #right-panel { flex-grow: 1; padding: 15px; overflow-y: auto; }
-        h2, h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 5px; color: #333;}
-        h3 { margin-top: 20px; font-size: 1.1em; }
-        ul { list-style: none; padding: 0; margin: 0; }
-        li { padding: 8px 5px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 0.9em; word-break: break-all; }
-        li:hover { background-color: #eee; }
-        li.selected { background-color: #007bff; color: white; font-weight: bold;}
-        pre { background-color: #f0f0f0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85em; max-height: 300px; overflow-y: auto; }
-        code { background-color: #f0f0f0; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
-        .method { font-weight: bold; padding: 3px 6px; border-radius: 3px; color: white; margin-right: 8px; font-size: 0.9em;}
-        .method-get { background-color: #61affe; }
-        .method-post { background-color: #49cc90; }
-        .method-put { background-color: #fca130; }
-        .method-delete { background-color: #f93e3e; }
-        .method-patch { background-color: #50e3c2; }
-        .param-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
-        .param-table th, .param-table td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-        .param-table th { background-color: #f9f9f9; font-weight: bold;}
-        .error { color: red; font-weight: bold;}
-        .loading { color: #888; font-style: italic;}
-        .schema-section { margin-top: 15px; }
-        .schema-title { font-weight: bold; margin-bottom: 5px; }
+        /* --- General Styles --- */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; display: flex; height: 100vh; font-size: 14px; background-color: #f8f9fa; color: #212529; }
+        ::-webkit-scrollbar { width: 8px; height: 8px;}
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px;}
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px;}
+        ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+
+        /* --- Panels --- */
+        #left-panel { width: 350px; border-right: 1px solid #dee2e6; padding: 20px; overflow-y: auto; background-color: #fff; flex-shrink: 0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
+        #right-panel { flex-grow: 1; padding: 25px; overflow-y: auto; }
+
+        /* --- Headings --- */
+        h2 { margin-top: 0; border-bottom: 1px solid #e9ecef; padding-bottom: 10px; color: #007bff; font-size: 1.4em; }
+        h3 { margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px; color: #495057; font-size: 1.2em; }
+        h4 { margin-top: 20px; margin-bottom: 10px; color: #6c757d; font-size: 1.1em; }
+
+        /* --- Left Panel Navigation --- */
+        .controller-group { margin-bottom: 20px; }
+        .controller-name { font-weight: bold; font-size: 1.1em; color: #343a40; margin-bottom: 8px; padding-left: 5px; }
+        #navigation-list ul { list-style: none; padding-left: 10px; margin: 0; }
+        #navigation-list li { padding: 9px 8px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 0.9em; word-break: break-all; border-radius: 4px; margin-bottom: 3px; }
+        #navigation-list li:hover { background-color: #e9ecef; }
+        #navigation-list li.selected { background-color: #007bff; color: white; font-weight: bold;}
+
+        /* --- HTTP Method Badges --- */
+        .method { display: inline-block; font-weight: bold; padding: 3px 8px; border-radius: 4px; color: white; margin-right: 8px; font-size: 0.8em; text-transform: uppercase; min-width: 40px; text-align: center; }
+        .method-get { background-color: #28a745; }    /* Green */
+        .method-post { background-color: #17a2b8; }   /* Teal */
+        .method-put { background-color: #ffc107; color:#333;}    /* Yellow */
+        .method-delete { background-color: #dc3545; } /* Red */
+        .method-patch { background-color: #fd7e14; }  /* Orange */
+
+        /* --- Right Panel Details --- */
+        #details-content p { line-height: 1.6; color: #495057; margin-bottom: 15px;}
+        code { background-color: #e9ecef; padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.875em; color: #c82333; }
+        pre { background-color: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.875em; max-height: 400px; overflow-y: auto; color: #212529;}
+        .param-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .param-table th, .param-table td { border: 1px solid #dee2e6; padding: 8px 10px; text-align: left; vertical-align: top;}
+        .param-table th { background-color: #e9ecef; font-weight: 600; color: #495057;}
+        .schema-section { margin-top: 15px; border-left: 3px solid #007bff; padding-left: 15px; }
+        .schema-title { font-weight: bold; margin-bottom: 8px; color: #495057; }
+        .schema-indent { padding-left: 20px; }
+        .error { color: #dc3545; font-weight: bold;}
+        .loading { color: #6c757d; font-style: italic;}
     </style>
 </head>
 <body>
 
 <div id="left-panel">
-    <h2>API Paths</h2>
-    <ul id="paths-list">
-        <li class="loading">Loading Paths...</li>
-    </ul>
+    <h2>Controllers & Paths</h2>
+    <!-- NEW: Container for grouped list -->
+    <div id="navigation-list">
+        <p class="loading">Loading API Structure...</p>
+    </div>
 </div>
 
 <div id="right-panel">
     <h2>Details</h2>
     <div id="details-content">
-        <p>Select a path from the left panel.</p>
+        <p>Select an endpoint from the left panel.</p>
     </div>
 </div>
 
 <script>
     let fullApiSpec = null; // Store the fetched spec
 
-    // --- NEW: Enhanced displayDetails Function ---
-    function displayDetails(pathKey, listItemElement) {
+    // --- NEW: Recursive function to render schema objects ---
+    function renderSchema(schema, indent = '') {
+        if (!schema) return '<code>Schema not available</code>';
+
+        let html = '';
+        const currentIndent = indent + '&nbsp;&nbsp;&nbsp;&nbsp;'; // 4 spaces
+
+        if (schema.type === 'object' && schema.properties) {
+            html += `<code>{</code><br>`;
+            Object.entries(schema.properties).forEach(([propName, propSchema]) => {
+                html += `${currentIndent}<code>"${propName}"</code>: ${renderSchema(propSchema, currentIndent)}`;
+            });
+            html += `${indent}<code>}</code><br>`;
+        } else if (schema.type === 'array' && schema.items) {
+            html += `<code>[</code><br>`;
+            html += `${currentIndent}${renderSchema(schema.items, currentIndent)}`;
+            html += `${indent}<code>]</code><br>`;
+        } else {
+            // Simple type or reference ($ref not handled here yet)
+            html += `<code>${schema.type || 'unknown'}${schema.format ? ` (${schema.format})` : ''}${schema.description ? ` // ${schema.description}` : ''}</code><br>`;
+        }
+        return html;
+    }
+
+
+    // --- UPDATED: Enhanced displayDetails Function ---
+    function displayDetails(pathKey, httpMethod, listItemElement) {
         const detailsDiv = document.getElementById('details-content');
         detailsDiv.innerHTML = ''; // Clear previous content
 
         // --- Highlight selection in left panel ---
-        document.querySelectorAll('#paths-list li.selected').forEach(el => el.classList.remove('selected'));
+        document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));
         if (listItemElement) {
              listItemElement.classList.add('selected');
         }
         // --- End Highlight ---
 
-        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey]) {
-            detailsDiv.innerHTML = '<p class="error">Details not found for this path.</p>';
+        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {
+            detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';
             return;
         }
 
-        const pathItem = fullApiSpec.paths[pathKey];
-        let contentHtml = `<h2>Path: <code>${pathKey}</code></h2>`;
+        const operation = fullApiSpec.paths[pathKey][httpMethod];
+        const methodUpper = httpMethod.toUpperCase();
 
-        // Loop through HTTP methods (get, post, etc.) defined for this path
-        Object.entries(pathItem).forEach(([httpMethod, operation]) => {
-            const methodUpper = httpMethod.toUpperCase();
-            contentHtml += `<h3 style="margin-top: 25px;"><span class="method method-${httpMethod}">${methodUpper}</span> ${operation.summary || operation.operationId || ''}</h3>`;
-            if (operation.description) {
-                contentHtml += `<p>${operation.description}</p>`;
-            }
+        let contentHtml = `<h2><span class="method method-${httpMethod}">${methodUpper}</span> <code>${pathKey}</code></h2>`;
 
-            // --- Display Parameters ---
-            if (operation.parameters && operation.parameters.length > 0) {
-                contentHtml += `<h4>Parameters</h4>`;
-                contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
-                operation.parameters.forEach(param => {
-                    contentHtml += `<tr>
-                                        <td><code>${param.name}</code></td>
-                                        <td>${param.in}</td>
-                                        <td>${param.required ? 'Yes' : 'No'}</td>
-                                        <td><pre>${JSON.stringify(param.schema, null, 2)}</pre></td>
-                                    </tr>`;
-                });
-                contentHtml += `</tbody></table>`;
+        if (operation.summary) {
+            contentHtml += `<p><strong>${operation.summary}</strong></p>`;
+        }
+        if (operation.description) {
+            contentHtml += `<p>${operation.description}</p>`;
+        }
+         if (operation.operationId) {
+            contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;
+        }
+
+
+        // --- Display Parameters ---
+        contentHtml += `<h3>Parameters</h3>`;
+        if (operation.parameters && operation.parameters.length > 0) {
+            contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
+            operation.parameters.forEach(param => {
+                contentHtml += `<tr>
+                                    <td><code>${param.name}</code></td>
+                                    <td>${param.in}</td>
+                                    <td>${param.required ? '<strong>Yes</strong>' : 'No'}</td>
+                                    <td>${renderSchema(param.schema)}</td>
+                                </tr>`;
+            });
+            contentHtml += `</tbody></table>`;
+        } else {
+             contentHtml += `<p>No parameters.</p>`;
+        }
+
+        // --- Display Request Body ---
+        if (operation.requestBody) {
+            contentHtml += `<h3>Request Body</h3>`;
+            contentHtml += `<p>Required: ${operation.requestBody.required ? '<strong>Yes</strong>' : 'No'}</p>`;
+            if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {
+                contentHtml += `<div class="schema-section">
+                                    <div class="schema-title">Schema (application/json):</div>
+                                    <div class="schema-content">${renderSchema(operation.requestBody.content['application/json'].schema)}</div>
+                                </div>`;
             } else {
-                 contentHtml += `<p>Parameters: None</p>`
+                contentHtml += `<p>No schema defined for request body.</p>`;
             }
+        }
 
-            // --- Display Request Body ---
-            if (operation.requestBody) {
-                contentHtml += `<h4>Request Body</h4>`;
-                contentHtml += `<p>Required: ${operation.requestBody.required ? 'Yes' : 'No'}</p>`;
-                if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {
-                    contentHtml += `<div class="schema-section"><div class="schema-title">Schema (application/json):</div><pre>${JSON.stringify(operation.requestBody.content['application/json'].schema, null, 2)}</pre></div>`;
-                } else {
-                    contentHtml += `<p>No schema defined for request body.</p>`;
-                }
-            }
-
-            // --- Display Responses ---
-            if (operation.responses) {
-                contentHtml += `<h4>Responses</h4>`;
-                Object.entries(operation.responses).forEach(([statusCode, response]) => {
-                     contentHtml += `<div><strong>${statusCode}:</strong> ${response.description || ''}</div>`;
-                     if (response.content && response.content['application/json'] && response.content['application/json'].schema) {
-                         contentHtml += `<div class="schema-section"><div class="schema-title">Schema (application/json):</div><pre>${JSON.stringify(response.content['application/json'].schema, null, 2)}</pre></div>`;
-                     }
-                });
-            }
-            contentHtml += '<hr style="margin-top: 25px;">'; // Separator between methods
-        });
+        // --- Display Responses ---
+        if (operation.responses) {
+            contentHtml += `<h3>Responses</h3>`;
+            Object.entries(operation.responses).forEach(([statusCode, response]) => {
+                 contentHtml += `<div style="margin-bottom: 15px;"><h4>Status Code: <code>${statusCode}</code></h4>`;
+                 contentHtml += `<p>${response.description || ''}</p>`;
+                 if (response.content && response.content['application/json'] && response.content['application/json'].schema) {
+                     contentHtml += `<div class="schema-section">
+                                        <div class="schema-title">Schema (application/json):</div>
+                                        <div class="schema-content">${renderSchema(response.content['application/json'].schema)}</div>
+                                    </div>`;
+                 }
+                 contentHtml += `</div>`;
+            });
+        }
 
         detailsDiv.innerHTML = contentHtml;
     }
 
 
-    // --- loadApiPaths Function remains the same, but updates the click listener ---
-    async function loadApiPaths() {
-        const pathsList = document.getElementById('paths-list');
+    // --- UPDATED: load Function to group by tags/controllers ---
+    async function loadApiStructure() {
+        const navContainer = document.getElementById('navigation-list');
+        const detailsDiv = document.getElementById('details-content');
         try {
-            const response = await fetch('/autodocer/api-docs');
+            const response = await fetch('/autodocer/api-docs'); // Fetch THIS service's docs
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             fullApiSpec = await response.json();
             console.log("Fetched Spec:", fullApiSpec);
 
-            pathsList.innerHTML = '';
+            navContainer.innerHTML = ''; // Clear loading message
 
             if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {
-                 pathsList.innerHTML = '<li>No paths found.</li>';
+                 navContainer.innerHTML = '<p>No paths found in API spec.</p>';
                  return;
             }
 
-            const paths = Object.keys(fullApiSpec.paths).sort();
-            paths.forEach(pathKey => {
-                const listItem = document.createElement('li');
-
-                // Add method badges to the list item for quick reference
-                let methodsHtml = '';
-                const pathItem = fullApiSpec.paths[pathKey];
-                Object.keys(pathItem).forEach(method => {
-                    methodsHtml += `<span class="method method-${method}" style="font-size: 0.8em; margin-right: 4px;">${method.toUpperCase()}</span> `;
+            // Group paths by tag (controller name)
+            const pathsByTag = {};
+            Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {
+                Object.entries(pathItem).forEach(([method, operation]) => {
+                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default'; // Use first tag or 'default'
+                    if (!pathsByTag[tag]) {
+                        pathsByTag[tag] = [];
+                    }
+                    pathsByTag[tag].push({ pathKey, method, operation });
                 });
-                listItem.innerHTML = methodsHtml + pathKey; // Prepend methods to path
-
-                // UPDATE: Pass 'listItem' to the click handler for highlighting
-                listItem.addEventListener('click', (event) => displayDetails(pathKey, event.currentTarget));
-                pathsList.appendChild(listItem);
             });
 
+            // Sort tags alphabetically
+            const sortedTags = Object.keys(pathsByTag).sort();
+
+            // Populate list grouped by controller
+            sortedTags.forEach(tag => {
+                const groupDiv = document.createElement('div');
+                groupDiv.classList.add('controller-group');
+
+                const tagNameHeader = document.createElement('div');
+                tagNameHeader.classList.add('controller-name');
+                tagNameHeader.textContent = tag;
+                groupDiv.appendChild(tagNameHeader);
+
+                const ul = document.createElement('ul');
+                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method)) // Sort paths then methods
+                               .forEach(({ pathKey, method, operation }) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> ${pathKey}`;
+                    listItem.title = operation.summary || pathKey; // Tooltip
+
+                    // Add click listener
+                    listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));
+                    ul.appendChild(listItem);
+                });
+                groupDiv.appendChild(ul);
+                navContainer.appendChild(groupDiv);
+            });
+
+             // Initial message in right panel
+             detailsDiv.innerHTML = '<p>Select an endpoint from the left panel.</p>';
+
         } catch (error) {
-            console.error("Error loading API paths:", error);
-            pathsList.innerHTML = `<li class="error">Error loading data: ${error.message}</li>`;
-            document.getElementById('details-content').innerHTML = `<p class="error">Could not load API specification.</p>`
+            console.error("Error loading API structure:", error);
+            navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;
+            detailsDiv.innerHTML = `<p class="error">Could not load API specification.</p>`
         }
     }
 
-    window.onload = loadApiPaths;
+    // Run on page load
+    window.onload = loadApiStructure;
 </script>
 
 </body>
