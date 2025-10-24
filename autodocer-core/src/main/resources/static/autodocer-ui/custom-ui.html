@@ -1,61 +1,365 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>AutoDocER Custom UI</title>-->
+<!--    <style>-->
+<!--        /* -&#45;&#45; General Styles -&#45;&#45; */-->
+<!--        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; display: flex; height: 100vh; font-size: 14px; background-color: #f8f9fa; color: #212529; }-->
+<!--        ::-webkit-scrollbar { width: 8px; height: 8px;}-->
+<!--        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px;}-->
+<!--        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px;}-->
+<!--        ::-webkit-scrollbar-thumb:hover { background: #aaa; }-->
+
+<!--        /* -&#45;&#45; Panels -&#45;&#45; */-->
+<!--        #left-panel { width: 350px; border-right: 1px solid #dee2e6; padding: 20px; overflow-y: auto; background-color: #fff; flex-shrink: 0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }-->
+<!--        #right-panel { flex-grow: 1; padding: 25px; overflow-y: auto; }-->
+
+<!--        /* -&#45;&#45; Headings -&#45;&#45; */-->
+<!--        h2 { margin-top: 0; border-bottom: 1px solid #e9ecef; padding-bottom: 10px; color: #007bff; font-size: 1.4em; }-->
+<!--        h3 { margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px; color: #495057; font-size: 1.2em; }-->
+<!--        h4 { margin-top: 20px; margin-bottom: 10px; color: #6c757d; font-size: 1.1em; }-->
+
+<!--        /* -&#45;&#45; Left Panel Navigation -&#45;&#45; */-->
+<!--        .controller-group { margin-bottom: 20px; }-->
+<!--        .controller-name { font-weight: bold; font-size: 1.1em; color: #343a40; margin-bottom: 8px; padding-left: 5px; }-->
+<!--        #navigation-list ul { list-style: none; padding-left: 10px; margin: 0; }-->
+<!--        #navigation-list li { padding: 9px 8px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 0.9em; word-break: break-all; border-radius: 4px; margin-bottom: 3px; }-->
+<!--        #navigation-list li:hover { background-color: #e9ecef; }-->
+<!--        #navigation-list li.selected { background-color: #007bff; color: white; font-weight: bold;}-->
+
+<!--        /* -&#45;&#45; HTTP Method Badges -&#45;&#45; */-->
+<!--        .method { display: inline-block; font-weight: bold; padding: 3px 8px; border-radius: 4px; color: white; margin-right: 8px; font-size: 0.8em; text-transform: uppercase; min-width: 40px; text-align: center; }-->
+<!--        .method-get { background-color: #28a745; }    /* Green */-->
+<!--        .method-post { background-color: #17a2b8; }   /* Teal */-->
+<!--        .method-put { background-color: #ffc107; color:#333;}    /* Yellow */-->
+<!--        .method-delete { background-color: #dc3545; } /* Red */-->
+<!--        .method-patch { background-color: #fd7e14; }  /* Orange */-->
+
+<!--        /* -&#45;&#45; Right Panel Details -&#45;&#45; */-->
+<!--        #details-content p { line-height: 1.6; color: #495057; margin-bottom: 15px;}-->
+<!--        code { background-color: #e9ecef; padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.875em; color: #c82333; }-->
+<!--        pre { background-color: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.875em; max-height: 400px; overflow-y: auto; color: #212529;}-->
+<!--        .param-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }-->
+<!--        .param-table th, .param-table td { border: 1px solid #dee2e6; padding: 8px 10px; text-align: left; vertical-align: top;}-->
+<!--        .param-table th { background-color: #e9ecef; font-weight: 600; color: #495057;}-->
+<!--        .schema-section { margin-top: 15px; border-left: 3px solid #007bff; padding-left: 15px; }-->
+<!--        .schema-title { font-weight: bold; margin-bottom: 8px; color: #495057; }-->
+<!--        .schema-indent { padding-left: 20px; }-->
+<!--        .error { color: #dc3545; font-weight: bold;}-->
+<!--        .loading { color: #6c757d; font-style: italic;}-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div id="left-panel">-->
+<!--    <h2>Controllers & Paths</h2>-->
+<!--    &lt;!&ndash; NEW: Container for grouped list &ndash;&gt;-->
+<!--    <div id="navigation-list">-->
+<!--        <p class="loading">Loading API Structure...</p>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div id="right-panel">-->
+<!--    <h2>Details</h2>-->
+<!--    <div id="details-content">-->
+<!--        <p>Select an endpoint from the left panel.</p>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    let fullApiSpec = null; // Store the fetched spec-->
+
+<!--    // -&#45;&#45; NEW: Recursive function to render schema objects -&#45;&#45;-->
+<!--    function renderSchema(schema, indent = '') {-->
+<!--        if (!schema) return '<code>Schema not available</code>';-->
+
+<!--        let html = '';-->
+<!--        const currentIndent = indent + '&nbsp;&nbsp;&nbsp;&nbsp;'; // 4 spaces-->
+
+<!--        if (schema.type === 'object' && schema.properties) {-->
+<!--            html += `<code>{</code><br>`;-->
+<!--            Object.entries(schema.properties).forEach(([propName, propSchema]) => {-->
+<!--                html += `${currentIndent}<code>"${propName}"</code>: ${renderSchema(propSchema, currentIndent)}`;-->
+<!--            });-->
+<!--            html += `${indent}<code>}</code><br>`;-->
+<!--        } else if (schema.type === 'array' && schema.items) {-->
+<!--            html += `<code>[</code><br>`;-->
+<!--            html += `${currentIndent}${renderSchema(schema.items, currentIndent)}`;-->
+<!--            html += `${indent}<code>]</code><br>`;-->
+<!--        } else {-->
+<!--            // Simple type or reference ($ref not handled here yet)-->
+<!--            html += `<code>${schema.type || 'unknown'}${schema.format ? ` (${schema.format})` : ''}${schema.description ? ` // ${schema.description}` : ''}</code><br>`;-->
+<!--        }-->
+<!--        return html;-->
+<!--    }-->
+
+
+<!--    // -&#45;&#45; UPDATED: Enhanced displayDetails Function -&#45;&#45;-->
+<!--    function displayDetails(pathKey, httpMethod, listItemElement) {-->
+<!--        const detailsDiv = document.getElementById('details-content');-->
+<!--        detailsDiv.innerHTML = ''; // Clear previous content-->
+
+<!--        // -&#45;&#45; Highlight selection in left panel -&#45;&#45;-->
+<!--        document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));-->
+<!--        if (listItemElement) {-->
+<!--             listItemElement.classList.add('selected');-->
+<!--        }-->
+<!--        // -&#45;&#45; End Highlight -&#45;&#45;-->
+
+<!--        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {-->
+<!--            detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const operation = fullApiSpec.paths[pathKey][httpMethod];-->
+<!--        const methodUpper = httpMethod.toUpperCase();-->
+
+<!--        let contentHtml = `<h2><span class="method method-${httpMethod}">${methodUpper}</span> <code>${pathKey}</code></h2>`;-->
+
+<!--        if (operation.summary) {-->
+<!--            contentHtml += `<p><strong>${operation.summary}</strong></p>`;-->
+<!--        }-->
+<!--        if (operation.description) {-->
+<!--            contentHtml += `<p>${operation.description}</p>`;-->
+<!--        }-->
+<!--         if (operation.operationId) {-->
+<!--            contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;-->
+<!--        }-->
+
+
+<!--        // -&#45;&#45; Display Parameters -&#45;&#45;-->
+<!--        contentHtml += `<h3>Parameters</h3>`;-->
+<!--        if (operation.parameters && operation.parameters.length > 0) {-->
+<!--            contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;-->
+<!--            operation.parameters.forEach(param => {-->
+<!--                contentHtml += `<tr>-->
+<!--                                    <td><code>${param.name}</code></td>-->
+<!--                                    <td>${param.in}</td>-->
+<!--                                    <td>${param.required ? '<strong>Yes</strong>' : 'No'}</td>-->
+<!--                                    <td>${renderSchema(param.schema)}</td>-->
+<!--                                </tr>`;-->
+<!--            });-->
+<!--            contentHtml += `</tbody></table>`;-->
+<!--        } else {-->
+<!--             contentHtml += `<p>No parameters.</p>`;-->
+<!--        }-->
+
+<!--        // -&#45;&#45; Display Request Body -&#45;&#45;-->
+<!--        if (operation.requestBody) {-->
+<!--            contentHtml += `<h3>Request Body</h3>`;-->
+<!--            contentHtml += `<p>Required: ${operation.requestBody.required ? '<strong>Yes</strong>' : 'No'}</p>`;-->
+<!--            if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {-->
+<!--                contentHtml += `<div class="schema-section">-->
+<!--                                    <div class="schema-title">Schema (application/json):</div>-->
+<!--                                    <div class="schema-content">${renderSchema(operation.requestBody.content['application/json'].schema)}</div>-->
+<!--                                </div>`;-->
+<!--            } else {-->
+<!--                contentHtml += `<p>No schema defined for request body.</p>`;-->
+<!--            }-->
+<!--        }-->
+
+<!--        // -&#45;&#45; Display Responses -&#45;&#45;-->
+<!--        if (operation.responses) {-->
+<!--            contentHtml += `<h3>Responses</h3>`;-->
+<!--            Object.entries(operation.responses).forEach(([statusCode, response]) => {-->
+<!--                 contentHtml += `<div style="margin-bottom: 15px;"><h4>Status Code: <code>${statusCode}</code></h4>`;-->
+<!--                 contentHtml += `<p>${response.description || ''}</p>`;-->
+<!--                 if (response.content && response.content['application/json'] && response.content['application/json'].schema) {-->
+<!--                     contentHtml += `<div class="schema-section">-->
+<!--                                        <div class="schema-title">Schema (application/json):</div>-->
+<!--                                        <div class="schema-content">${renderSchema(response.content['application/json'].schema)}</div>-->
+<!--                                    </div>`;-->
+<!--                 }-->
+<!--                 contentHtml += `</div>`;-->
+<!--            });-->
+<!--        }-->
+
+<!--        detailsDiv.innerHTML = contentHtml;-->
+<!--    }-->
+
+
+<!--    // -&#45;&#45; UPDATED: load Function to group by tags/controllers -&#45;&#45;-->
+<!--    async function loadApiStructure() {-->
+<!--        const navContainer = document.getElementById('navigation-list');-->
+<!--        const detailsDiv = document.getElementById('details-content');-->
+<!--        try {-->
+<!--            const response = await fetch('/autodocer/api-docs'); // Fetch THIS service's docs-->
+<!--            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);-->
+<!--            fullApiSpec = await response.json();-->
+<!--            console.log("Fetched Spec:", fullApiSpec);-->
+
+<!--            navContainer.innerHTML = ''; // Clear loading message-->
+
+<!--            if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {-->
+<!--                 navContainer.innerHTML = '<p>No paths found in API spec.</p>';-->
+<!--                 return;-->
+<!--            }-->
+
+<!--            // Group paths by tag (controller name)-->
+<!--            const pathsByTag = {};-->
+<!--            Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {-->
+<!--                Object.entries(pathItem).forEach(([method, operation]) => {-->
+<!--                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default'; // Use first tag or 'default'-->
+<!--                    if (!pathsByTag[tag]) {-->
+<!--                        pathsByTag[tag] = [];-->
+<!--                    }-->
+<!--                    pathsByTag[tag].push({ pathKey, method, operation });-->
+<!--                });-->
+<!--            });-->
+
+<!--            // Sort tags alphabetically-->
+<!--            const sortedTags = Object.keys(pathsByTag).sort();-->
+
+<!--            // Populate list grouped by controller-->
+<!--            sortedTags.forEach(tag => {-->
+<!--                const groupDiv = document.createElement('div');-->
+<!--                groupDiv.classList.add('controller-group');-->
+
+<!--                const tagNameHeader = document.createElement('div');-->
+<!--                tagNameHeader.classList.add('controller-name');-->
+<!--                tagNameHeader.textContent = tag;-->
+<!--                groupDiv.appendChild(tagNameHeader);-->
+
+<!--                const ul = document.createElement('ul');-->
+<!--                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method)) // Sort paths then methods-->
+<!--                               .forEach(({ pathKey, method, operation }) => {-->
+<!--                    const listItem = document.createElement('li');-->
+<!--                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> ${pathKey}`;-->
+<!--                    listItem.title = operation.summary || pathKey; // Tooltip-->
+
+<!--                    // Add click listener-->
+<!--                    listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));-->
+<!--                    ul.appendChild(listItem);-->
+<!--                });-->
+<!--                groupDiv.appendChild(ul);-->
+<!--                navContainer.appendChild(groupDiv);-->
+<!--            });-->
+
+<!--             // Initial message in right panel-->
+<!--             detailsDiv.innerHTML = '<p>Select an endpoint from the left panel.</p>';-->
+
+<!--        } catch (error) {-->
+<!--            console.error("Error loading API structure:", error);-->
+<!--            navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;-->
+<!--            detailsDiv.innerHTML = `<p class="error">Could not load API specification.</p>`-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Run on page load-->
+<!--    window.onload = loadApiStructure;-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoDocER Custom UI</title>
+    <!-- Load Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Load Prism.js CSS (Okaidia theme) for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" xintegrity="sha512-mIs9kKbaw6JZFfSuo+MovjU+Ntggfoj8RwAmJbVXQ5mkAX5LlgETQEweFPI18humSPHymTb5iikEOKWF7I8ncQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        /* --- CSS Variables --- */
+        :root {
+            --primary-color: #0d6efd; /* Brighter Blue */
+            --secondary-color: #6c757d; /* Medium Gray */
+            --light-gray: #f8f9fa;     /* Very Light Gray */
+            --medium-gray: #e9ecef;    /* Light Gray */
+            --dark-gray: #495057;      /* Dark Gray */
+            --border-color: #dee2e6;   /* Border Gray */
+            --text-color: #212529;      /* Default Text Black */
+            --code-bg: #e9ecef;        /* Code Background */
+            --code-color: #d63384;     /* Code Text (Pinkish) */
+            --hover-bg: #e9ecef;       /* Hover Background */
+            --selected-bg: var(--primary-color);
+            --selected-text: #fff;
+            --green: #198754;          /* Darker Green */
+            --teal: #20c997;           /* Brighter Teal */
+            --yellow: #ffc107;         /* Yellow */
+            --yellow-text: #333;       /* Text for Yellow BG */
+            --red: #dc3545;            /* Red */
+            --orange: #fd7e14;         /* Orange */
+            --prism-bg: #2d2d2d;       /* Okaidia theme background */
+            --prism-text: #f8f8f2;     /* Light text on dark */
+        }
         /* --- General Styles --- */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; display: flex; height: 100vh; font-size: 14px; background-color: #f8f9fa; color: #212529; }
+        html { box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; display: flex; height: 100vh; font-size: 14px; background-color: var(--light-gray); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         ::-webkit-scrollbar { width: 8px; height: 8px;}
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px;}
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px;}
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px;}
         ::-webkit-scrollbar-thumb:hover { background: #aaa; }
 
         /* --- Panels --- */
-        #left-panel { width: 350px; border-right: 1px solid #dee2e6; padding: 20px; overflow-y: auto; background-color: #fff; flex-shrink: 0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
-        #right-panel { flex-grow: 1; padding: 25px; overflow-y: auto; }
+        #left-panel { width: 360px; border-right: 1px solid var(--border-color); padding: 20px; overflow-y: auto; background-color: #fff; flex-shrink: 0; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
+        #right-panel { flex-grow: 1; padding: 35px 40px; overflow-y: auto; }
 
         /* --- Headings --- */
-        h2 { margin-top: 0; border-bottom: 1px solid #e9ecef; padding-bottom: 10px; color: #007bff; font-size: 1.4em; }
-        h3 { margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #e9ecef; padding-bottom: 8px; color: #495057; font-size: 1.2em; }
-        h4 { margin-top: 20px; margin-bottom: 10px; color: #6c757d; font-size: 1.1em; }
+        h2 { margin-top: 0; border-bottom: 2px solid var(--primary-color); padding-bottom: 12px; color: var(--primary-color); font-size: 1.6em; font-weight: 600; }
+        h3 { /* Operation Header: Method + Path */ margin-top: 0; margin-bottom: 25px; font-size: 1.5em; font-weight: 500; display: flex; align-items: center; gap: 15px; background-color: var(--light-gray); padding: 12px 18px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: 0 1px 2px rgba(0,0,0,0.05);}
+        h4 { /* Section Headers: Parameters, Responses */ margin-top: 35px; margin-bottom: 18px; color: var(--primary-color); font-size: 1.2em; font-weight: 600; border-bottom: 1px solid var(--medium-gray); padding-bottom: 8px;}
+        h5 { /* e.g., Request Body */ margin-top: 25px; margin-bottom: 12px; color: var(--dark-gray); font-size: 1.1em; font-weight: 600; }
 
         /* --- Left Panel Navigation --- */
-        .controller-group { margin-bottom: 20px; }
-        .controller-name { font-weight: bold; font-size: 1.1em; color: #343a40; margin-bottom: 8px; padding-left: 5px; }
-        #navigation-list ul { list-style: none; padding-left: 10px; margin: 0; }
-        #navigation-list li { padding: 9px 8px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 0.9em; word-break: break-all; border-radius: 4px; margin-bottom: 3px; }
-        #navigation-list li:hover { background-color: #e9ecef; }
-        #navigation-list li.selected { background-color: #007bff; color: white; font-weight: bold;}
+        #search-box { width: 100%; padding: 10px 12px; margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 0.95em; }
+        .controller-group summary { font-weight: 600; font-size: 1.15em; color: var(--primary-color); margin-bottom: 10px; padding: 10px 8px; cursor: pointer; list-style: none; /* Hide default arrow */ position: relative; border-radius: 5px; transition: background-color 0.15s; user-select: none;}
+        .controller-group summary::before { content: '▸'; display: inline-block; margin-right: 10px; font-size: 0.9em; transition: transform 0.2s ease-in-out; color: var(--secondary-color);}
+        .controller-group[open] summary::before { transform: rotate(90deg); }
+        .controller-group summary:hover { background-color: var(--hover-bg); }
+        #navigation-list ul { list-style: none; padding-left: 20px; margin: 5px 0 20px 0; border-left: 2px solid var(--medium-gray); }
+        #navigation-list li { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f8f9fa; font-size: 0.95em; word-break: break-all; border-radius: 5px; margin-bottom: 5px; transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; display: flex; align-items: center; gap: 10px;}
+        #navigation-list li:hover { background-color: var(--hover-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+        #navigation-list li.selected { background-color: var(--selected-bg); color: var(--selected-text); font-weight: 500; box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);}
+        #navigation-list li.hidden { display: none; } /* For filtering */
 
         /* --- HTTP Method Badges --- */
-        .method { display: inline-block; font-weight: bold; padding: 3px 8px; border-radius: 4px; color: white; margin-right: 8px; font-size: 0.8em; text-transform: uppercase; min-width: 40px; text-align: center; }
-        .method-get { background-color: #28a745; }    /* Green */
-        .method-post { background-color: #17a2b8; }   /* Teal */
-        .method-put { background-color: #ffc107; color:#333;}    /* Yellow */
-        .method-delete { background-color: #dc3545; } /* Red */
-        .method-patch { background-color: #fd7e14; }  /* Orange */
+        .method { display: inline-block; font-weight: 600; padding: 4px 10px; border-radius: 4px; color: white; font-size: 0.85em; text-transform: uppercase; min-width: 50px; text-align: center; vertical-align: middle; flex-shrink: 0;}
+        .method-path { flex-grow: 1; word-break: break-all; font-family: monospace; font-size: 1.05em; color: var(--dark-gray); } /* Make path stand out */
+        #navigation-list .method-path { font-size: 0.9em; font-family: inherit; color: inherit; } /* Reset for left panel */
+        .method-get { background-color: var(--green); }
+        .method-post { background-color: var(--teal); }
+        .method-put { background-color: var(--yellow); color: var(--yellow-text); }
+        .method-delete { background-color: var(--red); }
+        .method-patch { background-color: var(--orange); }
 
         /* --- Right Panel Details --- */
-        #details-content p { line-height: 1.6; color: #495057; margin-bottom: 15px;}
-        code { background-color: #e9ecef; padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.875em; color: #c82333; }
-        pre { background-color: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.875em; max-height: 400px; overflow-y: auto; color: #212529;}
-        .param-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .param-table th, .param-table td { border: 1px solid #dee2e6; padding: 8px 10px; text-align: left; vertical-align: top;}
-        .param-table th { background-color: #e9ecef; font-weight: 600; color: #495057;}
-        .schema-section { margin-top: 15px; border-left: 3px solid #007bff; padding-left: 15px; }
-        .schema-title { font-weight: bold; margin-bottom: 8px; color: #495057; }
-        .schema-indent { padding-left: 20px; }
-        .error { color: #dc3545; font-weight: bold;}
-        .loading { color: #6c757d; font-style: italic;}
+        #details-content { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        #details-content p { line-height: 1.7; color: var(--dark-gray); margin-bottom: 18px;}
+        #details-content strong { color: var(--text-color); font-weight: 600; }
+        code { background-color: var(--code-bg); padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.9em; color: var(--code-color); }
+        pre[class*="language-"] { /* Style PrismJS blocks */ background-color: var(--prism-bg) !important; padding: 1.2em !important; border: 1px solid var(--border-color); border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; max-height: 450px; overflow-y: auto; color: var(--prism-text); margin-top: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        pre[class*="language-"] code { background: none; color: inherit; font-size: inherit; padding: 0;} /* Reset code inside pre */
+        .param-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 18px; font-size: 0.9em; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); border-radius: 5px; background-color: #fff; }
+        .param-table th, .param-table td { border-bottom: 1px solid var(--border-color); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .param-table th { background-color: var(--medium-gray); font-weight: 600; color: var(--dark-gray); border-top: none;}
+        .param-table tr:last-child td { border-bottom: none; }
+        .param-table td:first-child code { color: var(--primary-color); font-weight: 500;} /* Highlight param name */
+        .schema-section { margin-top: 18px; border-left: 4px solid var(--primary-color); padding-left: 20px; background-color: #fff; }
+        .schema-title { font-weight: 600; margin-bottom: 12px; color: var(--dark-gray); display: block; font-size: 1.05em;}
+        .response-block { margin-bottom: 30px; border: 1px solid var(--border-color); padding: 25px; border-radius: 6px; background-color: var(--light-gray); box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+        .response-block h4 { border-bottom: none; margin-top: 0; color: var(--primary-color); display: flex; justify-content: space-between; align-items: center;}
+        .try-it-out-btn { /* Placeholder button */ padding: 6px 12px; font-size: 0.85em; background-color: var(--secondary-color); color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s;}
+        .try-it-out-btn:hover { background-color: var(--dark-gray); }
+        .error { color: var(--red); font-weight: 600; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px 15px; border-radius: 4px;}
+        .loading { color: var(--secondary-color); font-style: italic; padding: 15px; }
     </style>
 </head>
 <body>
 
 <div id="left-panel">
     <h2>Controllers & Paths</h2>
-    <!-- NEW: Container for grouped list -->
+    <!-- NEW: Search Box -->
+    <input type="text" id="search-box" placeholder="Filter paths or methods..." onkeyup="filterPaths()">
     <div id="navigation-list">
         <p class="loading">Loading API Structure...</p>
     </div>
@@ -64,49 +368,52 @@
 <div id="right-panel">
     <h2>Details</h2>
     <div id="details-content">
-        <p>Select an endpoint from the left panel.</p>
+        <p class="loading">Select an endpoint from the left panel.</p>
     </div>
 </div>
+
+<!-- Load Prism.js for Syntax Highlighting -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" xintegrity="sha512-9khQRAUBomGQVugrceK8ZOhtW5NkTOb97xl8Wq1Ok9oCFw8YhQcqCRHqmLG3QGq9j6d9umcsth9bkJkLnm/Y9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" xintegrity="sha512-SROmpNWfXWp6dUgyxZEIHvePOIUo4PTSTgZZqqc47/Y/2Y5F45Q2296rY8+Qjr4f37Ug8W1+5GjX8Kx19ptAbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
     let fullApiSpec = null; // Store the fetched spec
 
-    // --- NEW: Recursive function to render schema objects ---
-    function renderSchema(schema, indent = '') {
-        if (!schema) return '<code>Schema not available</code>';
-
-        let html = '';
-        const currentIndent = indent + '&nbsp;&nbsp;&nbsp;&nbsp;'; // 4 spaces
-
-        if (schema.type === 'object' && schema.properties) {
-            html += `<code>{</code><br>`;
-            Object.entries(schema.properties).forEach(([propName, propSchema]) => {
-                html += `${currentIndent}<code>"${propName}"</code>: ${renderSchema(propSchema, currentIndent)}`;
-            });
-            html += `${indent}<code>}</code><br>`;
-        } else if (schema.type === 'array' && schema.items) {
-            html += `<code>[</code><br>`;
-            html += `${currentIndent}${renderSchema(schema.items, currentIndent)}`;
-            html += `${indent}<code>]</code><br>`;
-        } else {
-            // Simple type or reference ($ref not handled here yet)
-            html += `<code>${schema.type || 'unknown'}${schema.format ? ` (${schema.format})` : ''}${schema.description ? ` // ${schema.description}` : ''}</code><br>`;
+    // --- UPDATED: Function to render schema objects using Prism.js ---
+    function renderSchema(schema) {
+        if (!schema) return '<span class="error">Schema not available</span>';
+        try {
+            // Convert the schema part back to a pretty-printed JSON string
+            const jsonString = JSON.stringify(schema, null, 2);
+            // Wrap in pre/code tags with the correct language class for Prism
+            // Prism autoloader might need 'language-js' or 'language-json5' depending on features
+            return `<pre><code class="language-json">${escapeHtml(jsonString)}</code></pre>`;
+        } catch (e) {
+            console.error("Error rendering schema:", e);
+            return `<pre><code class="language-json error">Error rendering schema</code></pre>`;
         }
-        return html;
     }
 
+    // Helper to escape HTML for placing JSON in code blocks
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
 
     // --- UPDATED: Enhanced displayDetails Function ---
     function displayDetails(pathKey, httpMethod, listItemElement) {
         const detailsDiv = document.getElementById('details-content');
         detailsDiv.innerHTML = ''; // Clear previous content
 
-        // --- Highlight selection in left panel ---
         document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));
         if (listItemElement) {
              listItemElement.classList.add('selected');
         }
-        // --- End Highlight ---
 
         if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {
             detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';
@@ -116,44 +423,43 @@
         const operation = fullApiSpec.paths[pathKey][httpMethod];
         const methodUpper = httpMethod.toUpperCase();
 
-        let contentHtml = `<h2><span class="method method-${httpMethod}">${methodUpper}</span> <code>${pathKey}</code></h2>`;
+        let contentHtml = `
+            <h3>
+                <span class="method method-${httpMethod}">${methodUpper}</span>
+                <span class="method-path"><code>${pathKey}</code></span>
+                <button class="try-it-out-btn">Try it out</button>
+            </h3>`;
 
-        if (operation.summary) {
-            contentHtml += `<p><strong>${operation.summary}</strong></p>`;
-        }
-        if (operation.description) {
-            contentHtml += `<p>${operation.description}</p>`;
-        }
-         if (operation.operationId) {
-            contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;
-        }
+        if (operation.summary) contentHtml += `<p><strong>${operation.summary}</strong></p>`;
+        if (operation.description) contentHtml += `<p>${operation.description}</p>`;
+        if (operation.operationId) contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;
 
 
         // --- Display Parameters ---
-        contentHtml += `<h3>Parameters</h3>`;
         if (operation.parameters && operation.parameters.length > 0) {
+            contentHtml += `<h4>Parameters</h4>`;
             contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
             operation.parameters.forEach(param => {
                 contentHtml += `<tr>
                                     <td><code>${param.name}</code></td>
-                                    <td>${param.in}</td>
+                                    <td><code>${param.in}</code></td>
                                     <td>${param.required ? '<strong>Yes</strong>' : 'No'}</td>
                                     <td>${renderSchema(param.schema)}</td>
                                 </tr>`;
             });
             contentHtml += `</tbody></table>`;
         } else {
-             contentHtml += `<p>No parameters.</p>`;
+             contentHtml += `<h4>Parameters</h4><p>No parameters.</p>`;
         }
 
         // --- Display Request Body ---
         if (operation.requestBody) {
-            contentHtml += `<h3>Request Body</h3>`;
+            contentHtml += `<h4>Request Body</h4>`;
             contentHtml += `<p>Required: ${operation.requestBody.required ? '<strong>Yes</strong>' : 'No'}</p>`;
             if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {
                 contentHtml += `<div class="schema-section">
-                                    <div class="schema-title">Schema (application/json):</div>
-                                    <div class="schema-content">${renderSchema(operation.requestBody.content['application/json'].schema)}</div>
+                                    <span class="schema-title">Schema (application/json):</span>
+                                    ${renderSchema(operation.requestBody.content['application/json'].schema)}
                                 </div>`;
             } else {
                 contentHtml += `<p>No schema defined for request body.</p>`;
@@ -162,25 +468,27 @@
 
         // --- Display Responses ---
         if (operation.responses) {
-            contentHtml += `<h3>Responses</h3>`;
+            contentHtml += `<h4>Responses</h4>`;
             Object.entries(operation.responses).forEach(([statusCode, response]) => {
-                 contentHtml += `<div style="margin-bottom: 15px;"><h4>Status Code: <code>${statusCode}</code></h4>`;
-                 contentHtml += `<p>${response.description || ''}</p>`;
+                 contentHtml += `<div class="response-block">
+                                    <h5>Status Code: <code>${statusCode}</code></h5>
+                                    <p>${response.description || ''}</p>`;
                  if (response.content && response.content['application/json'] && response.content['application/json'].schema) {
                      contentHtml += `<div class="schema-section">
-                                        <div class="schema-title">Schema (application/json):</div>
-                                        <div class="schema-content">${renderSchema(response.content['application/json'].schema)}</div>
+                                        <span class="schema-title">Schema (application/json):</span>
+                                        ${renderSchema(response.content['application/json'].schema)}
                                     </div>`;
                  }
-                 contentHtml += `</div>`;
+                 contentHtml += `</div>`; // Close response div
             });
         }
 
         detailsDiv.innerHTML = contentHtml;
+        Prism.highlightAllUnder(detailsDiv); // Trigger syntax highlighting
     }
 
 
-    // --- UPDATED: load Function to group by tags/controllers ---
+    // --- UPDATED: load Function to group by tags/controllers using <details> ---
     async function loadApiStructure() {
         const navContainer = document.getElementById('navigation-list');
         const detailsDiv = document.getElementById('details-content');
@@ -193,7 +501,8 @@
             navContainer.innerHTML = ''; // Clear loading message
 
             if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {
-                 navContainer.innerHTML = '<p>No paths found in API spec.</p>';
+                 navContainer.innerHTML = '<p class="error">No paths found in API spec.</p>';
+                 detailsDiv.innerHTML = '<p>Could not load API specification or no endpoints defined.</p>';
                  return;
             }
 
@@ -201,40 +510,44 @@
             const pathsByTag = {};
             Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {
                 Object.entries(pathItem).forEach(([method, operation]) => {
-                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default'; // Use first tag or 'default'
-                    if (!pathsByTag[tag]) {
-                        pathsByTag[tag] = [];
-                    }
-                    pathsByTag[tag].push({ pathKey, method, operation });
+                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default';
+                    if (!pathsByTag[tag]) pathsByTag[tag] = [];
+                    // Store reference to the list item element for filtering
+                    pathsByTag[tag].push({ pathKey, method, operation, element: null });
                 });
             });
 
             // Sort tags alphabetically
             const sortedTags = Object.keys(pathsByTag).sort();
 
-            // Populate list grouped by controller
+            // Populate list grouped by controller using <details> and <summary>
             sortedTags.forEach(tag => {
-                const groupDiv = document.createElement('div');
-                groupDiv.classList.add('controller-group');
+                const detailsElement = document.createElement('details');
+                detailsElement.classList.add('controller-group');
+                detailsElement.open = true; // Open all by default
 
-                const tagNameHeader = document.createElement('div');
-                tagNameHeader.classList.add('controller-name');
-                tagNameHeader.textContent = tag;
-                groupDiv.appendChild(tagNameHeader);
+                const summaryElement = document.createElement('summary');
+                summaryElement.classList.add('controller-name');
+                summaryElement.textContent = tag;
+                detailsElement.appendChild(summaryElement);
 
                 const ul = document.createElement('ul');
-                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method)) // Sort paths then methods
-                               .forEach(({ pathKey, method, operation }) => {
+                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method))
+                               .forEach((endpointData) => {
+                    const {pathKey, method, operation} = endpointData;
                     const listItem = document.createElement('li');
-                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> ${pathKey}`;
-                    listItem.title = operation.summary || pathKey; // Tooltip
+                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> <span class="method-path">${pathKey}</span>`;
+                    listItem.title = operation.summary || pathKey;
+                    listItem.dataset.path = pathKey; // Store data for filtering
+                    listItem.dataset.method = method;
 
                     // Add click listener
                     listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));
                     ul.appendChild(listItem);
+                    endpointData.element = listItem; // Store reference back
                 });
-                groupDiv.appendChild(ul);
-                navContainer.appendChild(groupDiv);
+                detailsElement.appendChild(ul);
+                navContainer.appendChild(detailsElement);
             });
 
              // Initial message in right panel
@@ -243,9 +556,40 @@
         } catch (error) {
             console.error("Error loading API structure:", error);
             navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;
-            detailsDiv.innerHTML = `<p class="error">Could not load API specification.</p>`
+            detailsDiv.innerHTML = `<p class="error">Could not load API specification: ${error.message}</p>`
         }
     }
+
+    // --- NEW: Function to filter paths in the left panel ---
+    function filterPaths() {
+        const filterText = document.getElementById('search-box').value.toLowerCase();
+        const listItems = document.querySelectorAll('#navigation-list li');
+        const controllerGroups = document.querySelectorAll('#navigation-list .controller-group');
+
+        listItems.forEach(item => {
+            const path = item.dataset.path || '';
+            const method = item.dataset.method || '';
+            const textContent = (method + ' ' + path).toLowerCase();
+            if (textContent.includes(filterText)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        // Hide controller groups if all children are hidden
+        controllerGroups.forEach(group => {
+            const visibleItems = group.querySelectorAll('li:not(.hidden)');
+            if (visibleItems.length === 0) {
+                 group.style.display = 'none';
+            } else {
+                 group.style.display = '';
+                 // Optionally expand groups with matches when filtering
+                 // group.open = true;
+            }
+        });
+    }
+
 
     // Run on page load
     window.onload = loadApiStructure;
@@ -253,4 +597,5 @@
 
 </body>
 </html>
+
 
