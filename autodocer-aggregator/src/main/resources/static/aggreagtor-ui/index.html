@@ -7,43 +7,14 @@
 <!--    &lt;!&ndash; Load Swagger UI CSS from CDN &ndash;&gt;-->
 <!--    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">-->
 <!--    <style>-->
-<!--        html, body {-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            font-family: sans-serif;-->
-<!--            background-color: #f7f7f7;-->
-<!--        }-->
-<!--        .container {-->
-<!--            max-width: 1200px;-->
-<!--            margin: 20px auto;-->
-<!--            padding: 20px;-->
-<!--            background-color: #fff;-->
-<!--            box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
-<!--            border-radius: 8px;-->
-<!--        }-->
-<!--        h1 {-->
-<!--            color: #333;-->
-<!--            border-bottom: 1px solid #eee;-->
-<!--            padding-bottom: 10px;-->
-<!--        }-->
-<!--        label {-->
-<!--            display: block;-->
-<!--            margin-bottom: 5px;-->
-<!--            font-weight: bold;-->
-<!--            color: #555;-->
-<!--        }-->
-<!--        select {-->
-<!--            width: 100%;-->
-<!--            padding: 10px;-->
-<!--            margin-bottom: 20px;-->
-<!--            border: 1px solid #ccc;-->
-<!--            border-radius: 4px;-->
-<!--            box-sizing: border-box; /* Ensures padding doesn't affect width */-->
-<!--            font-size: 16px;-->
-<!--        }-->
-<!--        #swagger-ui {-->
-<!--            margin-top: 20px;-->
-<!--        }-->
+<!--        html, body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f7f7f7; }-->
+<!--        .container { max-width: 1400px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px; }-->
+<!--        h1 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; }-->
+<!--        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }-->
+<!--        select { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }-->
+<!--        #swagger-ui { margin-top: 20px; }-->
+<!--        .error-message { color: red; font-weight: bold; margin-top: 10px; }-->
+<!--        .loading-message { color: #666; font-style: italic; }-->
 <!--    </style>-->
 <!--</head>-->
 <!--<body>-->
@@ -51,174 +22,14 @@
 <!--<div class="container">-->
 <!--    <h1>Aggregated Microservice API Documentation</h1>-->
 
-<!--    <label for="service-select">Select a Service:</label>-->
+<!--    <label for="service-select">Select a Service View:</label>-->
 <!--    <select id="service-select">-->
-<!--        <option value="">&#45;&#45; Loading Services &#45;&#45;</option>-->
-<!--    </select>-->
-
-<!--    &lt;!&ndash; This div will host the Swagger UI &ndash;&gt;-->
-<!--    <div id="swagger-ui"></div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Load Swagger UI JavaScript from CDN &ndash;&gt;-->
-<!--<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>-->
-<!--<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>-->
-
-<!--<script>-->
-<!--    // Store the fetched definitions globally for easy access-->
-<!--    let apiDefinitions = {};-->
-<!--    let swaggerUiInstance = null;-->
-
-<!--    // Function to initialize Swagger UI for a selected service-->
-<!--    function loadSwaggerUI(serviceName) {-->
-<!--        if (!serviceName || !apiDefinitions[serviceName]) {-->
-<!--            // Clear the UI if no service is selected or definition is missing-->
-<!--            if (swaggerUiInstance) {-->
-<!--                // Find a way to clear or hide the instance if needed-->
-<!--                document.getElementById('swagger-ui').innerHTML = '';-->
-<!--            }-->
-<!--            console.log("No service selected or definition not found.");-->
-<!--            return;-->
-<!--        }-->
-
-<!--        try {-->
-<!--            // Parse the JSON string for the selected service-->
-<!--            const spec = JSON.parse(apiDefinitions[serviceName]);-->
-
-<!--            // Initialize Swagger UI-->
-<!--            swaggerUiInstance = SwaggerUIBundle({-->
-<!--                spec: spec, // Use the parsed JSON spec-->
-<!--                dom_id: '#swagger-ui', // Target the div-->
-<!--                deepLinking: true,-->
-<!--                presets: [-->
-<!--                    SwaggerUIBundle.presets.apis,-->
-<!--                    SwaggerUIStandalonePreset-->
-<!--                ],-->
-<!--                plugins: [-->
-<!--                    SwaggerUIBundle.plugins.DownloadUrl-->
-<!--                ],-->
-<!--                layout: "StandaloneLayout"-->
-<!--            });-->
-<!--        } catch (e) {-->
-<!--            console.error("Error parsing JSON spec or initializing Swagger UI:", e);-->
-<!--            document.getElementById('swagger-ui').innerHTML = '<p style="color: red;">Error loading API definition. Is the JSON valid?</p>';-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Function to fetch definitions and populate the dropdown-->
-<!--    async function fetchAndPopulateServices() {-->
-<!--        const selectElement = document.getElementById('service-select');-->
-<!--        try {-->
-<!--            // Fetch the aggregated definitions from our backend endpoint-->
-<!--            const response = await fetch('/autodocer-aggregator/definitions');-->
-<!--            if (!response.ok) {-->
-<!--                throw new Error(`HTTP error! status: ${response.status}`);-->
-<!--            }-->
-<!--            apiDefinitions = await response.json();-->
-
-<!--            // Clear existing options except the placeholder-->
-<!--            selectElement.innerHTML = '<option value="">&#45;&#45; Select a Service &#45;&#45;</option>';-->
-
-<!--            // Populate the dropdown-->
-<!--            const serviceNames = Object.keys(apiDefinitions);-->
-<!--            if (serviceNames.length === 0) {-->
-<!--                 selectElement.innerHTML = '<option value="">&#45;&#45; No Services Found &#45;&#45;</option>';-->
-<!--                 return;-->
-<!--            }-->
-
-<!--            serviceNames.sort().forEach(serviceName => {-->
-<!--                const option = document.createElement('option');-->
-<!--                option.value = serviceName;-->
-<!--                option.textContent = serviceName.toUpperCase(); // Display in uppercase-->
-<!--                selectElement.appendChild(option);-->
-<!--            });-->
-
-<!--            // Add event listener to load Swagger UI when a service is selected-->
-<!--            selectElement.addEventListener('change', (event) => {-->
-<!--                loadSwaggerUI(event.target.value);-->
-<!--            });-->
-
-<!--        } catch (error) {-->
-<!--            console.error('Error fetching API definitions:', error);-->
-<!--            selectElement.innerHTML = '<option value="">&#45;&#45; Error Loading Services &#45;&#45;</option>';-->
-<!--            document.getElementById('swagger-ui').innerHTML = '<p style="color: red;">Could not fetch API definitions from the server.</p>';-->
-<!--        }-->
-<!--    }-->
-
-<!--    // Run the fetch function when the page loads-->
-<!--    window.onload = fetchAndPopulateServices;-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
-
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Aggregated API Documentation</title>-->
-<!--    &lt;!&ndash; Load Swagger UI CSS from CDN &ndash;&gt;-->
-<!--    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">-->
-<!--    <style>-->
-<!--        html, body {-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            font-family: sans-serif;-->
-<!--            background-color: #f7f7f7;-->
-<!--        }-->
-<!--        .container {-->
-<!--            max-width: 1400px; /* Wider for better view */-->
-<!--            margin: 20px auto;-->
-<!--            padding: 20px;-->
-<!--            background-color: #fff;-->
-<!--            box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
-<!--            border-radius: 8px;-->
-<!--        }-->
-<!--        h1 {-->
-<!--            color: #333;-->
-<!--            border-bottom: 1px solid #eee;-->
-<!--            padding-bottom: 10px;-->
-<!--        }-->
-<!--        label {-->
-<!--            display: block;-->
-<!--            margin-bottom: 5px;-->
-<!--            font-weight: bold;-->
-<!--            color: #555;-->
-<!--        }-->
-<!--        select {-->
-<!--            width: 100%;-->
-<!--            padding: 10px;-->
-<!--            margin-bottom: 20px;-->
-<!--            border: 1px solid #ccc;-->
-<!--            border-radius: 4px;-->
-<!--            box-sizing: border-box;-->
-<!--            font-size: 16px;-->
-<!--        }-->
-<!--        #swagger-ui {-->
-<!--            margin-top: 20px;-->
-<!--        }-->
-<!--        /* Style to hide filtered elements (using Swagger UI classes) */-->
-<!--        .swagger-ui .opblock-tag-section.hidden {-->
-<!--            display: none;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<div class="container">-->
-<!--    <h1>Aggregated Microservice API Documentation</h1>-->
-
-<!--    <label for="service-select">Filter by Service:</label>-->
-<!--    <select id="service-select">-->
-<!--        <option value="all">&#45;&#45; All Services &#45;&#45;</option>-->
+<!--        <option value="all">&#45;&#45; All Services (Unified View) &#45;&#45;</option>-->
 <!--        &lt;!&ndash; Service options will be populated by JavaScript &ndash;&gt;-->
 <!--    </select>-->
 
 <!--    &lt;!&ndash; This div will host the Swagger UI &ndash;&gt;-->
-<!--    <div id="swagger-ui">Loading API Documentation...</div>-->
+<!--    <div id="swagger-ui"><p class="loading-message">Loading API Documentation...</p></div>-->
 <!--</div>-->
 
 <!--&lt;!&ndash; Load Swagger UI JavaScript from CDN &ndash;&gt;-->
@@ -227,14 +38,38 @@
 
 <!--<script>-->
 <!--    let swaggerUiInstance = null;-->
-<!--    let fullSpec = null; // Store the full merged spec-->
-<!--    let serviceTags = new Set(); // To store unique service names (tags)-->
+<!--    let unifiedSpec = null;         // Store the merged spec object-->
+<!--    let individualSpecsMap = {};    // Store the map of individual spec objects-->
 
-<!--    // Function to initialize Swagger UI with the full spec-->
-<!--    function initializeSwaggerUI(spec) {-->
+<!--    // Function to initialize or update Swagger UI with a given spec object-->
+<!--    function loadSwaggerUI(specObject) {-->
+<!--        const swaggerUiDiv = document.getElementById('swagger-ui');-->
+<!--        swaggerUiDiv.innerHTML = ''; // Clear previous UI or loading message-->
+
+<!--        if (!specObject) {-->
+<!--            swaggerUiDiv.innerHTML = '<p class="error-message">Error: No specification data provided.</p>';-->
+<!--            console.error("loadSwaggerUI called with null or undefined specObject.");-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // Check if the spec contains an error marker from the backend-->
+<!--        if (specObject.error) {-->
+<!--             swaggerUiDiv.innerHTML = `<p class="error-message">Error loading API definition: ${specObject.error}</p>`;-->
+<!--             console.error("Backend reported error in spec:", specObject.error);-->
+<!--             return;-->
+<!--        }-->
+<!--         // Basic validation: Check if it looks like an OpenAPI spec-->
+<!--         if (!specObject.openapi || !specObject.info || !specObject.paths) {-->
+<!--            swaggerUiDiv.innerHTML = '<p class="error-message">Error: Invalid OpenAPI specification format received.</p>';-->
+<!--            console.error("Invalid spec format:", specObject);-->
+<!--            return;-->
+<!--         }-->
+
+
 <!--        try {-->
+<!--            // Initialize Swagger UI-->
 <!--            swaggerUiInstance = SwaggerUIBundle({-->
-<!--                spec: spec, // Use the parsed JSON spec object-->
+<!--                spec: specObject, // Use the provided spec object (already parsed)-->
 <!--                dom_id: '#swagger-ui',-->
 <!--                deepLinking: true,-->
 <!--                presets: [-->
@@ -245,94 +80,69 @@
 <!--                    SwaggerUIBundle.plugins.DownloadUrl-->
 <!--                ],-->
 <!--                layout: "StandaloneLayout",-->
-<!--                // NEW: Add filter capability-->
-<!--                filter: true // Enable the filter textbox in Swagger UI (optional alternative)-->
+<!--                filter: true // Enable Swagger UI's built-in filter box-->
 <!--            });-->
 <!--        } catch (e) {-->
 <!--            console.error("Error initializing Swagger UI:", e);-->
-<!--            document.getElementById('swagger-ui').innerHTML = '<p style="color: red;">Error loading API definition. Is the JSON valid?</p>';-->
+<!--            swaggerUiDiv.innerHTML = '<p class="error-message">Error rendering API definition.</p>';-->
 <!--        }-->
 <!--    }-->
 
-<!--    // NEW: Function to filter the displayed endpoints based on the selected tag-->
-<!--    function filterSwaggerUI(selectedTag) {-->
-<!--        const uiRoot = document.getElementById('swagger-ui');-->
-<!--        if (!uiRoot) return;-->
-
-<!--        // Find all the top-level sections for each tag/service-->
-<!--        const tagSections = uiRoot.querySelectorAll('.swagger-ui .opblock-tag-section');-->
-
-<!--        tagSections.forEach(section => {-->
-<!--            // Find the tag name associated with this section (Swagger UI uses data attributes)-->
-<!--            const tagNameElement = section.querySelector('.opblock-tag > span > a > span'); // Adjust selector based on Swagger UI version if needed-->
-<!--            const tagName = tagNameElement ? tagNameElement.textContent : '';-->
-
-<!--            // Show or hide the section based on selection-->
-<!--            if (selectedTag === 'all' || tagName === selectedTag) {-->
-<!--                section.classList.remove('hidden');-->
-<!--            } else {-->
-<!--                section.classList.add('hidden');-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
-
-
-<!--    // Function to fetch the merged definition, initialize UI, and populate dropdown-->
+<!--    // Function to fetch the combined data, populate dropdown, and load initial view-->
 <!--    async function loadAndInitialize() {-->
 <!--        const selectElement = document.getElementById('service-select');-->
 <!--        const swaggerUiDiv = document.getElementById('swagger-ui');-->
 <!--        try {-->
-<!--            swaggerUiDiv.innerHTML = 'Fetching API definitions...';-->
-<!--            // Fetch the single, merged OpenAPI definition-->
+<!--            swaggerUiDiv.innerHTML = '<p class="loading-message">Fetching API definitions...</p>';-->
+<!--            // Fetch the combined JSON object from our backend endpoint-->
 <!--            const response = await fetch('/autodocer-aggregator/definitions');-->
 <!--            if (!response.ok) {-->
 <!--                throw new Error(`HTTP error! status: ${response.status}`);-->
 <!--            }-->
-<!--            // IMPORTANT: Parse the response as JSON object directly-->
-<!--            fullSpec = await response.json();-->
+<!--            // Parse the response containing { unifiedSpec: {...}, individualSpecs: {...} }-->
+<!--            const result = await response.json();-->
 
-<!--            // Clear loading message-->
-<!--             swaggerUiDiv.innerHTML = '';-->
+<!--            // Store both parts-->
+<!--            unifiedSpec = result.unifiedSpec;-->
+<!--            individualSpecsMap = result.individualSpecs || {}; // Use empty map if missing-->
 
-<!--            // Initialize Swagger UI with the full merged spec-->
-<!--            initializeSwaggerUI(fullSpec);-->
+<!--            console.log("Unified Spec:", unifiedSpec);-->
+<!--            console.log("Individual Specs Map:", individualSpecsMap);-->
 
-<!--            // Populate the dropdown based on tags found in the spec-->
-<!--            serviceTags.clear();-->
-<!--            if (fullSpec && fullSpec.paths) {-->
-<!--                Object.values(fullSpec.paths).forEach(pathItem => {-->
-<!--                    Object.values(pathItem).forEach(operation => {-->
-<!--                        if (operation.tags && operation.tags.length > 0) {-->
-<!--                            serviceTags.add(operation.tags[0]); // Assuming first tag is service name-->
-<!--                        }-->
-<!--                    });-->
+<!--            // Populate the dropdown with keys from individualSpecsMap-->
+<!--            const serviceNames = Object.keys(individualSpecsMap);-->
+<!--            if (serviceNames.length === 0) {-->
+<!--                 // Update the "All Services" option text if no specific services found-->
+<!--                 selectElement.options[0].textContent = '&#45;&#45; All Services (No specific services registered) &#45;&#45;';-->
+<!--            } else {-->
+<!--                serviceNames.sort().forEach(serviceName => {-->
+<!--                    const option = document.createElement('option');-->
+<!--                    option.value = serviceName;-->
+<!--                    option.textContent = serviceName.toUpperCase();-->
+<!--                    selectElement.appendChild(option);-->
 <!--                });-->
 <!--            }-->
 
-<!--            // Add sorted service names to the dropdown-->
-<!--            const sortedTags = Array.from(serviceTags).sort();-->
-<!--             if (sortedTags.length === 0) {-->
-<!--                 // Keep only the "All Services" option if no tags found-->
-<!--                 selectElement.innerHTML = '<option value="all">&#45;&#45; All Services (No specific tags found) &#45;&#45;</option>';-->
-<!--             } else {-->
-<!--                sortedTags.forEach(tag => {-->
-<!--                    const option = document.createElement('option');-->
-<!--                    option.value = tag;-->
-<!--                    option.textContent = tag.toUpperCase();-->
-<!--                    selectElement.appendChild(option);-->
-<!--                });-->
-<!--             }-->
-
-
-<!--            // Add event listener to filter Swagger UI when dropdown changes-->
+<!--            // Add event listener to switch views when dropdown changes-->
 <!--            selectElement.addEventListener('change', (event) => {-->
-<!--                filterSwaggerUI(event.target.value);-->
+<!--                const selectedValue = event.target.value;-->
+<!--                if (selectedValue === 'all') {-->
+<!--                    console.log("Loading Unified Spec");-->
+<!--                    loadSwaggerUI(unifiedSpec); // Load the merged spec-->
+<!--                } else {-->
+<!--                    console.log("Loading Individual Spec for:", selectedValue);-->
+<!--                    loadSwaggerUI(individualSpecsMap[selectedValue]); // Load the specific service's spec-->
+<!--                }-->
 <!--            });-->
+
+<!--            // Load the unified view by default after populating dropdown-->
+<!--            console.log("Loading initial Unified Spec");-->
+<!--            loadSwaggerUI(unifiedSpec);-->
 
 <!--        } catch (error) {-->
 <!--            console.error('Error fetching or processing API definition:', error);-->
 <!--            selectElement.innerHTML = '<option value="">&#45;&#45; Error Loading Services &#45;&#45;</option>';-->
-<!--            swaggerUiDiv.innerHTML = '<p style="color: red;">Could not load API definitions.</p>';-->
+<!--            swaggerUiDiv.innerHTML = `<p class="error-message">Could not load API definitions: ${error.message}</p>`;-->
 <!--        }-->
 <!--    }-->
 
@@ -350,116 +160,366 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aggregated API Documentation</title>
-    <!-- Load Swagger UI CSS from CDN -->
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        html, body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f7f7f7; }
-        .container { max-width: 1400px; margin: 20px auto; padding: 20px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px; }
-        h1 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        select { width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        #swagger-ui { margin-top: 20px; }
-        .error-message { color: red; font-weight: bold; margin-top: 10px; }
-        .loading-message { color: #666; font-style: italic; }
+        /* --- CSS Variables --- */
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #495057;
+            --border-color: #dee2e6;
+            --text-color: #212529;
+            --body-bg: #f1f3f5;
+            --panel-bg: #ffffff;
+            --code-bg: #e9ecef;
+            --code-color: #d63384;
+            --hover-bg: #f1f3f5;
+            --selected-bg: var(--primary-color);
+            --selected-text: #fff;
+            --green: #198754;
+            --teal: #20c997;
+            --yellow: #ffc107;
+            --yellow-text: #333;
+            --red: #dc3545;
+            --orange: #fd7e14;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        /* --- General Styles --- */
+        html { box-sizing: border-box; font-size: 16px; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; background-color: var(--body-bg); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; overflow: hidden; }
+        ::-webkit-scrollbar { width: 8px; height: 8px;}
+        ::-webkit-scrollbar-track { background: var(--medium-gray); border-radius: 4px;}
+        ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 4px;}
+        ::-webkit-scrollbar-thumb:hover { background: #999; }
+
+        /* --- Panels --- */
+        #left-panel { width: 380px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background-color: var(--panel-bg); flex-shrink: 0; box-shadow: var(--shadow-md); z-index: 10;}
+        #left-panel-header { padding: 20px; border-bottom: 1px solid var(--border-color); }
+        #left-panel-content { padding: 15px 20px; overflow-y: auto; flex-grow: 1; }
+        #right-panel { flex-grow: 1; padding: 0; overflow-y: auto; background-color: var(--light-gray); }
+        #details-content-wrapper { padding: 40px 45px; }
+
+        /* --- Headings --- */
+        h1 { font-size: 1.5em; color: var(--primary-color); margin: 0; font-weight: 700; display: flex; align-items: center; gap: 10px;}
+        h1 i { font-size: 0.9em; }
+        h3 { margin-top: 0; margin-bottom: 30px; font-size: 1.6em; font-weight: 600; display: flex; align-items: center; gap: 15px; background-color: var(--light-gray); padding: 15px 20px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);}
+        h4 { margin-top: 40px; margin-bottom: 20px; color: var(--primary-color); font-size: 1.25em; font-weight: 600; border-bottom: 1px solid var(--medium-gray); padding-bottom: 10px;}
+        h5 { margin-top: 30px; margin-bottom: 15px; color: var(--dark-gray); font-size: 1.1em; font-weight: 600; }
+
+        /* --- Service Selector --- */
+        #service-select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 1em; margin-bottom: 15px; transition: border-color 0.2s, box-shadow 0.2s; background-color: white; cursor: pointer;}
+        #service-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25); outline: none; }
+
+        /* --- Left Panel Navigation --- */
+        #search-box { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 5px; box-sizing: border-box; font-size: 1em; margin-bottom: 15px; transition: border-color 0.2s, box-shadow 0.2s;}
+        #search-box:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25); outline: none; }
+        .controller-group summary { font-weight: 600; font-size: 1.1em; color: var(--primary-color); margin-bottom: 10px; padding: 12px 10px; cursor: pointer; list-style: none; position: relative; border-radius: 5px; transition: background-color 0.15s; user-select: none;}
+        .controller-group summary::before { content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; margin-right: 10px; font-size: 0.9em; transition: transform 0.2s ease-in-out; color: var(--secondary-color);}
+        .controller-group[open] summary::before { transform: rotate(90deg); }
+        .controller-group summary:hover { background-color: var(--hover-bg); }
+        #navigation-list ul { list-style: none; padding-left: 20px; margin: 5px 0 20px 0; border-left: 2px solid var(--medium-gray); }
+        #navigation-list li { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #f8f9fa; font-size: 0.95em; word-break: break-all; border-radius: 5px; margin-bottom: 5px; transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out; display: flex; align-items: center; gap: 10px;}
+        #navigation-list li:hover { background-color: var(--hover-bg); transform: translateX(2px); }
+        #navigation-list li.selected { background-color: var(--selected-bg); color: var(--selected-text); font-weight: 500; transform: translateX(0); box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);}
+        #navigation-list li.selected code { color: var(--selected-text); background-color: rgba(255,255,255,0.2);}
+        #navigation-list li.hidden { display: none; }
+
+        /* --- HTTP Method Badges --- */
+        .method { display: inline-block; font-weight: 700; padding: 4px 10px; border-radius: 4px; color: white; font-size: 0.8em; text-transform: uppercase; min-width: 50px; text-align: center; vertical-align: middle; flex-shrink: 0;}
+        .method-path { flex-grow: 1; word-break: break-all; font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 1.1em; color: var(--dark-gray); }
+        #navigation-list .method-path { font-size: 0.95em; font-family: inherit; color: inherit; }
+        .method-get { background-color: var(--green); }
+        .method-post { background-color: var(--teal); }
+        .method-put { background-color: var(--yellow); color: var(--yellow-text); }
+        .method-delete { background-color: var(--red); }
+        .method-patch { background-color: var(--orange); }
+
+        /* --- Right Panel Details --- */
+        #details-content-wrapper { background-color: var(--panel-bg); padding: 35px 40px; border-radius: 8px; box-shadow: var(--shadow-md); margin-bottom: 30px;}
+        #details-content p { line-height: 1.7; color: var(--dark-gray); margin-bottom: 18px;}
+        #details-content strong { color: var(--text-color); font-weight: 600; }
+        code { background-color: var(--code-bg); padding: 3px 6px; border-radius: 4px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.9em; color: var(--code-color); }
+        .param-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 20px; font-size: 0.95em; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-radius: 6px; background-color: #fff; }
+        .param-table th, .param-table td { border-bottom: 1px solid var(--border-color); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .param-table th { background-color: var(--light-gray); font-weight: 600; color: var(--dark-gray); border-top: none; }
+        .param-table tr:last-child td { border-bottom: none; }
+        .param-table td:first-child code { color: var(--primary-color); font-weight: 600; background: none; padding: 0;}
+        .schema-section { margin-top: 20px; margin-bottom: 20px; border-left: 4px solid var(--primary-color); padding-left: 20px; background-color: #fff; }
+        .schema-title { font-weight: 600; margin-bottom: 12px; color: var(--dark-gray); display: block; font-size: 1.05em;}
+        .response-block { margin-bottom: 30px; border: 1px solid var(--border-color); padding: 25px; border-radius: 6px; background-color: var(--light-gray); box-shadow: var(--shadow-sm);}
+        .response-block h5 { border-bottom: none; margin-top: 0; margin-bottom: 15px; color: var(--primary-color); display: flex; justify-content: space-between; align-items: center; font-size: 1.1em; font-weight: 600;}
+        .try-it-out-btn { padding: 8px 15px; font-size: 0.9em; background-color: var(--secondary-color); color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.2s; font-weight: 500;}
+        .try-it-out-btn:hover { background-color: var(--dark-gray); }
+        .error { color: var(--red); font-weight: 600; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 12px 18px; border-radius: 5px;}
+        .loading { color: var(--secondary-color); font-style: italic; padding: 20px; text-align: center; font-size: 1.1em;}
+        .initial-message { color: var(--secondary-color); font-size: 1.1em; text-align: center; margin-top: 50px;}
+
+        /* --- Schema Rendering Styles --- */
+        .schema-container { border: 1px solid var(--border-color); border-radius: 5px; padding: 15px; background-color: var(--light-gray); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 0.9em; margin-top: 10px;}
+        .schema-object, .schema-array { padding-left: 20px; border-left: 1px dashed var(--secondary-color); margin-left: 5px; }
+        .schema-property { margin-bottom: 8px; }
+        .schema-prop-name { color: var(--primary-color); font-weight: 600; }
+        .schema-prop-type { color: var(--green); margin-left: 8px; font-style: italic; }
+        .schema-prop-format { color: var(--secondary-color); font-size: 0.9em; margin-left: 5px; }
+        .schema-prop-desc { color: var(--dark-gray); font-size: 0.9em; margin-left: 25px; display: block;}
+        .schema-array-items { margin-left: 25px; }
+
+        /* --- Service Badge --- */
+        .service-badge { display: inline-block; padding: 2px 8px; background-color: var(--medium-gray); color: var(--dark-gray); border-radius: 3px; font-size: 0.75em; font-weight: 600; margin-left: 8px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Aggregated Microservice API Documentation</h1>
+<div id="left-panel">
+    <div id="left-panel-header">
+        <h1><i class="fas fa-book-open"></i> API Aggregator</h1>
 
-    <label for="service-select">Select a Service View:</label>
-    <select id="service-select">
-        <option value="all">-- All Services (Unified View) --</option>
-        <!-- Service options will be populated by JavaScript -->
-    </select>
+        <label for="service-select" style="font-size: 0.9em; margin-bottom: 5px; color: var(--dark-gray);">
+            <i class="fas fa-layer-group"></i> Select Service:
+        </label>
+        <select id="service-select">
+            <option value="all">All Services (Unified View)</option>
+        </select>
 
-    <!-- This div will host the Swagger UI -->
-    <div id="swagger-ui"><p class="loading-message">Loading API Documentation...</p></div>
+        <input type="text" id="search-box" placeholder="Filter paths or methods..." onkeyup="filterPaths()">
+    </div>
+    <div id="left-panel-content">
+        <div id="navigation-list">
+            <p class="loading">Loading API Structure...</p>
+        </div>
+    </div>
 </div>
 
-<!-- Load Swagger UI JavaScript from CDN -->
-<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
-<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+<div id="right-panel">
+    <div id="details-content-wrapper">
+        <div id="details-content">
+            <p class="initial-message">Select an endpoint from the left panel to view details.</p>
+        </div>
+    </div>
+</div>
 
 <script>
-    let swaggerUiInstance = null;
-    let unifiedSpec = null;         // Store the merged spec object
-    let individualSpecsMap = {};    // Store the map of individual spec objects
+    let fullApiSpec = null; // Store the current active spec
+    let unifiedSpec = null; // Store the merged spec
+    let individualSpecsMap = {}; // Store individual service specs
 
-    // Function to initialize or update Swagger UI with a given spec object
-    function loadSwaggerUI(specObject) {
-        const swaggerUiDiv = document.getElementById('swagger-ui');
-        swaggerUiDiv.innerHTML = ''; // Clear previous UI or loading message
+    // --- Recursive function to render schema objects as structured HTML ---
+    function renderSchema(schema, isRoot = true) {
+        if (!schema) return '<span class="error">Schema not available</span>';
 
-        if (!specObject) {
-            swaggerUiDiv.innerHTML = '<p class="error-message">Error: No specification data provided.</p>';
-            console.error("loadSwaggerUI called with null or undefined specObject.");
-            return;
-        }
+        let html = isRoot ? '<div class="schema-container">' : '';
 
-        // Check if the spec contains an error marker from the backend
-        if (specObject.error) {
-             swaggerUiDiv.innerHTML = `<p class="error-message">Error loading API definition: ${specObject.error}</p>`;
-             console.error("Backend reported error in spec:", specObject.error);
-             return;
-        }
-         // Basic validation: Check if it looks like an OpenAPI spec
-         if (!specObject.openapi || !specObject.info || !specObject.paths) {
-            swaggerUiDiv.innerHTML = '<p class="error-message">Error: Invalid OpenAPI specification format received.</p>';
-            console.error("Invalid spec format:", specObject);
-            return;
-         }
-
-
-        try {
-            // Initialize Swagger UI
-            swaggerUiInstance = SwaggerUIBundle({
-                spec: specObject, // Use the provided spec object (already parsed)
-                dom_id: '#swagger-ui',
-                deepLinking: true,
-                presets: [
-                    SwaggerUIBundle.presets.apis,
-                    SwaggerUIStandalonePreset
-                ],
-                plugins: [
-                    SwaggerUIBundle.plugins.DownloadUrl
-                ],
-                layout: "StandaloneLayout",
-                filter: true // Enable Swagger UI's built-in filter box
+        if (schema.type === 'object' && schema.properties) {
+            html += `<div class="schema-object">`;
+            html += '<div><code>{</code></div>';
+            const entries = Object.entries(schema.properties);
+            entries.forEach(([propName, propSchema], index) => {
+                html += `<div class="schema-property">`;
+                html += `<span class="schema-prop-name">"${propName}"</span>: `;
+                html += renderSchema(propSchema, false);
+                if (index < entries.length - 1) html += '<code>,</code>';
+                html += `</div>`;
             });
-        } catch (e) {
-            console.error("Error initializing Swagger UI:", e);
-            swaggerUiDiv.innerHTML = '<p class="error-message">Error rendering API definition.</p>';
+            html += '<div><code>}</code></div>';
+            html += `</div>`;
+        } else if (schema.type === 'array' && schema.items) {
+            html += `<div class="schema-array">`;
+            html += '<div><code>[</code> (List of items below)</div>';
+            html += '<div class="schema-array-items">';
+            html += renderSchema(schema.items, false);
+            html += '</div>';
+            html += '<div><code>]</code></div>';
+            html += `</div>`;
+        } else {
+            html += `<span class="schema-prop-type">${schema.type || 'unknown'}</span>`;
+            if (schema.format) {
+                html += `<span class="schema-prop-format">(${schema.format})</span>`;
+            }
+            if (schema.description) {
+                html += `<span class="schema-prop-desc">// ${schema.description}</span>`;
+            }
         }
+
+        if (isRoot) html += '</div>';
+        return html;
     }
 
-    // Function to fetch the combined data, populate dropdown, and load initial view
+    // --- displayDetails Function ---
+    function displayDetails(pathKey, httpMethod, listItemElement) {
+        const detailsDiv = document.getElementById('details-content');
+        detailsDiv.innerHTML = '';
+
+        document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));
+        if (listItemElement) {
+            listItemElement.classList.add('selected');
+        }
+
+        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {
+            detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';
+            return;
+        }
+
+        const operation = fullApiSpec.paths[pathKey][httpMethod];
+        const methodUpper = httpMethod.toUpperCase();
+
+        // Build HTML for right panel
+        let contentHtml = `
+            <h3>
+                <span class="method method-${httpMethod}">${methodUpper}</span>
+                <span class="method-path"><code>${pathKey}</code></span>
+                <button class="try-it-out-btn" title="Feature not implemented yet">Try it out</button>
+            </h3>`;
+
+        if (operation.summary) contentHtml += `<p><strong>${operation.summary}</strong></p>`;
+        if (operation.description) contentHtml += `<p>${operation.description}</p>`;
+        if (operation.operationId) contentHtml += `<p><small>Operation ID: <code>${operation.operationId}</code></small></p>`;
+
+        // Parameters Section
+        if (operation.parameters && operation.parameters.length > 0) {
+            contentHtml += `<h4>Parameters</h4>`;
+            contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
+            operation.parameters.forEach(param => {
+                contentHtml += `<tr>
+                                    <td><code>${param.name}</code></td>
+                                    <td><code>${param.in}</code></td>
+                                    <td>${param.required ? '<strong>Yes</strong>' : 'No'}</td>
+                                    <td>${renderSchema(param.schema)}</td>
+                                </tr>`;
+            });
+            contentHtml += `</tbody></table>`;
+        } else {
+            contentHtml += `<h4>Parameters</h4><p>No parameters required for this endpoint.</p>`;
+        }
+
+        // Request Body Section
+        if (operation.requestBody) {
+            contentHtml += `<h4>Request Body</h4>`;
+            contentHtml += `<p>Required: ${operation.requestBody.required ? '<strong>Yes</strong>' : 'No'}</p>`;
+            if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {
+                contentHtml += `<div class="schema-section">
+                                    <span class="schema-title">Schema (application/json):</span>
+                                    ${renderSchema(operation.requestBody.content['application/json'].schema)}
+                                </div>`;
+            } else {
+                contentHtml += `<p>No schema defined for request body.</p>`;
+            }
+        }
+
+        // Responses Section
+        if (operation.responses) {
+            contentHtml += `<h4>Responses</h4>`;
+            Object.entries(operation.responses).forEach(([statusCode, response]) => {
+                contentHtml += `<div class="response-block">
+                                    <h5>Status Code: <code>${statusCode}</code></h5>
+                                    <p>${response.description || 'No description provided.'}</p>`;
+                if (response.content && response.content['application/json'] && response.content['application/json'].schema) {
+                    contentHtml += `<div class="schema-section">
+                                        <span class="schema-title">Schema (application/json):</span>
+                                        ${renderSchema(response.content['application/json'].schema)}
+                                    </div>`;
+                } else if (statusCode !== '204' && statusCode !== '202') {
+                    contentHtml += `<p><small>No response body schema defined.</small></p>`
+                }
+                contentHtml += `</div>`;
+            });
+        }
+
+        detailsDiv.innerHTML = contentHtml;
+    }
+
+    // --- buildNavigationList Function ---
+    function buildNavigationList(apiSpec) {
+        const navContainer = document.getElementById('navigation-list');
+        const detailsDiv = document.getElementById('details-content');
+
+        navContainer.innerHTML = '';
+
+        if (!apiSpec || !apiSpec.paths || Object.keys(apiSpec.paths).length === 0) {
+            navContainer.innerHTML = '<p class="error">No paths found.</p>';
+            detailsDiv.innerHTML = '<p class="initial-message">Could not load API specification or no endpoints defined.</p>';
+            return;
+        }
+
+        // Group paths by tag
+        const pathsByTag = {};
+        Object.entries(apiSpec.paths).forEach(([pathKey, pathItem]) => {
+            Object.entries(pathItem).forEach(([method, operation]) => {
+                if (typeof operation !== 'object' || method === 'parameters' || method === 'servers') return;
+
+                const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default';
+                if (!pathsByTag[tag]) pathsByTag[tag] = [];
+                pathsByTag[tag].push({ pathKey, method, operation });
+            });
+        });
+
+        const sortedTags = Object.keys(pathsByTag).sort();
+
+        // Populate list grouped by controller
+        sortedTags.forEach(tag => {
+            const detailsElement = document.createElement('details');
+            detailsElement.classList.add('controller-group');
+            detailsElement.open = true;
+
+            const summaryElement = document.createElement('summary');
+            summaryElement.classList.add('controller-name');
+            summaryElement.textContent = tag;
+            detailsElement.appendChild(summaryElement);
+
+            const ul = document.createElement('ul');
+            pathsByTag[tag].sort((a, b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method))
+                .forEach((endpointData) => {
+                    const { pathKey, method, operation } = endpointData;
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> <span class="method-path">${pathKey}</span>`;
+                    listItem.title = operation.summary || pathKey;
+                    listItem.dataset.path = pathKey;
+                    listItem.dataset.method = method;
+                    listItem.dataset.tag = tag;
+
+                    listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));
+                    ul.appendChild(listItem);
+                });
+            detailsElement.appendChild(ul);
+            navContainer.appendChild(detailsElement);
+        });
+
+        detailsDiv.innerHTML = '<p class="initial-message">Select an endpoint from the left panel.</p>';
+    }
+
+    // --- loadAndInitialize Function ---
     async function loadAndInitialize() {
         const selectElement = document.getElementById('service-select');
-        const swaggerUiDiv = document.getElementById('swagger-ui');
+        const navContainer = document.getElementById('navigation-list');
+
         try {
-            swaggerUiDiv.innerHTML = '<p class="loading-message">Fetching API definitions...</p>';
-            // Fetch the combined JSON object from our backend endpoint
+            navContainer.innerHTML = '<p class="loading">Fetching API definitions...</p>';
+
+            // Fetch the combined JSON object from backend endpoint
             const response = await fetch('/autodocer-aggregator/definitions');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            // Parse the response containing { unifiedSpec: {...}, individualSpecs: {...} }
+
             const result = await response.json();
 
             // Store both parts
             unifiedSpec = result.unifiedSpec;
-            individualSpecsMap = result.individualSpecs || {}; // Use empty map if missing
+            individualSpecsMap = result.individualSpecs || {};
 
             console.log("Unified Spec:", unifiedSpec);
             console.log("Individual Specs Map:", individualSpecsMap);
 
-            // Populate the dropdown with keys from individualSpecsMap
+            // Populate the dropdown with service names
             const serviceNames = Object.keys(individualSpecsMap);
             if (serviceNames.length === 0) {
-                 // Update the "All Services" option text if no specific services found
-                 selectElement.options[0].textContent = '-- All Services (No specific services registered) --';
+                selectElement.options[0].textContent = 'All Services (No specific services registered)';
             } else {
                 serviceNames.sort().forEach(serviceName => {
                     const option = document.createElement('option');
@@ -474,28 +534,75 @@
                 const selectedValue = event.target.value;
                 if (selectedValue === 'all') {
                     console.log("Loading Unified Spec");
-                    loadSwaggerUI(unifiedSpec); // Load the merged spec
+                    fullApiSpec = unifiedSpec;
                 } else {
                     console.log("Loading Individual Spec for:", selectedValue);
-                    loadSwaggerUI(individualSpecsMap[selectedValue]); // Load the specific service's spec
+                    fullApiSpec = individualSpecsMap[selectedValue];
                 }
+                buildNavigationList(fullApiSpec);
             });
 
-            // Load the unified view by default after populating dropdown
-            console.log("Loading initial Unified Spec");
-            loadSwaggerUI(unifiedSpec);
+            // Load the unified view by default
+            fullApiSpec = unifiedSpec;
+            buildNavigationList(fullApiSpec);
 
         } catch (error) {
             console.error('Error fetching or processing API definition:', error);
             selectElement.innerHTML = '<option value="">-- Error Loading Services --</option>';
-            swaggerUiDiv.innerHTML = `<p class="error-message">Could not load API definitions: ${error.message}</p>`;
+            navContainer.innerHTML = `<p class="error">Could not load API definitions: ${error.message}</p>`;
         }
     }
 
-    // Run the load function when the page loads
+    // --- filterPaths Function ---
+    function filterPaths() {
+        const filterText = document.getElementById('search-box').value.toLowerCase().trim();
+        const listItems = document.querySelectorAll('#navigation-list li');
+        const controllerGroups = document.querySelectorAll('#navigation-list .controller-group');
+        let hasVisibleItems = false;
+
+        listItems.forEach(item => {
+            const path = item.dataset.path || '';
+            const method = item.dataset.method || '';
+            const tag = item.dataset.tag || '';
+            const textContent = (tag + ' ' + method + ' ' + path).toLowerCase();
+            if (textContent.includes(filterText)) {
+                item.classList.remove('hidden');
+                hasVisibleItems = true;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        let noResultsMsg = document.querySelector('#navigation-list .no-results');
+        controllerGroups.forEach(group => {
+            const visibleItems = group.querySelectorAll('li:not(.hidden)');
+            if (visibleItems.length === 0 && filterText !== '') {
+                group.style.display = 'none';
+            } else {
+                group.style.display = '';
+                if (filterText !== '' && visibleItems.length > 0) {
+                    group.open = true;
+                }
+            }
+        });
+
+        // Show/hide "No results" message
+        if (!hasVisibleItems && filterText !== '') {
+            if (!noResultsMsg) {
+                noResultsMsg = document.createElement('p');
+                noResultsMsg.className = 'error no-results';
+                noResultsMsg.style.paddingLeft = '20px';
+                noResultsMsg.textContent = 'No matching endpoints found.';
+                document.getElementById('navigation-list').appendChild(noResultsMsg);
+            }
+        } else if (noResultsMsg) {
+            noResultsMsg.remove();
+        }
+    }
+
+    // Run on page load
     window.onload = loadAndInitialize;
 </script>
 
 </body>
 </html>
-
