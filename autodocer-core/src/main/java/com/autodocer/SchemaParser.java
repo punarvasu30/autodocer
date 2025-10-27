@@ -1,12 +1,24 @@
-
 package com.autodocer;
 
 // Ensure correct import for your DTOs/API package
-import com.autodocer.DTO.ArraySchemaInfo; // Or com.autodocer.DTO.*;
+import com.autodocer.DTO.ArraySchemaInfo;
 import com.autodocer.DTO.FieldInfo;
 import com.autodocer.DTO.SchemaInfo;
-import java.lang.reflect.*; // Import reflection types
+import com.autodocer.DTO.ValidationConstraints; // <-- ADDED
+
+import java.lang.reflect.*;
 import java.util.*;
+
+// --- ADDED VALIDATION IMPORTS (JAKARTA) ---
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+// ------------------------------------------
 
 public class SchemaParser {
 
@@ -60,17 +72,90 @@ public class SchemaParser {
             }
             visited.add(clazz); // Mark this class as visited for the current path
 
-            // Recursive Step: It's a complex DTO/Entity, so inspect its fields.
+            // --- START OF VALIDATION LOGIC ---
             List<FieldInfo> fields = new ArrayList<>();
+            List<String> requiredFields = new ArrayList<>(); // <-- ADDED
+
             // Use getDeclaredFields to get only fields directly declared in this class
             for (Field field : clazz.getDeclaredFields()) {
-                // Important: Use field.getGenericType() for recursive call to handle nested generics
+                // Initialize constraint holders
+                Integer minLength = null;
+                Integer maxLength = null;
+                Double min = null;
+                Double max = null;
+                String pattern = null;
+                String format = null;
+
+                // 1. Check for required
+                if (field.isAnnotationPresent(NotNull.class) ||
+                        field.isAnnotationPresent(NotBlank.class) ||
+                        field.isAnnotationPresent(NotEmpty.class)) {
+                    requiredFields.add(field.getName());
+                }
+
+                // 2. Check for @Size
+                if (field.isAnnotationPresent(Size.class)) {
+                    Size size = field.getAnnotation(Size.class);
+                    if (size.min() > 0) {
+                        minLength = size.min();
+                    }
+                    if (size.max() < Integer.MAX_VALUE) {
+                        maxLength = size.max();
+                    }
+                }
+
+                // 3. Check for @Min
+                if (field.isAnnotationPresent(Min.class)) {
+                    min = (double) field.getAnnotation(Min.class).value();
+                }
+
+                // 4. Check for @Max
+                if (field.isAnnotationPresent(Max.class)) {
+                    max = (double) field.getAnnotation(Max.class).value();
+                }
+
+                // 5. Check for @Email
+                if (field.isAnnotationPresent(Email.class)) {
+                    format = "email";
+                    // If a specific regex is also provided, capture it
+                    if (!field.getAnnotation(Email.class).regexp().isEmpty()) {
+                        pattern = field.getAnnotation(Email.class).regexp();
+                    }
+                }
+
+                // 6. Check for @Pattern (overrides @Email's pattern if both present)
+                if (field.isAnnotationPresent(Pattern.class)) {
+                    pattern = field.getAnnotation(Pattern.class).regexp();
+                }
+
+                // 7. Check for java.time types for format
+                if (format == null) { // Only if not already set by @Email
+                    String typeName = field.getType().getSimpleName();
+                    if (typeName.equals("LocalDate")) {
+                        format = "date";
+                    } else if (typeName.equals("LocalDateTime") || typeName.equals("Instant") || typeName.equals("OffsetDateTime") || typeName.equals("ZonedDateTime")) {
+                        format = "date-time";
+                    } else if (typeName.equals("UUID")) {
+                        format = "uuid";
+                    }
+                }
+
+
+                // Create constraints object *only if* any were found
+                ValidationConstraints constraints = null;
+                if (minLength != null || maxLength != null || min != null || max != null || pattern != null || format != null) {
+                    constraints = new ValidationConstraints(minLength, maxLength, min, max, pattern, format);
+                }
+
+                // Recursively parse the field's type
                 Object fieldType = parseSchemaRecursive(field.getGenericType(), new HashSet<>(visited));
-                // Assuming FieldInfo exists and takes (String name, Object type)
-                fields.add(new FieldInfo(field.getName(), fieldType));
+
+                // Add the FieldInfo with its new constraints
+                fields.add(new FieldInfo(field.getName(), fieldType, constraints)); // <-- UPDATED
             }
-            // Assuming SchemaInfo exists and takes (String className, List<FieldInfo> fields)
-            return new SchemaInfo(clazz.getSimpleName(), fields);
+
+            // Return the SchemaInfo with the new requiredFields list
+            return new SchemaInfo(clazz.getSimpleName(), fields, requiredFields); // <-- UPDATED
         }
 
         // Fallback for unknown Type implementations (like TypeVariable, WildcardType)
@@ -86,7 +171,8 @@ public class SchemaParser {
             Double.class, Float.class,
             Boolean.class, Character.class,
             Void.class, java.math.BigDecimal.class, java.math.BigInteger.class,
-            java.util.Date.class, java.util.UUID.class
+            java.util.Date.class, java.sql.Date.class, java.sql.Timestamp.class,
+            java.util.UUID.class
             // Add other standard types you want to treat as simple
     );
 
@@ -96,10 +182,8 @@ public class SchemaParser {
                 || type.equals(Void.TYPE)
                 || SIMPLE_TYPES.contains(type)
                 || type.isEnum()
-                || type.getPackageName().startsWith("java.time") // Treat all java.time as simple strings for now
-                // Adjust this check if you want deeper inspection of standard Java collections
+                || type.getPackageName().startsWith("java.time") // Treat all java.time as simple
+                // An array of simple types is NOT a simple type itself
                 || (type.isArray() && isSimpleType(type.getComponentType()));
     }
 }
-
-
