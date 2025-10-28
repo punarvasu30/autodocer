@@ -4,1673 +4,1771 @@
 <!--    <meta charset="UTF-8">-->
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
 <!--    <title>AutoDocER API Reference</title>-->
-<!--    <link rel="preconnect" href="https://fonts.googleapis.com">-->
-<!--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
-<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">-->
-<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />-->
 <!--    <style>-->
-<!--        /* -&#45;&#45; CSS Variables -&#45;&#45; */-->
 <!--        :root {-->
-<!--            &#45;&#45;primary-color: #6366f1;-->
-<!--            &#45;&#45;primary-hover: #4f46e5;-->
-<!--            &#45;&#45;secondary-color: #64748b;-->
-<!--            &#45;&#45;light-gray: #f8fafc;-->
-<!--            &#45;&#45;medium-gray: #e2e8f0;-->
-<!--            &#45;&#45;dark-gray: #475569;-->
-<!--            &#45;&#45;border-color: #e2e8f0;-->
-<!--            &#45;&#45;text-color: #1e293b;-->
-<!--            &#45;&#45;body-bg: #f1f5f9;-->
-<!--            &#45;&#45;panel-bg: #ffffff;-->
-<!--            &#45;&#45;code-bg: #f1f5f9;-->
-<!--            &#45;&#45;code-color: #e11d48;-->
-<!--            &#45;&#45;hover-bg: #f8fafc;-->
-<!--            &#45;&#45;selected-bg: var(&#45;&#45;primary-color);-->
-<!--            &#45;&#45;selected-text: #fff;-->
+<!--            &#45;&#45;primary: #3b82f6;-->
+<!--            &#45;&#45;primary-dark: #2563eb;-->
+<!--            &#45;&#45;bg: #fafafa;-->
+<!--            &#45;&#45;sidebar-bg: #ffffff;-->
+<!--            &#45;&#45;content-bg: #ffffff;-->
+<!--            &#45;&#45;text: #1f2937;-->
+<!--            &#45;&#45;text-light: #6b7280;-->
+<!--            &#45;&#45;border: #e5e7eb;-->
+<!--            &#45;&#45;hover: #f3f4f6;-->
+<!--            &#45;&#45;code-bg: #f9fafb;-->
 <!--            &#45;&#45;green: #10b981;-->
-<!--            &#45;&#45;teal: #14b8a6;-->
+<!--            &#45;&#45;blue: #3b82f6;-->
 <!--            &#45;&#45;yellow: #f59e0b;-->
-<!--            &#45;&#45;yellow-text: #fff;-->
 <!--            &#45;&#45;red: #ef4444;-->
 <!--            &#45;&#45;orange: #f97316;-->
-<!--            &#45;&#45;purple: #a855f7;-->
-<!--            &#45;&#45;shadow-sm: 0 1px 3px rgba(0,0,0,0.08);-->
-<!--            &#45;&#45;shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);-->
-<!--            &#45;&#45;shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);-->
+<!--            &#45;&#45;purple: #8b5cf6;-->
 <!--        }-->
 
-<!--        /* -&#45;&#45; General Styles -&#45;&#45; */-->
-<!--        html { box-sizing: border-box; font-size: 16px; }-->
-<!--        *, *:before, *:after { box-sizing: inherit; }-->
+<!--        * { margin: 0; padding: 0; box-sizing: border-box; }-->
+
 <!--        body {-->
-<!--            font-family: 'Inter', sans-serif;-->
-<!--            margin: 0;-->
+<!--            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;-->
 <!--            display: flex;-->
 <!--            height: 100vh;-->
-<!--            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
-<!--            color: var(&#45;&#45;text-color);-->
-<!--            line-height: 1.6;-->
-<!--            -webkit-font-smoothing: antialiased;-->
-<!--            -moz-osx-font-smoothing: grayscale;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            font-size: 14px;-->
 <!--            overflow: hidden;-->
 <!--        }-->
 
-<!--        ::-webkit-scrollbar { width: 10px; height: 10px;}-->
+<!--        ::-webkit-scrollbar { width: 8px; }-->
 <!--        ::-webkit-scrollbar-track { background: transparent; }-->
-<!--        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; border: 2px solid transparent; background-clip: padding-box;}-->
-<!--        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; background-clip: padding-box; }-->
+<!--        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }-->
+<!--        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }-->
 
-<!--        /* -&#45;&#45; Panels -&#45;&#45; */-->
-<!--        #left-panel {-->
-<!--            width: 400px;-->
-<!--            border-right: 1px solid var(&#45;&#45;border-color);-->
+<!--        /* Sidebar */-->
+<!--        #sidebar {-->
+<!--            width: 300px;-->
+<!--            background: var(&#45;&#45;sidebar-bg);-->
+<!--            border-right: 1px solid var(&#45;&#45;border);-->
 <!--            display: flex;-->
 <!--            flex-direction: column;-->
-<!--            background-color: var(&#45;&#45;panel-bg);-->
 <!--            flex-shrink: 0;-->
-<!--            box-shadow: var(&#45;&#45;shadow-lg);-->
-<!--            z-index: 10;-->
-<!--            margin: 12px;-->
-<!--            margin-right: 6px;-->
-<!--            border-radius: 16px;-->
-<!--            overflow: hidden;-->
 <!--        }-->
 
-<!--        #left-panel-header {-->
-<!--            padding: 24px;-->
-<!--            background: linear-gradient(135deg, var(&#45;&#45;primary-color) 0%, var(&#45;&#45;purple) 100%);-->
-<!--            color: white;-->
-<!--        }-->
-
-<!--        #left-panel-content {-->
+<!--        #sidebar-header {-->
 <!--            padding: 20px;-->
-<!--            overflow-y: auto;-->
-<!--            flex-grow: 1;-->
-<!--            background: var(&#45;&#45;panel-bg);-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--            background: #fff;-->
 <!--        }-->
 
-<!--        #right-panel {-->
-<!--            flex-grow: 1;-->
-<!--            padding: 0;-->
-<!--            overflow-y: auto;-->
-<!--            background-color: transparent;-->
-<!--            margin: 12px;-->
-<!--            margin-left: 6px;-->
-<!--        }-->
-
-<!--        #details-content-wrapper {-->
-<!--            background-color: var(&#45;&#45;panel-bg);-->
-<!--            padding: 40px;-->
-<!--            border-radius: 16px;-->
-<!--            box-shadow: var(&#45;&#45;shadow-lg);-->
-<!--            margin-bottom: 20px;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Headings -&#45;&#45; */-->
 <!--        h1 {-->
-<!--            font-size: 1.75em;-->
-<!--            color: white;-->
-<!--            margin: 0 0 20px 0;-->
+<!--            font-size: 20px;-->
 <!--            font-weight: 700;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 12px;-->
-<!--            letter-spacing: -0.02em;-->
-<!--        }-->
-<!--        h1 i { font-size: 1em; }-->
-
-<!--        h3 {-->
-<!--            margin-top: 0;-->
-<!--            margin-bottom: 32px;-->
-<!--            font-size: 1.75em;-->
-<!--            font-weight: 700;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 15px;-->
-<!--            background: linear-gradient(135deg, var(&#45;&#45;light-gray) 0%, #e0e7ff 100%);-->
-<!--            padding: 20px 24px;-->
-<!--            border-radius: 12px;-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--            box-shadow: var(&#45;&#45;shadow-sm);-->
-<!--            flex-wrap: wrap;-->
-<!--        }-->
-
-<!--        h4 {-->
-<!--            margin-top: 48px;-->
-<!--            margin-bottom: 20px;-->
-<!--            color: var(&#45;&#45;primary-color);-->
-<!--            font-size: 1.35em;-->
-<!--            font-weight: 700;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 10px;-->
-<!--        }-->
-
-<!--        h4:first-of-type { margin-top: 24px; }-->
-
-<!--        h4::before {-->
-<!--            content: '';-->
-<!--            display: inline-block;-->
-<!--            width: 4px;-->
-<!--            height: 24px;-->
-<!--            background: var(&#45;&#45;primary-color);-->
-<!--            border-radius: 2px;-->
-<!--        }-->
-
-<!--        h5 {-->
-<!--            margin-top: 24px;-->
+<!--            color: var(&#45;&#45;text);-->
 <!--            margin-bottom: 16px;-->
-<!--            color: var(&#45;&#45;dark-gray);-->
-<!--            font-size: 1.15em;-->
-<!--            font-weight: 600;-->
 <!--        }-->
 
-<!--        /* -&#45;&#45; Search Box -&#45;&#45; */-->
+<!--        .server-selector {-->
+<!--            margin-top: 12px;-->
+<!--        }-->
+
+<!--        .server-selector label {-->
+<!--            display: block;-->
+<!--            font-size: 12px;-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            margin-bottom: 6px;-->
+<!--            text-transform: uppercase;-->
+<!--            letter-spacing: 0.5px;-->
+<!--        }-->
+
+<!--        #server-select {-->
+<!--            width: 100%;-->
+<!--            padding: 8px 12px;-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 6px;-->
+<!--            font-size: 13px;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            cursor: pointer;-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--        }-->
+
+<!--        #server-select:focus {-->
+<!--            outline: none;-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);-->
+<!--        }-->
+
+<!--        .server-url {-->
+<!--            margin-top: 8px;-->
+<!--            padding: 8px 12px;-->
+<!--            background: var(&#45;&#45;code-bg);-->
+<!--            border-radius: 6px;-->
+<!--            font-size: 12px;-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            word-break: break-all;-->
+<!--        }-->
+
 <!--        #search-box {-->
 <!--            width: 100%;-->
-<!--            padding: 12px 16px 12px 44px;-->
-<!--            border: 2px solid rgba(255,255,255,0.3);-->
-<!--            border-radius: 10px;-->
-<!--            box-sizing: border-box;-->
-<!--            font-size: 0.95em;-->
-<!--            margin-bottom: 0;-->
-<!--            transition: all 0.2s;-->
-<!--            background: rgba(255,255,255,0.15);-->
-<!--            color: white;-->
-<!--            font-weight: 500;-->
-<!--            backdrop-filter: blur(10px);-->
-<!--            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");-->
-<!--            background-repeat: no-repeat;-->
-<!--            background-position: 14px center;-->
+<!--            padding: 10px 12px 10px 36px;-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 6px;-->
+<!--            font-size: 13px;-->
+<!--            background: var(&#45;&#45;bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;-->
+<!--            margin-top: 16px;-->
 <!--        }-->
-
-<!--        #search-box::placeholder { color: rgba(255,255,255,0.7); }-->
 
 <!--        #search-box:focus {-->
-<!--            border-color: rgba(255,255,255,0.5);-->
-<!--            box-shadow: 0 0 0 3px rgba(255,255,255,0.15);-->
 <!--            outline: none;-->
-<!--            background: rgba(255,255,255,0.2);-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);-->
 <!--        }-->
 
-<!--        /* -&#45;&#45; Left Panel Navigation -&#45;&#45; */-->
-<!--        .controller-group {-->
-<!--            margin-bottom: 16px;-->
-<!--            border-radius: 8px;-->
-<!--            overflow: hidden;-->
+<!--        #nav-content {-->
+<!--            padding: 12px;-->
+<!--            overflow-y: auto;-->
+<!--            flex: 1;-->
 <!--        }-->
 
-<!--        .controller-group summary {-->
-<!--            font-weight: 600;-->
-<!--            font-size: 1.05em;-->
-<!--            color: var(&#45;&#45;text-color);-->
-<!--            padding: 14px 16px;-->
-<!--            cursor: pointer;-->
-<!--            list-style: none;-->
-<!--            position: relative;-->
-<!--            border-radius: 8px;-->
-<!--            transition: all 0.2s;-->
-<!--            user-select: none;-->
-<!--            background: var(&#45;&#45;light-gray);-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 10px;-->
-<!--        }-->
-
-<!--        .controller-group summary::before {-->
-<!--            content: '\f0da';-->
-<!--            font-family: 'Font Awesome 6 Free';-->
-<!--            font-weight: 900;-->
-<!--            font-size: 0.9em;-->
-<!--            transition: transform 0.2s ease-in-out;-->
-<!--            color: var(&#45;&#45;primary-color);-->
-<!--            flex-shrink: 0;-->
-<!--        }-->
-
-<!--        .controller-group[open] summary::before { transform: rotate(90deg); }-->
-<!--        .controller-group summary:hover { background-color: var(&#45;&#45;medium-gray); transform: translateY(-1px); }-->
-
-<!--        #navigation-list ul {-->
-<!--            list-style: none;-->
-<!--            padding: 8px 0 8px 8px;-->
-<!--            margin: 0;-->
-<!--        }-->
-
-<!--        #navigation-list li {-->
-<!--            padding: 12px 14px;-->
-<!--            cursor: pointer;-->
-<!--            font-size: 0.92em;-->
-<!--            word-break: break-all;-->
-<!--            border-radius: 8px;-->
-<!--            margin-bottom: 6px;-->
-<!--            transition: all 0.15s ease-in-out;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 10px;-->
-<!--            background: white;-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--        }-->
-
-<!--        #navigation-list li:hover {-->
-<!--            background-color: var(&#45;&#45;hover-bg);-->
-<!--            transform: translateX(4px);-->
-<!--            box-shadow: var(&#45;&#45;shadow-sm);-->
-<!--            border-color: var(&#45;&#45;primary-color);-->
-<!--        }-->
-
-<!--        #navigation-list li.selected {-->
-<!--            background: linear-gradient(135deg, var(&#45;&#45;primary-color) 0%, var(&#45;&#45;purple) 100%);-->
-<!--            color: var(&#45;&#45;selected-text);-->
-<!--            font-weight: 600;-->
-<!--            transform: translateX(0);-->
-<!--            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);-->
-<!--            border-color: transparent;-->
-<!--        }-->
-
-<!--        #navigation-list li.selected code {-->
-<!--            color: var(&#45;&#45;selected-text);-->
-<!--            background-color: rgba(255,255,255,0.2);-->
-<!--        }-->
-
-<!--        #navigation-list li.hidden { display: none; }-->
-
-<!--        /* -&#45;&#45; HTTP Method Badges -&#45;&#45; */-->
-<!--        .method {-->
-<!--            display: inline-block;-->
-<!--            font-weight: 700;-->
-<!--            padding: 5px 12px;-->
-<!--            border-radius: 6px;-->
-<!--            color: white;-->
-<!--            font-size: 0.75em;-->
-<!--            text-transform: uppercase;-->
-<!--            min-width: 55px;-->
-<!--            text-align: center;-->
-<!--            flex-shrink: 0;-->
-<!--            letter-spacing: 0.5px;-->
-<!--            box-shadow: 0 2px 4px rgba(0,0,0,0.1);-->
-<!--        }-->
-
-<!--        .method-path {-->
-<!--            flex-grow: 1;-->
-<!--            word-break: break-all;-->
-<!--            font-family: 'JetBrains Mono', monospace;-->
-<!--            font-size: 0.9em;-->
-<!--            font-weight: 500;-->
-<!--        }-->
-
-<!--        #navigation-list .method-path {-->
-<!--            font-size: 0.9em;-->
-<!--        }-->
-
-<!--        .method-get { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }-->
-<!--        .method-post { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }-->
-<!--        .method-put { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }-->
-<!--        .method-delete { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }-->
-<!--        .method-patch { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }-->
-
-<!--        /* -&#45;&#45; Right Panel Details -&#45;&#45; */-->
-<!--        #details-content p {-->
-<!--            line-height: 1.8;-->
-<!--            color: var(&#45;&#45;dark-gray);-->
-<!--            margin-bottom: 18px;-->
-<!--            font-size: 1.05em;-->
-<!--        }-->
-
-<!--        #details-content strong { color: var(&#45;&#45;text-color); font-weight: 600; }-->
-
-<!--        code {-->
-<!--            background-color: var(&#45;&#45;code-bg);-->
-<!--            padding: 4px 8px;-->
-<!--            border-radius: 6px;-->
-<!--            font-family: 'JetBrains Mono', monospace;-->
-<!--            font-size: 0.88em;-->
-<!--            color: var(&#45;&#45;code-color);-->
-<!--            font-weight: 500;-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--        }-->
-
-<!--        .param-table {-->
-<!--            width: 100%;-->
-<!--            border-collapse: separate;-->
-<!--            border-spacing: 0;-->
-<!--            margin-top: 20px;-->
-<!--            font-size: 0.95em;-->
-<!--            box-shadow: var(&#45;&#45;shadow-sm);-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--            border-radius: 12px;-->
-<!--            background-color: #fff;-->
-<!--            overflow: hidden;-->
-<!--        }-->
-
-<!--        .param-table th, .param-table td {-->
-<!--            border-bottom: 1px solid var(&#45;&#45;border-color);-->
-<!--            padding: 14px 18px;-->
-<!--            text-align: left;-->
-<!--            vertical-align: top;-->
-<!--        }-->
-
-<!--        .param-table th {-->
-<!--            background: linear-gradient(135deg, var(&#45;&#45;light-gray) 0%, #e0e7ff 100%);-->
-<!--            font-weight: 600;-->
-<!--            color: var(&#45;&#45;text-color);-->
-<!--            border-top: none;-->
-<!--            font-size: 0.9em;-->
-<!--            text-transform: uppercase;-->
-<!--            letter-spacing: 0.5px;-->
-<!--        }-->
-
-<!--        .param-table tr:last-child td { border-bottom: none; }-->
-<!--        .param-table tr:hover td { background-color: var(&#45;&#45;hover-bg); }-->
-
-<!--        .param-table td:first-child code {-->
-<!--            color: var(&#45;&#45;primary-color);-->
-<!--            font-weight: 600;-->
-<!--            background: none;-->
-<!--            padding: 0;-->
-<!--            border: none;-->
-<!--        }-->
-
-<!--        .schema-section {-->
-<!--            margin-top: 24px;-->
-<!--            margin-bottom: 24px;-->
-<!--            border-left: 4px solid var(&#45;&#45;primary-color);-->
-<!--            padding-left: 24px;-->
-<!--            background-color: var(&#45;&#45;light-gray);-->
-<!--            padding: 20px 24px;-->
-<!--            border-radius: 0 12px 12px 0;-->
-<!--        }-->
-
-<!--        .schema-title {-->
-<!--            font-weight: 600;-->
-<!--            margin-bottom: 16px;-->
-<!--            color: var(&#45;&#45;primary-color);-->
-<!--            display: block;-->
-<!--            font-size: 1.05em;-->
-<!--            text-transform: uppercase;-->
-<!--            letter-spacing: 0.5px;-->
-<!--        }-->
-
-<!--        .response-block {-->
-<!--            margin-bottom: 24px;-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--            padding: 24px;-->
-<!--            border-radius: 12px;-->
-<!--            background: linear-gradient(135deg, #ffffff 0%, var(&#45;&#45;light-gray) 100%);-->
-<!--            box-shadow: var(&#45;&#45;shadow-sm);-->
-<!--        }-->
-
-<!--        .response-block h5 {-->
-<!--            border-bottom: none;-->
-<!--            margin-top: 0;-->
-<!--            margin-bottom: 16px;-->
-<!--            color: var(&#45;&#45;primary-color);-->
-<!--            display: flex;-->
-<!--            justify-content: space-between;-->
-<!--            align-items: center;-->
-<!--            font-size: 1.15em;-->
-<!--            font-weight: 600;-->
-<!--        }-->
-
-<!--        .try-it-out-btn {-->
-<!--            padding: 10px 20px;-->
-<!--            font-size: 0.9em;-->
-<!--            background: linear-gradient(135deg, var(&#45;&#45;primary-color) 0%, var(&#45;&#45;purple) 100%);-->
-<!--            color: white;-->
-<!--            border: none;-->
-<!--            border-radius: 8px;-->
-<!--            cursor: pointer;-->
-<!--            transition: all 0.2s;-->
-<!--            font-weight: 600;-->
-<!--            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);-->
-<!--        }-->
-
-<!--        .try-it-out-btn:hover {-->
-<!--            transform: translateY(-2px);-->
-<!--            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);-->
-<!--        }-->
-
-<!--        .error {-->
-<!--            color: var(&#45;&#45;red);-->
-<!--            font-weight: 600;-->
-<!--            background-color: #fee2e2;-->
-<!--            border: 1px solid #fecaca;-->
-<!--            padding: 14px 20px;-->
-<!--            border-radius: 10px;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 10px;-->
-<!--        }-->
-
-<!--        .error::before {-->
-<!--            content: '\f06a';-->
-<!--            font-family: 'Font Awesome 6 Free';-->
-<!--            font-weight: 900;-->
-<!--        }-->
-
-<!--        .loading {-->
-<!--            color: var(&#45;&#45;secondary-color);-->
-<!--            font-style: italic;-->
-<!--            padding: 24px;-->
-<!--            text-align: center;-->
-<!--            font-size: 1.1em;-->
-<!--        }-->
-
-<!--        .initial-message {-->
-<!--            color: var(&#45;&#45;secondary-color);-->
-<!--            font-size: 1.15em;-->
-<!--            text-align: center;-->
-<!--            margin-top: 60px;-->
-<!--            padding: 40px;-->
-<!--            background: var(&#45;&#45;light-gray);-->
-<!--            border-radius: 12px;-->
-<!--        }-->
-
-<!--        /* -&#45;&#45; Schema Rendering Styles -&#45;&#45; */-->
-<!--        .schema-container {-->
-<!--            border: 1px solid var(&#45;&#45;border-color);-->
-<!--            border-radius: 10px;-->
-<!--            padding: 20px;-->
-<!--            background-color: white;-->
-<!--            font-family: 'JetBrains Mono', monospace;-->
-<!--            font-size: 0.88em;-->
-<!--            margin-top: 12px;-->
-<!--            box-shadow: var(&#45;&#45;shadow-sm);-->
-<!--        }-->
-
-<!--        .schema-object, .schema-array {-->
-<!--            padding-left: 24px;-->
-<!--            border-left: 2px solid var(&#45;&#45;primary-color);-->
-<!--            margin-left: 8px;-->
-<!--            margin-top: 8px;-->
+<!--        .tag-group {-->
 <!--            margin-bottom: 8px;-->
 <!--        }-->
 
-<!--        .schema-property { margin-bottom: 10px; }-->
-<!--        .schema-prop-name { color: var(&#45;&#45;primary-color); font-weight: 600; }-->
-<!--        .schema-prop-type { color: var(&#45;&#45;green); margin-left: 8px; font-style: italic; }-->
-<!--        .schema-prop-format { color: var(&#45;&#45;secondary-color); font-size: 0.9em; margin-left: 5px; }-->
-<!--        .schema-prop-desc { color: var(&#45;&#45;dark-gray); font-size: 0.88em; margin-left: 28px; display: block; margin-top: 4px; font-style: italic;}-->
-<!--        .schema-array-items { margin-left: 0; margin-top: 8px; }-->
-
-<!--        /* -&#45;&#45; Badges and Pills -&#45;&#45; */-->
-<!--        .badge {-->
-<!--            display: inline-block;-->
-<!--            padding: 4px 10px;-->
-<!--            border-radius: 6px;-->
-<!--            font-size: 0.8em;-->
+<!--        .tag-group summary {-->
+<!--            padding: 8px 12px;-->
+<!--            cursor: pointer;-->
+<!--            list-style: none;-->
 <!--            font-weight: 600;-->
+<!--            font-size: 13px;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            border-radius: 6px;-->
+<!--            user-select: none;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--        }-->
+
+<!--        .tag-group summary:hover { background: var(&#45;&#45;hover); }-->
+
+<!--        .tag-group summary::before {-->
+<!--            content: '▶';-->
+<!--            font-size: 10px;-->
+<!--            transition: transform 0.2s;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--        }-->
+
+<!--        .tag-group[open] summary::before { transform: rotate(90deg); }-->
+
+<!--        .tag-group ul {-->
+<!--            list-style: none;-->
+<!--            padding-left: 8px;-->
+<!--            margin-top: 4px;-->
+<!--        }-->
+
+<!--        .tag-group li {-->
+<!--            padding: 8px 12px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 13px;-->
+<!--            border-radius: 6px;-->
+<!--            margin-bottom: 2px;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            transition: all 0.15s;-->
+<!--        }-->
+
+<!--        .tag-group li:hover { background: var(&#45;&#45;hover); }-->
+
+<!--        .tag-group li.selected {-->
+<!--            background: #eff6ff;-->
+<!--            color: var(&#45;&#45;primary);-->
+<!--            font-weight: 500;-->
+<!--        }-->
+
+<!--        .tag-group li.hidden { display: none; }-->
+
+<!--        .method {-->
+<!--            display: inline-block;-->
+<!--            font-weight: 700;-->
+<!--            padding: 3px 8px;-->
+<!--            border-radius: 4px;-->
+<!--            font-size: 10px;-->
 <!--            text-transform: uppercase;-->
 <!--            letter-spacing: 0.5px;-->
+<!--            flex-shrink: 0;-->
+<!--            min-width: 45px;-->
+<!--            text-align: center;-->
 <!--        }-->
 
-<!--        .badge-required { background: #fef3c7; color: #92400e; }-->
+<!--        .method-get { background: #d1fae5; color: #065f46; }-->
+<!--        .method-post { background: #dbeafe; color: #1e40af; }-->
+<!--        .method-put { background: #fef3c7; color: #92400e; }-->
+<!--        .method-delete { background: #fee2e2; color: #991b1b; }-->
+<!--        .method-patch { background: #f3e8ff; color: #6b21a8; }-->
+
+<!--        .endpoint-path {-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 12px;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            overflow: hidden;-->
+<!--            text-overflow: ellipsis;-->
+<!--            white-space: nowrap;-->
+<!--        }-->
+
+<!--        /* Main Content */-->
+<!--        #main-content {-->
+<!--            flex: 1;-->
+<!--            overflow-y: auto;-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--        }-->
+
+<!--        #content-wrapper {-->
+<!--            max-width: 1000px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 40px;-->
+<!--        }-->
+
+<!--        .content-card {-->
+<!--            background: var(&#45;&#45;content-bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 8px;-->
+<!--            padding: 32px;-->
+<!--            margin-bottom: 24px;-->
+<!--        }-->
+
+<!--        .endpoint-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 12px;-->
+<!--            margin-bottom: 24px;-->
+<!--            flex-wrap: wrap;-->
+<!--        }-->
+
+<!--        .endpoint-header .method {-->
+<!--            font-size: 12px;-->
+<!--            padding: 6px 12px;-->
+<!--        }-->
+
+<!--        .endpoint-header .path {-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 18px;-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--        }-->
+
+<!--        h2 {-->
+<!--            font-size: 18px;-->
+<!--            font-weight: 600;-->
+<!--            margin-top: 32px;-->
+<!--            margin-bottom: 16px;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            padding-bottom: 8px;-->
+<!--            border-bottom: 1px solid var(&#45;&#45;border);-->
+<!--        }-->
+
+<!--        h2:first-of-type { margin-top: 0; }-->
+
+<!--        .description {-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            line-height: 1.7;-->
+<!--            margin-bottom: 16px;-->
+<!--        }-->
+
+<!--        /* Parameter Card Layout */-->
+<!--        .param-list {-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            gap: 12px;-->
+<!--            margin: 16px 0;-->
+<!--        }-->
+
+<!--        .param-card {-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 6px;-->
+<!--            padding: 16px;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+
+<!--        .param-card:hover {-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);-->
+<!--        }-->
+
+<!--        .param-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            margin-bottom: 8px;-->
+<!--            flex-wrap: wrap;-->
+<!--            gap: 8px;-->
+<!--        }-->
+
+<!--        .param-name-section {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--        }-->
+
+<!--        .param-name {-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 14px;-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;primary);-->
+<!--        }-->
+
+<!--        .param-badges {-->
+<!--            display: flex;-->
+<!--            gap: 6px;-->
+<!--            align-items: center;-->
+<!--        }-->
+
+<!--        .badge {-->
+<!--            display: inline-block;-->
+<!--            padding: 3px 8px;-->
+<!--            border-radius: 4px;-->
+<!--            font-size: 10px;-->
+<!--            font-weight: 600;-->
+<!--            text-transform: uppercase;-->
+<!--        }-->
+
+<!--        .badge-required { background: #fee2e2; color: #991b1b; }-->
 <!--        .badge-optional { background: #e0e7ff; color: #3730a3; }-->
+<!--        .badge-in { background: var(&#45;&#45;code-bg); color: var(&#45;&#45;text-light); border: 1px solid var(&#45;&#45;border); }-->
 
-<!--        /* -&#45;&#45; Animations -&#45;&#45; */-->
-<!--        @keyframes fadeIn {-->
-<!--            from { opacity: 0; transform: translateY(10px); }-->
-<!--            to { opacity: 1; transform: translateY(0); }-->
+<!--        .param-type {-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 13px;-->
+<!--            color: var(&#45;&#45;green);-->
+<!--            font-weight: 500;-->
 <!--        }-->
 
-<!--        #details-content-wrapper {-->
-<!--            animation: fadeIn 0.3s ease-out;-->
+<!--        .param-constraints {-->
+<!--            margin-top: 8px;-->
+<!--            padding: 8px 12px;-->
+<!--            background: #fff;-->
+<!--            border-radius: 4px;-->
+<!--            border-left: 3px solid var(&#45;&#45;orange);-->
+<!--            font-size: 12px;-->
 <!--        }-->
 
-<!--        /* -&#45;&#45; Responsive adjustments -&#45;&#45; */-->
-<!--        @media (max-width: 1024px) {-->
-<!--            #left-panel { width: 320px; }-->
+<!--        .constraint-item {-->
+<!--            display: inline-block;-->
+<!--            margin-right: 12px;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--        }-->
+
+<!--        .constraint-label {-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;orange);-->
+<!--        }-->
+
+<!--        .no-data {-->
+<!--            padding: 24px;-->
+<!--            text-align: center;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            border-radius: 6px;-->
+<!--            font-style: italic;-->
+<!--        }-->
+
+<!--        /* Schema Display */-->
+<!--        .schema-box {-->
+<!--            background: var(&#45;&#45;code-bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 6px;-->
+<!--            padding: 16px;-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 12px;-->
+<!--            margin: 12px 0;-->
+<!--            overflow-x: auto;-->
+<!--        }-->
+
+<!--        .schema-property {-->
+<!--            margin: 8px 0;-->
+<!--            padding-left: 20px;-->
+<!--        }-->
+
+<!--        .schema-property-name { color: var(&#45;&#45;primary); font-weight: 600; }-->
+<!--        .schema-property-type { color: var(&#45;&#45;green); margin-left: 8px; }-->
+<!--        .schema-property-required { color: var(&#45;&#45;red); font-size: 10px; margin-left: 4px; }-->
+<!--        .schema-property-format { color: var(&#45;&#45;purple); margin-left: 4px; }-->
+
+<!--        .schema-constraints {-->
+<!--            margin-left: 8px;-->
+<!--            color: var(&#45;&#45;orange);-->
+<!--            font-size: 11px;-->
+<!--        }-->
+
+<!--        .response-block {-->
+<!--            background: var(&#45;&#45;bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 6px;-->
+<!--            padding: 16px;-->
+<!--            margin: 12px 0;-->
+<!--        }-->
+
+<!--        .response-block h3 {-->
+<!--            font-size: 14px;-->
+<!--            font-weight: 600;-->
+<!--            margin-bottom: 12px;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--        }-->
+
+<!--        /* Try It Out Button */-->
+<!--        .try-it-section {-->
+<!--            margin-top: 40px;-->
+<!--            padding-top: 24px;-->
+<!--            border-top: 2px solid var(&#45;&#45;border);-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .try-it-btn {-->
+<!--            display: inline-flex;-->
+<!--            align-items: center;-->
+<!--            gap: 8px;-->
+<!--            padding: 12px 24px;-->
+<!--            background: linear-gradient(135deg, var(&#45;&#45;primary) 0%, var(&#45;&#45;primary-dark) 100%);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 8px;-->
+<!--            font-size: 14px;-->
+<!--            font-weight: 600;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.2s;-->
+<!--            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);-->
+<!--        }-->
+
+<!--        .try-it-btn:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);-->
+<!--        }-->
+
+<!--        .try-it-btn:active {-->
+<!--            transform: translateY(0);-->
+<!--        }-->
+
+<!--        .initial-message {-->
+<!--            text-align: center;-->
+<!--            padding: 80px 40px;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--            font-size: 15px;-->
+<!--        }-->
+
+<!--        .loading {-->
+<!--            padding: 20px;-->
+<!--            text-align: center;-->
+<!--            color: var(&#45;&#45;text-light);-->
+<!--        }-->
+
+<!--        .error-message {-->
+<!--            background: #fef2f2;-->
+<!--            border: 1px solid #fecaca;-->
+<!--            color: #991b1b;-->
+<!--            padding: 12px 16px;-->
+<!--            border-radius: 6px;-->
+<!--            margin: 16px 0;-->
+<!--        }-->
+
+<!--        code {-->
+<!--            background: var(&#45;&#45;code-bg);-->
+<!--            padding: 3px 6px;-->
+<!--            border-radius: 4px;-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 12px;-->
+<!--            color: #e11d48;-->
 <!--        }-->
 <!--    </style>-->
 <!--</head>-->
 <!--<body>-->
 
-<!--<div id="left-panel">-->
-<!--    <div id="left-panel-header">-->
-<!--        <h1><i class="fas fa-book-open"></i> AutoDocER</h1>-->
-<!--        <input type="text" id="search-box" placeholder="Search endpoints..." onkeyup="filterPaths()">-->
-<!--    </div>-->
-<!--    <div id="left-panel-content">-->
-<!--        <div id="navigation-list">-->
-<!--            <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading API Structure...</p>-->
+<!--<div id="sidebar">-->
+<!--    <div id="sidebar-header">-->
+<!--        <h1>📚 AutoDocER API</h1>-->
+
+<!--        <div class="server-selector">-->
+<!--            <label for="server-select">Server</label>-->
+<!--            <select id="server-select">-->
+<!--                <option value="">Loading servers...</option>-->
+<!--            </select>-->
+<!--            <div class="server-url" id="server-url-display">Select a server</div>-->
 <!--        </div>-->
+
+<!--        <input type="text" id="search-box" placeholder="Search endpoints..." onkeyup="filterEndpoints()">-->
+<!--    </div>-->
+<!--    <div id="nav-content">-->
+<!--        <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>-->
 <!--    </div>-->
 <!--</div>-->
 
-<!--<div id="right-panel">-->
-<!--    <div id="details-content-wrapper">-->
-<!--        <div id="details-content">-->
-<!--            <p class="initial-message">👈 Select an endpoint from the left panel to view details.</p>-->
+<!--<div id="main-content">-->
+<!--    <div id="content-wrapper">-->
+<!--        <div class="content-card">-->
+<!--            <div class="initial-message">-->
+<!--                👈 Select an endpoint from the sidebar to view its documentation-->
+<!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
 
 <!--<script>-->
-<!--    let fullApiSpec = null;-->
+<!--    let apiSpec = null;-->
+<!--    let selectedServer = null;-->
 
-<!--    function renderSchema(schema, isRoot = true) {-->
-<!--        if (!schema) return '<span class="error">Schema not available</span>';-->
+<!--    function populateServers() {-->
+<!--        const select = document.getElementById('server-select');-->
+<!--        const urlDisplay = document.getElementById('server-url-display');-->
 
-<!--        let html = isRoot ? '<div class="schema-container">' : '';-->
-
-<!--        if (schema.type === 'object' && schema.properties) {-->
-<!--            html += `<div class="schema-object">`;-->
-<!--            html += '<div><code>{</code></div>';-->
-<!--            const entries = Object.entries(schema.properties);-->
-<!--            entries.forEach(([propName, propSchema], index) => {-->
-<!--                html += `<div class="schema-property">`;-->
-<!--                html += `<span class="schema-prop-name">"${propName}"</span>: `;-->
-<!--                html += renderSchema(propSchema, false);-->
-<!--                if (index < entries.length - 1) html += '<code>,</code>';-->
-<!--                html += `</div>`;-->
-<!--            });-->
-<!--            html += '<div><code>}</code></div>';-->
-<!--            html += `</div>`;-->
-<!--        } else if (schema.type === 'array' && schema.items) {-->
-<!--            html += `<div class="schema-array">`;-->
-<!--            html += '<div><code>[</code></div>';-->
-<!--            html += '<div class="schema-array-items">';-->
-<!--            html += renderSchema(schema.items, false);-->
-<!--            html += '</div>';-->
-<!--            html += '<div><code>]</code></div>';-->
-<!--            html += `</div>`;-->
-<!--        } else {-->
-<!--            html += `<span class="schema-prop-type">${schema.type || 'unknown'}</span>`;-->
-<!--            if (schema.format) {-->
-<!--                html += `<span class="schema-prop-format">(${schema.format})</span>`;-->
-<!--            }-->
-<!--            if (schema.description) {-->
-<!--                html += `<span class="schema-prop-desc">// ${schema.description}</span>`;-->
-<!--            }-->
-<!--        }-->
-
-<!--        if (isRoot) html += '</div>';-->
-<!--        return html;-->
-<!--    }-->
-
-<!--    function displayDetails(pathKey, httpMethod, listItemElement) {-->
-<!--        const detailsDiv = document.getElementById('details-content');-->
-<!--        detailsDiv.innerHTML = '';-->
-
-<!--        document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));-->
-<!--        if (listItemElement) {-->
-<!--            listItemElement.classList.add('selected');-->
-<!--        }-->
-
-<!--        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {-->
-<!--            detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';-->
+<!--        if (!apiSpec || !apiSpec.servers || apiSpec.servers.length === 0) {-->
+<!--            select.innerHTML = '<option value="/">Default Server (/)</option>';-->
+<!--            selectedServer = '/';-->
+<!--            urlDisplay.textContent = '/';-->
 <!--            return;-->
 <!--        }-->
 
-<!--        const operation = fullApiSpec.paths[pathKey][httpMethod];-->
-<!--        const methodUpper = httpMethod.toUpperCase();-->
+<!--        select.innerHTML = apiSpec.servers.map((server, idx) =>-->
+<!--            `<option value="${idx}">${server.description || server.url}</option>`-->
+<!--        ).join('');-->
 
-<!--        let contentHtml = `-->
-<!--            <h3>-->
-<!--                <span class="method method-${httpMethod}">${methodUpper}</span>-->
-<!--                <span class="method-path"><code>${pathKey}</code></span>-->
-<!--                <button class="try-it-out-btn" title="Feature not implemented yet"><i class="fas fa-play"></i> Try it out</button>-->
-<!--            </h3>`;-->
+<!--        select.addEventListener('change', (e) => {-->
+<!--            const idx = e.target.value;-->
+<!--            selectedServer = apiSpec.servers[idx].url;-->
+<!--            urlDisplay.textContent = selectedServer;-->
+<!--        });-->
 
-<!--        if (operation.summary) contentHtml += `<p><strong>${operation.summary}</strong></p>`;-->
-<!--        if (operation.description) contentHtml += `<p>${operation.description}</p>`;-->
-<!--        if (operation.operationId) contentHtml += `<p><small><i class="fas fa-tag"></i> Operation ID: <code>${operation.operationId}</code></small></p>`;-->
+<!--        selectedServer = apiSpec.servers[0].url;-->
+<!--        urlDisplay.textContent = selectedServer;-->
+<!--    }-->
 
-<!--        if (operation.parameters && operation.parameters.length > 0) {-->
-<!--            contentHtml += `<h4><i class="fas fa-sliders-h"></i> Parameters</h4>`;-->
-<!--            contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;-->
-<!--            operation.parameters.forEach(param => {-->
-<!--                const requiredBadge = param.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';-->
-<!--                contentHtml += `<tr>-->
-<!--                                    <td><code>${param.name}</code></td>-->
-<!--                                    <td><code>${param.in}</code></td>-->
-<!--                                    <td>${requiredBadge}</td>-->
-<!--                                    <td>${renderSchema(param.schema)}</td>-->
-<!--                                </tr>`;-->
+<!--    function renderConstraints(schema) {-->
+<!--        const constraints = [];-->
+
+<!--        if (schema.minLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min Length:</span> ${schema.minLength}</span>`);-->
+<!--        if (schema.maxLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max Length:</span> ${schema.maxLength}</span>`);-->
+<!--        if (schema.minimum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min:</span> ${schema.minimum}</span>`);-->
+<!--        if (schema.maximum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max:</span> ${schema.maximum}</span>`);-->
+<!--        if (schema.pattern) constraints.push(`<span class="constraint-item"><span class="constraint-label">Pattern:</span> <code>${schema.pattern}</code></span>`);-->
+<!--        if (schema.enum && schema.enum.length > 0) constraints.push(`<span class="constraint-item"><span class="constraint-label">Enum:</span> [${schema.enum.join(', ')}]</span>`);-->
+
+<!--        return constraints.length > 0 ? `<div class="param-constraints">${constraints.join('')}</div>` : '';-->
+<!--    }-->
+
+<!--    function renderSchema(schema, depth = 0, required = []) {-->
+<!--        if (!schema) return '<span style="color: #6b7280;">No schema</span>';-->
+
+<!--        let html = '';-->
+<!--        const indent = '&nbsp;'.repeat(depth * 4);-->
+
+<!--        if (schema.type === 'object' && schema.properties) {-->
+<!--            html += '<div class="schema-object">';-->
+<!--            html += `${indent}{<br>`;-->
+<!--            const props = Object.entries(schema.properties);-->
+<!--            const requiredFields = schema.required || required;-->
+
+<!--            props.forEach(([name, prop], idx) => {-->
+<!--                const isRequired = requiredFields.includes(name);-->
+<!--                const reqMark = isRequired ? '<span class="schema-property-required">*</span>' : '';-->
+<!--                html += `${indent}&nbsp;&nbsp;<span class="schema-property-name">"${name}"</span>${reqMark}: `;-->
+
+<!--                if (prop.type && prop.type !== 'object' && prop.type !== 'array') {-->
+<!--                    html += `<span class="schema-property-type">${prop.type}</span>`;-->
+<!--                    if (prop.format) html += `<span class="schema-property-format">&lt;${prop.format}&gt;</span>`;-->
+
+<!--                    const constraints = [];-->
+<!--                    if (prop.minLength) constraints.push(`minLen:${prop.minLength}`);-->
+<!--                    if (prop.maxLength) constraints.push(`maxLen:${prop.maxLength}`);-->
+<!--                    if (prop.minimum) constraints.push(`min:${prop.minimum}`);-->
+<!--                    if (prop.maximum) constraints.push(`max:${prop.maximum}`);-->
+<!--                    if (prop.pattern) constraints.push(`pattern:${prop.pattern}`);-->
+<!--                    if (constraints.length > 0) {-->
+<!--                        html += `<span class="schema-constraints"> [${constraints.join(', ')}]</span>`;-->
+<!--                    }-->
+<!--                } else {-->
+<!--                    html += renderSchema(prop, depth + 1, requiredFields);-->
+<!--                }-->
+
+<!--                if (idx < props.length - 1) html += ',';-->
+<!--                html += '<br>';-->
 <!--            });-->
-<!--            contentHtml += `</tbody></table>`;-->
+<!--            html += `${indent}}`;-->
+<!--            html += '</div>';-->
+<!--        } else if (schema.type === 'array' && schema.items) {-->
+<!--            html += `[<br>${indent}&nbsp;&nbsp;`;-->
+<!--            html += renderSchema(schema.items, depth + 1);-->
+<!--            html += `<br>${indent}]`;-->
 <!--        } else {-->
-<!--            contentHtml += `<h4><i class="fas fa-sliders-h"></i> Parameters</h4><p>No parameters required for this endpoint.</p>`;-->
+<!--            html += `<span class="schema-property-type">${schema.type || 'any'}</span>`;-->
+<!--            if (schema.format) html += `<span class="schema-property-format">&lt;${schema.format}&gt;</span>`;-->
 <!--        }-->
 
+<!--        return html;-->
+<!--    }-->
+
+<!--    function displayEndpoint(path, method, li) {-->
+<!--        document.querySelectorAll('.tag-group li.selected').forEach(el => el.classList.remove('selected'));-->
+<!--        if (li) li.classList.add('selected');-->
+
+<!--        const operation = apiSpec.paths[path][method];-->
+<!--        const methodUpper = method.toUpperCase();-->
+
+<!--        let html = `-->
+<!--            <div class="content-card">-->
+<!--                <div class="endpoint-header">-->
+<!--                    <span class="method method-${method}">${methodUpper}</span>-->
+<!--                    <span class="path">${path}</span>-->
+<!--                </div>`;-->
+
+<!--        if (operation.summary) html += `<p class="description"><strong>${operation.summary}</strong></p>`;-->
+<!--        if (operation.description) html += `<p class="description">${operation.description}</p>`;-->
+
+<!--        // Parameters-->
+<!--        html += `<h2>Parameters</h2>`;-->
+<!--        if (operation.parameters && operation.parameters.length > 0) {-->
+<!--            html += `<div class="param-list">`;-->
+<!--            operation.parameters.forEach(param => {-->
+<!--                const badge = param.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';-->
+<!--                const type = param.schema ? param.schema.type || 'any' : 'any';-->
+
+<!--                html += `<div class="param-card">-->
+<!--                    <div class="param-header">-->
+<!--                        <div class="param-name-section">-->
+<!--                            <span class="param-name">${param.name}</span>-->
+<!--                            <span class="badge badge-in">${param.in}</span>-->
+<!--                        </div>-->
+<!--                        <div class="param-badges">-->
+<!--                            <span class="param-type">${type}</span>-->
+<!--                            ${badge}-->
+<!--                        </div>-->
+<!--                    </div>`;-->
+
+<!--                if (param.description) {-->
+<!--                    html += `<p style="color: var(&#45;&#45;text-light); font-size: 13px; margin-top: 8px;">${param.description}</p>`;-->
+<!--                }-->
+
+<!--                if (param.schema) {-->
+<!--                    html += renderConstraints(param.schema);-->
+<!--                }-->
+
+<!--                html += `</div>`;-->
+<!--            });-->
+<!--            html += `</div>`;-->
+<!--        } else {-->
+<!--            html += `<div class="no-data"><i class="fas fa-inbox"></i> No parameters required for this endpoint</div>`;-->
+<!--        }-->
+
+<!--        // Request Body-->
 <!--        if (operation.requestBody) {-->
-<!--            contentHtml += `<h4><i class="fas fa-file-import"></i> Request Body</h4>`;-->
-<!--            const requiredText = operation.requestBody.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';-->
-<!--            contentHtml += `<p>${requiredText}</p>`;-->
-<!--            if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {-->
-<!--                contentHtml += `<div class="schema-section">-->
-<!--                                    <span class="schema-title"><i class="fas fa-code"></i> Schema (application/json)</span>-->
-<!--                                    ${renderSchema(operation.requestBody.content['application/json'].schema)}-->
-<!--                                </div>`;-->
-<!--            } else {-->
-<!--                contentHtml += `<p>No schema defined for request body.</p>`;-->
+<!--            html += `<h2>Request Body</h2>`;-->
+<!--            const badge = operation.requestBody.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';-->
+<!--            html += `<p style="margin-bottom: 12px;">${badge}</p>`;-->
+
+<!--            if (operation.requestBody.content && operation.requestBody.content['application/json']) {-->
+<!--                const schema = operation.requestBody.content['application/json'].schema;-->
+<!--                html += `<div class="schema-box">${renderSchema(schema)}</div>`;-->
 <!--            }-->
 <!--        }-->
 
+<!--        // Responses-->
 <!--        if (operation.responses) {-->
-<!--            contentHtml += `<h4><i class="fas fa-reply"></i> Responses</h4>`;-->
-<!--            Object.entries(operation.responses).forEach(([statusCode, response]) => {-->
-<!--                contentHtml += `<div class="response-block">-->
-<!--                                    <h5><i class="fas fa-check-circle"></i> Status Code: <code>${statusCode}</code></h5>-->
-<!--                                    <p>${response.description || 'No description provided.'}</p>`;-->
-<!--                if (response.content && response.content['application/json'] && response.content['application/json'].schema) {-->
-<!--                    contentHtml += `<div class="schema-section">-->
-<!--                                        <span class="schema-title"><i class="fas fa-code"></i> Schema (application/json)</span>-->
-<!--                                        ${renderSchema(response.content['application/json'].schema)}-->
-<!--                                    </div>`;-->
-<!--                } else if (statusCode !== '204' && statusCode !== '202') {-->
-<!--                    contentHtml += `<p><small>No response body schema defined.</small></p>`-->
+<!--            html += `<h2>Responses</h2>`;-->
+<!--            Object.entries(operation.responses).forEach(([code, response]) => {-->
+<!--                html += `<div class="response-block">-->
+<!--                    <h3><i class="fas fa-check-circle" style="color: var(&#45;&#45;green);"></i> Status ${code}</h3>-->
+<!--                    <p style="color: var(&#45;&#45;text-light);">${response.description || 'No description'}</p>`;-->
+
+<!--                if (response.content && response.content['application/json']) {-->
+<!--                    const schema = response.content['application/json'].schema;-->
+<!--                    html += `<div class="schema-box">${renderSchema(schema)}</div>`;-->
 <!--                }-->
-<!--                contentHtml += `</div>`;-->
+<!--                html += `</div>`;-->
 <!--            });-->
 <!--        }-->
 
-<!--        detailsDiv.innerHTML = contentHtml;-->
+<!--        // Try It Out Section-->
+<!--        html += `-->
+<!--            <div class="try-it-section">-->
+<!--                <button class="try-it-btn" onclick="alert('Try It Out functionality coming soon!')">-->
+<!--                    <i class="fas fa-play"></i>-->
+<!--                    Try It Out-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        `;-->
+
+<!--        html += `</div>`;-->
+<!--        document.getElementById('content-wrapper').innerHTML = html;-->
 <!--    }-->
 
-<!--    async function loadApiStructure() {-->
-<!--        const navContainer = document.getElementById('navigation-list');-->
-<!--        const detailsDiv = document.getElementById('details-content');-->
+<!--    function buildNavigation() {-->
+<!--        const nav = document.getElementById('nav-content');-->
+<!--        if (!apiSpec || !apiSpec.paths) {-->
+<!--            nav.innerHTML = '<p class="error-message">No endpoints found</p>';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        const pathsByTag = {};-->
+<!--        Object.entries(apiSpec.paths).forEach(([path, methods]) => {-->
+<!--            Object.entries(methods).forEach(([method, operation]) => {-->
+<!--                const tag = (operation.tags && operation.tags[0]) || 'default';-->
+<!--                if (!pathsByTag[tag]) pathsByTag[tag] = [];-->
+<!--                pathsByTag[tag].push({ path, method, operation });-->
+<!--            });-->
+<!--        });-->
+
+<!--        let html = '';-->
+<!--        Object.keys(pathsByTag).sort().forEach(tag => {-->
+<!--            html += `<details class="tag-group" open><summary>${tag}</summary><ul>`;-->
+<!--            pathsByTag[tag].forEach(({ path, method, operation }) => {-->
+<!--                html += `<li data-path="${path}" data-method="${method}" onclick="displayEndpoint('${path}', '${method}', this)">-->
+<!--                    <span class="method method-${method}">${method.toUpperCase()}</span>-->
+<!--                    <span class="endpoint-path">${path}</span>-->
+<!--                </li>`;-->
+<!--            });-->
+<!--            html += `</ul></details>`;-->
+<!--        });-->
+
+<!--        nav.innerHTML = html;-->
+<!--    }-->
+
+<!--    function filterEndpoints() {-->
+<!--        const query = document.getElementById('search-box').value.toLowerCase();-->
+<!--        document.querySelectorAll('.tag-group li').forEach(li => {-->
+<!--            const path = li.dataset.path || '';-->
+<!--            const method = li.dataset.method || '';-->
+<!--            const visible = (path + method).toLowerCase().includes(query);-->
+<!--            li.classList.toggle('hidden', !visible);-->
+<!--        });-->
+<!--    }-->
+
+<!--    async function loadApi() {-->
 <!--        try {-->
 <!--            const response = await fetch('/autodocer/api-docs');-->
-<!--            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);-->
-<!--            const responseText = await response.text();-->
+<!--            if (!response.ok) throw new Error(`HTTP ${response.status}`);-->
 
-<!--            try {-->
-<!--                fullApiSpec = JSON.parse(responseText);-->
-<!--            } catch (parseError) {-->
-<!--                throw new Error(`Invalid JSON received from API: ${parseError.message}`);-->
-<!--            }-->
+<!--            apiSpec = await response.json();-->
+<!--            console.log('Loaded API spec:', apiSpec);-->
 
-<!--            console.log("Fetched and Parsed Spec:", fullApiSpec);-->
-<!--            navContainer.innerHTML = '';-->
-
-<!--            if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {-->
-<!--                navContainer.innerHTML = '<p class="error">No paths found.</p>';-->
-<!--                detailsDiv.innerHTML = '<p class="initial-message">Could not load API specification or no endpoints defined.</p>';-->
-<!--                return;-->
-<!--            }-->
-
-<!--            const pathsByTag = {};-->
-<!--            Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {-->
-<!--                Object.entries(pathItem).forEach(([method, operation]) => {-->
-<!--                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default';-->
-<!--                    if (!pathsByTag[tag]) pathsByTag[tag] = [];-->
-<!--                    pathsByTag[tag].push({ pathKey, method, operation, element: null });-->
-<!--                });-->
-<!--            });-->
-
-<!--            const sortedTags = Object.keys(pathsByTag).sort();-->
-
-<!--            sortedTags.forEach(tag => {-->
-<!--                const detailsElement = document.createElement('details');-->
-<!--                detailsElement.classList.add('controller-group');-->
-<!--                detailsElement.open = true;-->
-
-<!--                const summaryElement = document.createElement('summary');-->
-<!--                summaryElement.classList.add('controller-name');-->
-<!--                summaryElement.innerHTML = `<i class="fas fa-layer-group"></i> ${tag}`;-->
-<!--                detailsElement.appendChild(summaryElement);-->
-
-<!--                const ul = document.createElement('ul');-->
-<!--                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method))-->
-<!--                               .forEach((endpointData) => {-->
-<!--                    const {pathKey, method, operation} = endpointData;-->
-<!--                    const listItem = document.createElement('li');-->
-<!--                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> <span class="method-path">${pathKey}</span>`;-->
-<!--                    listItem.title = operation.summary || pathKey;-->
-<!--                    listItem.dataset.path = pathKey;-->
-<!--                    listItem.dataset.method = method;-->
-<!--                    listItem.dataset.tag = tag;-->
-
-<!--                    listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));-->
-<!--                    ul.appendChild(listItem);-->
-<!--                    endpointData.element = listItem;-->
-<!--                });-->
-<!--                detailsElement.appendChild(ul);-->
-<!--                navContainer.appendChild(detailsElement);-->
-<!--            });-->
-
-<!--            detailsDiv.innerHTML = '<p class="initial-message">👈 Select an endpoint from the left panel.</p>';-->
-
+<!--            populateServers();-->
+<!--            buildNavigation();-->
 <!--        } catch (error) {-->
-<!--            console.error("Error loading API structure:", error);-->
-<!--            navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;-->
-<!--            detailsDiv.innerHTML = `<p class="error">Could not load API specification: ${error.message}</p>`-->
+<!--            console.error('Error loading API:', error);-->
+<!--            document.getElementById('nav-content').innerHTML =-->
+<!--                `<p class="error-message">Error: ${error.message}</p>`;-->
 <!--        }-->
 <!--    }-->
 
-<!--    function filterPaths() {-->
-<!--        const filterText = document.getElementById('search-box').value.toLowerCase().trim();-->
-<!--        const listItems = document.querySelectorAll('#navigation-list li');-->
-<!--        const controllerGroups = document.querySelectorAll('#navigation-list .controller-group');-->
-<!--        let hasVisibleItems = false;-->
-
-<!--        listItems.forEach(item => {-->
-<!--            const path = item.dataset.path || '';-->
-<!--            const method = item.dataset.method || '';-->
-<!--            const tag = item.dataset.tag || '';-->
-<!--            const textContent = (tag + ' ' + method + ' ' + path).toLowerCase();-->
-<!--            if (textContent.includes(filterText)) {-->
-<!--                item.classList.remove('hidden');-->
-<!--                hasVisibleItems = true;-->
-<!--            } else {-->
-<!--                item.classList.add('hidden');-->
-<!--            }-->
-<!--        });-->
-
-<!--        let noResultsMsg = document.querySelector('#navigation-list .no-results');-->
-<!--        controllerGroups.forEach(group => {-->
-<!--            const visibleItems = group.querySelectorAll('li:not(.hidden)');-->
-<!--            if (visibleItems.length === 0 && filterText !== '') {-->
-<!--                group.style.display = 'none';-->
-<!--            } else {-->
-<!--                group.style.display = '';-->
-<!--                if(filterText !== '' && visibleItems.length > 0) {-->
-<!--                    group.open = true;-->
-<!--                }-->
-<!--            }-->
-<!--        });-->
-
-<!--        if (!hasVisibleItems && filterText !== '') {-->
-<!--            if (!noResultsMsg) {-->
-<!--                noResultsMsg = document.createElement('p');-->
-<!--                noResultsMsg.className = 'error no-results';-->
-<!--                noResultsMsg.style.paddingLeft = '20px';-->
-<!--                noResultsMsg.textContent = 'No matching endpoints found.';-->
-<!--                document.getElementById('navigation-list').appendChild(noResultsMsg);-->
-<!--            }-->
-<!--        } else if (noResultsMsg) {-->
-<!--            noResultsMsg.remove();-->
-<!--        }-->
-<!--    }-->
-
-<!--    window.onload = loadApiStructure;-->
+<!--    window.onload = loadApi;-->
 <!--</script>-->
 
 <!--</body>-->
 <!--</html>-->
 
-    <!DOCTYPE html>
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoDocER API Reference</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
-        /* --- CSS Variables --- */
         :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
-            --secondary-color: #64748b;
-            --light-gray: #f8fafc;
-            --medium-gray: #e2e8f0;
-            --dark-gray: #475569;
-            --border-color: #e2e8f0;
-            --text-color: #1e293b;
-            --body-bg: #f1f5f9;
-            --panel-bg: #ffffff;
-            --code-bg: #f1f5f9;
-            --code-color: #e11d48;
-            --hover-bg: #f8fafc;
-            --selected-bg: var(--primary-color);
-            --selected-text: #fff;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --bg: #fafafa;
+            --sidebar-bg: #ffffff;
+            --content-bg: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --hover: #f3f4f6;
+            --code-bg: #f9fafb;
             --green: #10b981;
-            --teal: #14b8a6;
+            --blue: #3b82f6;
             --yellow: #f59e0b;
-            --yellow-text: #fff;
             --red: #ef4444;
             --orange: #f97316;
-            --purple: #a855f7;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --purple: #8b5cf6;
         }
 
-        /* --- General Styles --- */
-        html { box-sizing: border-box; font-size: 16px; }
-        *, *:before, *:after { box-sizing: inherit; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--text-color);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
             overflow: hidden;
         }
 
-        ::-webkit-scrollbar { width: 10px; height: 10px;}
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; border: 2px solid transparent; background-clip: padding-box;}
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; background-clip: padding-box; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
-        /* --- Panels --- */
-        #left-panel {
-            width: 400px;
-            border-right: 1px solid var(--border-color);
+        /* Sidebar */
+        #sidebar {
+            width: 300px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            background-color: var(--panel-bg);
             flex-shrink: 0;
-            box-shadow: var(--shadow-lg);
-            z-index: 10;
-            margin: 12px;
-            margin-right: 6px;
-            border-radius: 16px;
-            overflow: hidden;
         }
 
-        #left-panel-header {
-            padding: 24px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--purple) 100%);
-            color: white;
-        }
-
-        #left-panel-content {
+        #sidebar-header {
             padding: 20px;
-            overflow-y: auto;
-            flex-grow: 1;
-            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border);
+            background: #fff;
         }
 
-        #right-panel {
-            flex-grow: 1;
-            padding: 0;
-            overflow-y: auto;
-            background-color: transparent;
-            margin: 12px;
-            margin-left: 6px;
-        }
-
-        #details-content-wrapper {
-            background-color: var(--panel-bg);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 20px;
-        }
-
-        /* --- Headings --- */
         h1 {
-            font-size: 1.75em;
-            color: white;
-            margin: 0 0 20px 0;
+            font-size: 20px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: -0.02em;
-        }
-        h1 i { font-size: 1em; }
-
-        h3 {
-            margin-top: 0;
-            margin-bottom: 32px;
-            font-size: 1.75em;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: linear-gradient(135deg, var(--light-gray) 0%, #e0e7ff 100%);
-            padding: 20px 24px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            flex-wrap: wrap;
-        }
-
-        h4 {
-            margin-top: 48px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-size: 1.35em;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        h4:first-of-type { margin-top: 24px; }
-
-        h4::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 24px;
-            background: var(--primary-color);
-            border-radius: 2px;
-        }
-
-        h5 {
-            margin-top: 24px;
+            color: var(--text);
             margin-bottom: 16px;
-            color: var(--dark-gray);
-            font-size: 1.15em;
-            font-weight: 600;
         }
 
-        /* --- Search Box --- */
+        .server-selector {
+            margin-top: 12px;
+        }
+
+        .server-selector label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #server-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        #server-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .server-url {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: var(--code-bg);
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-light);
+            word-break: break-all;
+        }
+
         #search-box {
             width: 100%;
-            padding: 12px 16px 12px 44px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 0.95em;
-            margin-bottom: 0;
-            transition: all 0.2s;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: 14px center;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;
+            margin-top: 16px;
         }
-
-        #search-box::placeholder { color: rgba(255,255,255,0.7); }
 
         #search-box:focus {
-            border-color: rgba(255,255,255,0.5);
-            box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
             outline: none;
-            background: rgba(255,255,255,0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        /* --- Left Panel Navigation --- */
-        .controller-group {
-            margin-bottom: 16px;
-            border-radius: 8px;
-            overflow: hidden;
+        #nav-content {
+            padding: 12px;
+            overflow-y: auto;
+            flex: 1;
         }
 
-        .controller-group summary {
-            font-weight: 600;
-            font-size: 1.05em;
-            color: var(--text-color);
-            padding: 14px 16px;
-            cursor: pointer;
-            list-style: none;
-            position: relative;
-            border-radius: 8px;
-            transition: all 0.2s;
-            user-select: none;
-            background: var(--light-gray);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .controller-group summary::before {
-            content: '\f0da';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 0.9em;
-            transition: transform 0.2s ease-in-out;
-            color: var(--primary-color);
-            flex-shrink: 0;
-        }
-
-        .controller-group[open] summary::before { transform: rotate(90deg); }
-        .controller-group summary:hover { background-color: var(--medium-gray); transform: translateY(-1px); }
-
-        #navigation-list ul {
-            list-style: none;
-            padding: 8px 0 8px 8px;
-            margin: 0;
-        }
-
-        #navigation-list li {
-            padding: 12px 14px;
-            cursor: pointer;
-            font-size: 0.92em;
-            word-break: break-all;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            transition: all 0.15s ease-in-out;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            border: 1px solid var(--border-color);
-        }
-
-        #navigation-list li:hover {
-            background-color: var(--hover-bg);
-            transform: translateX(4px);
-            box-shadow: var(--shadow-sm);
-            border-color: var(--primary-color);
-        }
-
-        #navigation-list li.selected {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--purple) 100%);
-            color: var(--selected-text);
-            font-weight: 600;
-            transform: translateX(0);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-            border-color: transparent;
-        }
-
-        #navigation-list li.selected code {
-            color: var(--selected-text);
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        #navigation-list li.hidden { display: none; }
-
-        /* --- HTTP Method Badges --- */
-        .method {
-            display: inline-block;
-            font-weight: 700;
-            padding: 5px 12px;
-            border-radius: 6px;
-            color: white;
-            font-size: 0.75em;
-            text-transform: uppercase;
-            min-width: 55px;
-            text-align: center;
-            flex-shrink: 0;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .method-path {
-            flex-grow: 1;
-            word-break: break-all;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        #navigation-list .method-path {
-            font-size: 0.9em;
-        }
-
-        .method-get { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .method-post { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
-        .method-put { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .method-delete { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .method-patch { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
-
-        /* --- Right Panel Details --- */
-        #details-content p {
-            line-height: 1.8;
-            color: var(--dark-gray);
-            margin-bottom: 18px;
-            font-size: 1.05em;
-        }
-
-        #details-content strong { color: var(--text-color); font-weight: 600; }
-
-        code {
-            background-color: var(--code-bg);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88em;
-            color: var(--code-color);
-            font-weight: 500;
-            border: 1px solid var(--border-color);
-        }
-
-        .param-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 20px;
-            font-size: 0.95em;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: #fff;
-            overflow: hidden;
-        }
-
-        .param-table th, .param-table td {
-            border-bottom: 1px solid var(--border-color);
-            padding: 14px 18px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .param-table th {
-            background: linear-gradient(135deg, var(--light-gray) 0%, #e0e7ff 100%);
-            font-weight: 600;
-            color: var(--text-color);
-            border-top: none;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .param-table tr:last-child td { border-bottom: none; }
-        .param-table tr:hover td { background-color: var(--hover-bg); }
-
-        .param-table td:first-child code {
-            color: var(--primary-color);
-            font-weight: 600;
-            background: none;
-            padding: 0;
-            border: none;
-        }
-
-        .schema-section {
-            margin-top: 24px;
-            margin-bottom: 24px;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 24px;
-            background-color: var(--light-gray);
-            padding: 20px 24px;
-            border-radius: 0 12px 12px 0;
-        }
-
-        .schema-title {
-            font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--primary-color);
-            display: block;
-            font-size: 1.05em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .response-block {
-            margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #ffffff 0%, var(--light-gray) 100%);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .response-block h5 {
-            border-bottom: none;
-            margin-top: 0;
-            margin-bottom: 16px;
-            color: var(--primary-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.15em;
-            font-weight: 600;
-        }
-
-        .try-it-out-btn {
-            padding: 10px 20px;
-            font-size: 0.9em;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--purple) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
-        }
-
-        .try-it-out-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-        }
-
-        .error {
-            color: var(--red);
-            font-weight: 600;
-            background-color: #fee2e2;
-            border: 1px solid #fecaca;
-            padding: 14px 20px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .error::before {
-            content: '\f06a';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-        }
-
-        .loading {
-            color: var(--secondary-color);
-            font-style: italic;
-            padding: 24px;
-            text-align: center;
-            font-size: 1.1em;
-        }
-
-        .initial-message {
-            color: var(--secondary-color);
-            font-size: 1.15em;
-            text-align: center;
-            margin-top: 60px;
-            padding: 40px;
-            background: var(--light-gray);
-            border-radius: 12px;
-        }
-
-        /* --- Enhanced Schema Rendering Styles --- */
-        .schema-container {
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px;
-            background-color: white;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.88em;
-            margin-top: 12px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .schema-object, .schema-array {
-            padding-left: 24px;
-            border-left: 2px solid var(--primary-color);
-            margin-left: 8px;
-            margin-top: 8px;
+        .tag-group {
             margin-bottom: 8px;
         }
 
-        .schema-property {
-            margin-bottom: 14px;
-            padding: 10px;
-            background: var(--light-gray);
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .schema-prop-name {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1.05em;
-        }
-
-        .schema-prop-type {
-            color: var(--green);
-            margin-left: 8px;
+        .tag-group summary {
+            padding: 8px 12px;
+            cursor: pointer;
+            list-style: none;
             font-weight: 600;
+            font-size: 13px;
+            color: var(--text);
+            border-radius: 6px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .schema-prop-format {
-            color: var(--purple);
-            font-size: 0.9em;
-            margin-left: 5px;
+        .tag-group summary:hover { background: var(--hover); }
+
+        .tag-group summary::before {
+            content: '▶';
+            font-size: 10px;
+            transition: transform 0.2s;
+            color: var(--text-light);
+        }
+
+        .tag-group[open] summary::before { transform: rotate(90deg); }
+
+        .tag-group ul {
+            list-style: none;
+            padding-left: 8px;
+            margin-top: 4px;
+        }
+
+        .tag-group li {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+
+        .tag-group li:hover { background: var(--hover); }
+
+        .tag-group li.selected {
+            background: #eff6ff;
+            color: var(--primary);
             font-weight: 500;
         }
 
-        .schema-constraints {
+        .tag-group li.hidden { display: none; }
+
+        .method {
+            display: inline-block;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .method-get { background: #d1fae5; color: #065f46; }
+        .method-post { background: #dbeafe; color: #1e40af; }
+        .method-put { background: #fef3c7; color: #92400e; }
+        .method-delete { background: #fee2e2; color: #991b1b; }
+        .method-patch { background: #f3e8ff; color: #6b21a8; }
+
+        .endpoint-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Main Content */
+        #main-content {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--bg);
+        }
+
+        #content-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .content-card {
+            background: var(--content-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .endpoint-header .method {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .endpoint-header .path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h2:first-of-type { margin-top: 0; }
+
+        .description {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .param-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .param-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .param-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .param-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .param-name-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .param-badges {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-required { background: #fee2e2; color: #991b1b; }
+        .badge-optional { background: #e0e7ff; color: #3730a3; }
+        .badge-in { background: var(--code-bg); color: var(--text-light); border: 1px solid var(--border); }
+
+        .param-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--green);
+            font-weight: 500;
+        }
+
+        .param-constraints {
             margin-top: 8px;
             padding: 8px 12px;
-            background: white;
+            background: #fff;
             border-radius: 4px;
             border-left: 3px solid var(--orange);
-            font-size: 0.92em;
+            font-size: 12px;
         }
 
         .constraint-item {
             display: inline-block;
-            margin-right: 16px;
-            margin-bottom: 4px;
-            color: var(--dark-gray);
+            margin-right: 12px;
+            color: var(--text-light);
         }
 
         .constraint-label {
+            font-weight: 600;
             color: var(--orange);
-            font-weight: 600;
-            margin-right: 4px;
         }
 
-        .constraint-value {
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .schema-array-items { margin-left: 0; margin-top: 8px; }
-
-        /* --- Badges and Pills --- */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
+        .no-data {
+            padding: 24px;
+            text-align: center;
+            color: var(--text-light);
+            background: var(--bg);
             border-radius: 6px;
-            font-size: 0.8em;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-style: italic;
+        }
+
+        .schema-box {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .schema-property {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .schema-property-name { color: var(--primary); font-weight: 600; }
+        .schema-property-type { color: var(--green); margin-left: 8px; }
+        .schema-property-required { color: var(--red); font-size: 10px; margin-left: 4px; }
+        .schema-property-format { color: var(--purple); margin-left: 4px; }
+
+        .schema-constraints {
             margin-left: 8px;
+            color: var(--orange);
+            font-size: 11px;
         }
 
-        .badge-required {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fcd34d;
+        .response-block {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 12px 0;
         }
 
-        .badge-optional {
-            background: #e0e7ff;
-            color: #3730a3;
-            border: 1px solid #c7d2fe;
+        .response-block h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
         }
 
-        /* --- Animations --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Try It Out Section */
+        .try-it-section {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 2px solid var(--border);
+            text-align: center;
         }
 
-        #details-content-wrapper {
-            animation: fadeIn 0.3s ease-out;
+        .try-it-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
         }
 
-        /* --- Responsive adjustments --- */
-        @media (max-width: 1024px) {
-            #left-panel { width: 320px; }
+        .try-it-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .try-it-btn:active {
+            transform: translateY(0);
+        }
+
+        .try-it-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Examples Display */
+        .examples-container {
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .example-item {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .example-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .example-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .example-description {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: var(--green);
+        }
+
+        .example-command {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .initial-message {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        .loading {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #e11d48;
         }
     </style>
 </head>
 <body>
 
-<div id="left-panel">
-    <div id="left-panel-header">
-        <h1><i class="fas fa-book-open"></i> AutoDocER</h1>
-        <input type="text" id="search-box" placeholder="Search endpoints..." onkeyup="filterPaths()">
-    </div>
-    <div id="left-panel-content">
-        <div id="navigation-list">
-            <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading API Structure...</p>
+<div id="sidebar">
+    <div id="sidebar-header">
+        <h1>📚 AutoDocER API</h1>
+
+        <div class="server-selector">
+            <label for="server-select">Server</label>
+            <select id="server-select">
+                <option value="">Loading servers...</option>
+            </select>
+            <div class="server-url" id="server-url-display">Select a server</div>
         </div>
+
+        <input type="text" id="search-box" placeholder="Search endpoints..." onkeyup="filterEndpoints()">
+    </div>
+    <div id="nav-content">
+        <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>
     </div>
 </div>
 
-<div id="right-panel">
-    <div id="details-content-wrapper">
-        <div id="details-content">
-            <p class="initial-message">👈 Select an endpoint from the left panel to view details.</p>
+<div id="main-content">
+    <div id="content-wrapper">
+        <div class="content-card">
+            <div class="initial-message">
+                👈 Select an endpoint from the sidebar to view its documentation
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    let fullApiSpec = null;
+    let apiSpec = null;
+    let selectedServer = null;
+    let currentEndpoint = null;
+
+    function populateServers() {
+        const select = document.getElementById('server-select');
+        const urlDisplay = document.getElementById('server-url-display');
+
+        if (!apiSpec || !apiSpec.servers || apiSpec.servers.length === 0) {
+            select.innerHTML = '<option value="/">Default Server (/)</option>';
+            selectedServer = '/';
+            urlDisplay.textContent = '/';
+            return;
+        }
+
+        select.innerHTML = apiSpec.servers.map((server, idx) =>
+            `<option value="${idx}">${server.description || server.url}</option>`
+        ).join('');
+
+        select.addEventListener('change', (e) => {
+            const idx = e.target.value;
+            selectedServer = apiSpec.servers[idx].url;
+            urlDisplay.textContent = selectedServer;
+        });
+
+        selectedServer = apiSpec.servers[0].url;
+        urlDisplay.textContent = selectedServer;
+    }
 
     function renderConstraints(schema) {
         const constraints = [];
 
-        if (schema.minLength !== undefined) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">minLength:</span><span class="constraint-value">${schema.minLength}</span></span>`);
-        }
-        if (schema.maxLength !== undefined) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">maxLength:</span><span class="constraint-value">${schema.maxLength}</span></span>`);
-        }
-        if (schema.minimum !== undefined) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">minimum:</span><span class="constraint-value">${schema.minimum}</span></span>`);
-        }
-        if (schema.maximum !== undefined) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">maximum:</span><span class="constraint-value">${schema.maximum}</span></span>`);
-        }
-        if (schema.pattern) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">pattern:</span><span class="constraint-value">${schema.pattern}</span></span>`);
-        }
-        if (schema.enum && schema.enum.length > 0) {
-            constraints.push(`<span class="constraint-item"><span class="constraint-label">enum:</span><span class="constraint-value">[${schema.enum.join(', ')}]</span></span>`);
-        }
+        if (schema.minLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min Length:</span> ${schema.minLength}</span>`);
+        if (schema.maxLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max Length:</span> ${schema.maxLength}</span>`);
+        if (schema.minimum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min:</span> ${schema.minimum}</span>`);
+        if (schema.maximum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max:</span> ${schema.maximum}</span>`);
+        if (schema.pattern) constraints.push(`<span class="constraint-item"><span class="constraint-label">Pattern:</span> <code>${schema.pattern}</code></span>`);
+        if (schema.enum && schema.enum.length > 0) constraints.push(`<span class="constraint-item"><span class="constraint-label">Enum:</span> [${schema.enum.join(', ')}]</span>`);
 
-        if (constraints.length > 0) {
-            return `<div class="schema-constraints">${constraints.join('')}</div>`;
-        }
-        return '';
+        return constraints.length > 0 ? `<div class="param-constraints">${constraints.join('')}</div>` : '';
     }
 
-    function renderSchema(schema, parentRequired = [], propName = null, isRoot = true) {
-        if (!schema) return '<span class="error">Schema not available</span>';
+    function renderSchema(schema, depth = 0, required = []) {
+        if (!schema) return '<span style="color: #6b7280;">No schema</span>';
 
-        let html = isRoot ? '<div class="schema-container">' : '';
+        let html = '';
+        const indent = '&nbsp;'.repeat(depth * 4);
 
         if (schema.type === 'object' && schema.properties) {
-            html += `<div class="schema-object">`;
-            html += '<div><code>{</code></div>';
-            const entries = Object.entries(schema.properties);
-            const requiredFields = schema.required || [];
+            html += '<div class="schema-object">';
+            html += `${indent}{<br>`;
+            const props = Object.entries(schema.properties);
+            const requiredFields = schema.required || required;
 
-            entries.forEach(([propName, propSchema], index) => {
-                const isRequired = requiredFields.includes(propName);
-                const requiredBadge = isRequired
-                    ? '<span class="badge badge-required"><i class="fas fa-asterisk"></i> Required</span>'
-                    : '<span class="badge badge-optional">Optional</span>';
+            props.forEach(([name, prop], idx) => {
+                const isRequired = requiredFields.includes(name);
+                const reqMark = isRequired ? '<span class="schema-property-required">*</span>' : '';
+                html += `${indent}&nbsp;&nbsp;<span class="schema-property-name">"${name}"</span>${reqMark}: `;
 
-                html += `<div class="schema-property">`;
-                html += `<div><span class="schema-prop-name">"${propName}"</span>${requiredBadge}: `;
-                html += renderSchema(propSchema, requiredFields, propName, false);
-                html += `</div>`;
-                if (index < entries.length - 1) html += '<code>,</code>';
-                html += `</div>`;
+                if (prop.type && prop.type !== 'object' && prop.type !== 'array') {
+                    html += `<span class="schema-property-type">${prop.type}</span>`;
+                    if (prop.format) html += `<span class="schema-property-format">&lt;${prop.format}&gt;</span>`;
+
+                    const constraints = [];
+                    if (prop.minLength) constraints.push(`minLen:${prop.minLength}`);
+                    if (prop.maxLength) constraints.push(`maxLen:${prop.maxLength}`);
+                    if (prop.minimum) constraints.push(`min:${prop.minimum}`);
+                    if (prop.maximum) constraints.push(`max:${prop.maximum}`);
+                    if (prop.pattern) constraints.push(`pattern:${prop.pattern}`);
+                    if (constraints.length > 0) {
+                        html += `<span class="schema-constraints"> [${constraints.join(', ')}]</span>`;
+                    }
+                } else {
+                    html += renderSchema(prop, depth + 1, requiredFields);
+                }
+
+                if (idx < props.length - 1) html += ',';
+                html += '<br>';
             });
-            html += '<div><code>}</code></div>';
-            html += `</div>`;
-        } else if (schema.type === 'array' && schema.items) {
-            html += `<div class="schema-array">`;
-            html += '<div><code>[</code></div>';
-            html += '<div class="schema-array-items">';
-            html += renderSchema(schema.items, [], null, false);
+            html += `${indent}}`;
             html += '</div>';
-            html += '<div><code>]</code></div>';
-            html += `</div>`;
+        } else if (schema.type === 'array' && schema.items) {
+            html += `[<br>${indent}&nbsp;&nbsp;`;
+            html += renderSchema(schema.items, depth + 1);
+            html += `<br>${indent}]`;
         } else {
-            html += `<span class="schema-prop-type">${schema.type || 'unknown'}</span>`;
-            if (schema.format) {
-                html += `<span class="schema-prop-format">(${schema.format})</span>`;
-            }
-            html += renderConstraints(schema);
-            if (schema.description) {
-                html += `<div style="margin-top:6px;color:var(--dark-gray);font-size:0.9em;font-style:italic;">${schema.description}</div>`;
-            }
+            html += `<span class="schema-property-type">${schema.type || 'any'}</span>`;
+            if (schema.format) html += `<span class="schema-property-format">&lt;${schema.format}&gt;</span>`;
         }
 
-        if (isRoot) html += '</div>';
         return html;
     }
 
-    function displayDetails(pathKey, httpMethod, listItemElement) {
-        const detailsDiv = document.getElementById('details-content');
-        detailsDiv.innerHTML = '';
+    // NEW: Convert OpenAPI operation to EndpointInfo DTO format
+    function buildEndpointInfo(path, method, operation) {
+        const parameters = [];
 
-        document.querySelectorAll('#navigation-list li.selected').forEach(el => el.classList.remove('selected'));
-        if (listItemElement) {
-            listItemElement.classList.add('selected');
+        // Add regular parameters (query, path, header)
+        if (operation.parameters) {
+            operation.parameters.forEach(param => {
+                let sourceType = 'RequestParam'; // default
+                if (param.in === 'path') sourceType = 'PathVariable';
+                else if (param.in === 'header') sourceType = 'RequestHeader';
+
+                parameters.push({
+                    name: param.name,
+                    type: param.schema?.type || 'string',
+                    isRequired: param.required || false,
+                    sourceType: sourceType,
+                    description: param.description || null
+                });
+            });
         }
 
-        if (!fullApiSpec || !fullApiSpec.paths || !fullApiSpec.paths[pathKey] || !fullApiSpec.paths[pathKey][httpMethod]) {
-            detailsDiv.innerHTML = '<p class="error">Details not found for this endpoint.</p>';
+        // Add request body as a parameter if present
+        if (operation.requestBody) {
+            const content = operation.requestBody.content?.['application/json'];
+            if (content && content.schema) {
+                parameters.push({
+                    name: 'body',
+                    type: content.schema, // Pass the full schema
+                    isRequired: operation.requestBody.required || false,
+                    sourceType: 'RequestBody',
+                    description: operation.requestBody.description || null
+                });
+            }
+        }
+
+        return {
+            path: path,
+            httpMethod: method.toUpperCase(),
+            summary: operation.summary || null,
+            description: operation.description || null,
+            parameters: parameters,
+            responses: operation.responses || {}
+        };
+    }
+
+    // NEW: Generate examples via AI
+    async function generateExamples(path, method) {
+        const btn = document.getElementById('try-it-btn');
+        const container = document.getElementById('examples-container');
+
+        // Disable button and show loading
+        btn.disabled = true;
+        btn.innerHTML = '<span class="loading-spinner"></span> Generating examples...';
+
+        // Clear previous examples
+        container.innerHTML = '<p class="loading"><i class="fas fa-spinner fa-spin"></i> AI is generating examples...</p>';
+
+        try {
+            // Build the endpoint info
+            const operation = apiSpec.paths[path][method];
+            const endpointInfo = buildEndpointInfo(path, method, operation);
+
+            console.log('Sending to AI:', endpointInfo);
+
+            // Call backend endpoint
+            const response = await fetch('/autodocer/ai/generate-examples', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(endpointInfo)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const examples = await response.json();
+            console.log('Received examples:', examples);
+
+            // Display examples
+            displayExamples(examples);
+
+        } catch (error) {
+            console.error('Error generating examples:', error);
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Error:</strong> ${error.message}
+                </div>
+            `;
+        } finally {
+            // Re-enable button
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-magic"></i> Try It Out';
+        }
+    }
+
+    // NEW: Display examples in UI
+    function displayExamples(examples) {
+        const container = document.getElementById('examples-container');
+
+        if (!examples || examples.length === 0) {
+            container.innerHTML = '<p class="no-data">No examples generated</p>';
             return;
         }
 
-        const operation = fullApiSpec.paths[pathKey][httpMethod];
-        const methodUpper = httpMethod.toUpperCase();
+        let html = '';
+        examples.forEach((example, idx) => {
+            html += `
+                <div class="example-item">
+                    <div class="example-header">
+                        <span class="example-description">
+                            <i class="fas fa-code"></i> ${example.description || 'Example ' + (idx + 1)}
+                        </span>
+                        <button class="copy-btn" onclick="copyToClipboard('${escapeHtml(example.command)}', this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <div class="example-command">${escapeHtml(example.command)}</div>
+                </div>
+            `;
+        });
 
-        let contentHtml = `
-            <h3>
-                <span class="method method-${httpMethod}">${methodUpper}</span>
-                <span class="method-path"><code>${pathKey}</code></span>
-                <button class="try-it-out-btn" title="Feature not implemented yet"><i class="fas fa-play"></i> Try it out</button>
-            </h3>`;
+        container.innerHTML = html;
+    }
 
-        if (operation.summary) contentHtml += `<p><strong>${operation.summary}</strong></p>`;
-        if (operation.description) contentHtml += `<p>${operation.description}</p>`;
-        if (operation.operationId) contentHtml += `<p><small><i class="fas fa-tag"></i> Operation ID: <code>${operation.operationId}</code></small></p>`;
+    // NEW: Copy to clipboard functionality
+    async function copyToClipboard(text, button) {
+        try {
+            await navigator.clipboard.writeText(text);
 
+            // Visual feedback
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            button.classList.add('copied');
+
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.remove('copied');
+            }, 2000);
+        } catch (error) {
+            console.error('Failed to copy:', error);
+            alert('Failed to copy to clipboard');
+        }
+    }
+
+    // Helper: Escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function displayEndpoint(path, method, li) {
+        document.querySelectorAll('.tag-group li.selected').forEach(el => el.classList.remove('selected'));
+        if (li) li.classList.add('selected');
+
+        // Store current endpoint
+        currentEndpoint = { path, method };
+
+        const operation = apiSpec.paths[path][method];
+        const methodUpper = method.toUpperCase();
+
+        let html = `
+            <div class="content-card">
+                <div class="endpoint-header">
+                    <span class="method method-${method}">${methodUpper}</span>
+                    <span class="path">${path}</span>
+                </div>`;
+
+        if (operation.summary) html += `<p class="description"><strong>${operation.summary}</strong></p>`;
+        if (operation.description) html += `<p class="description">${operation.description}</p>`;
+
+        // Parameters
+        html += `<h2>Parameters</h2>`;
         if (operation.parameters && operation.parameters.length > 0) {
-            contentHtml += `<h4><i class="fas fa-sliders-h"></i> Parameters</h4>`;
-            contentHtml += `<table class="param-table"><thead><tr><th>Name</th><th>In</th><th>Required</th><th>Schema</th></tr></thead><tbody>`;
+            html += `<div class="param-list">`;
             operation.parameters.forEach(param => {
-                const requiredBadge = param.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
-                contentHtml += `<tr>
-                                    <td><code>${param.name}</code></td>
-                                    <td><code>${param.in}</code></td>
-                                    <td>${requiredBadge}</td>
-                                    <td>${renderSchema(param.schema)}</td>
-                                </tr>`;
+                const badge = param.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
+                const type = param.schema ? param.schema.type || 'any' : 'any';
+
+                html += `<div class="param-card">
+                    <div class="param-header">
+                        <div class="param-name-section">
+                            <span class="param-name">${param.name}</span>
+                            <span class="badge badge-in">${param.in}</span>
+                        </div>
+                        <div class="param-badges">
+                            <span class="param-type">${type}</span>
+                            ${badge}
+                        </div>
+                    </div>`;
+
+                if (param.description) {
+                    html += `<p style="color: var(--text-light); font-size: 13px; margin-top: 8px;">${param.description}</p>`;
+                }
+
+                if (param.schema) {
+                    html += renderConstraints(param.schema);
+                }
+
+                html += `</div>`;
             });
-            contentHtml += `</tbody></table>`;
+            html += `</div>`;
         } else {
-            contentHtml += `<h4><i class="fas fa-sliders-h"></i> Parameters</h4><p>No parameters required for this endpoint.</p>`;
+            html += `<div class="no-data"><i class="fas fa-inbox"></i> No parameters required for this endpoint</div>`;
         }
 
+        // Request Body
         if (operation.requestBody) {
-            contentHtml += `<h4><i class="fas fa-file-import"></i> Request Body</h4>`;
-            const requiredText = operation.requestBody.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
-            contentHtml += `<p>${requiredText}</p>`;
-            if (operation.requestBody.content && operation.requestBody.content['application/json'] && operation.requestBody.content['application/json'].schema) {
-                contentHtml += `<div class="schema-section">
-                                    <span class="schema-title"><i class="fas fa-code"></i> Schema (application/json)</span>
-                                    ${renderSchema(operation.requestBody.content['application/json'].schema)}
-                                </div>`;
-            } else {
-                contentHtml += `<p>No schema defined for request body.</p>`;
+            html += `<h2>Request Body</h2>`;
+            const badge = operation.requestBody.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
+            html += `<p style="margin-bottom: 12px;">${badge}</p>`;
+
+            if (operation.requestBody.content && operation.requestBody.content['application/json']) {
+                const schema = operation.requestBody.content['application/json'].schema;
+                html += `<div class="schema-box">${renderSchema(schema)}</div>`;
             }
         }
 
+        // Responses
         if (operation.responses) {
-            contentHtml += `<h4><i class="fas fa-reply"></i> Responses</h4>`;
-            Object.entries(operation.responses).forEach(([statusCode, response]) => {
-                contentHtml += `<div class="response-block">
-                                    <h5><i class="fas fa-check-circle"></i> Status Code: <code>${statusCode}</code></h5>
-                                    <p>${response.description || 'No description provided.'}</p>`;
-                if (response.content && response.content['application/json'] && response.content['application/json'].schema) {
-                    contentHtml += `<div class="schema-section">
-                                        <span class="schema-title"><i class="fas fa-code"></i> Schema (application/json)</span>
-                                        ${renderSchema(response.content['application/json'].schema)}
-                                    </div>`;
-                } else if (statusCode !== '204' && statusCode !== '202') {
-                    contentHtml += `<p><small>No response body schema defined.</small></p>`
+            html += `<h2>Responses</h2>`;
+            Object.entries(operation.responses).forEach(([code, response]) => {
+                html += `<div class="response-block">
+                    <h3><i class="fas fa-check-circle" style="color: var(--green);"></i> Status ${code}</h3>
+                    <p style="color: var(--text-light);">${response.description || 'No description'}</p>`;
+
+                if (response.content && response.content['application/json']) {
+                    const schema = response.content['application/json'].schema;
+                    html += `<div class="schema-box">${renderSchema(schema)}</div>`;
                 }
-                contentHtml += `</div>`;
+                html += `</div>`;
             });
         }
 
-        detailsDiv.innerHTML = contentHtml;
+        // Try It Out Section with Examples Container
+        html += `
+            <div class="try-it-section">
+                <button id="try-it-btn" class="try-it-btn" onclick="generateExamples('${path}', '${method}')">
+                    <i class="fas fa-magic"></i>
+                    Try It Out
+                </button>
+                <div id="examples-container" class="examples-container"></div>
+            </div>
+        `;
+
+        html += `</div>`;
+        document.getElementById('content-wrapper').innerHTML = html;
     }
 
-    async function loadApiStructure() {
-        const navContainer = document.getElementById('navigation-list');
-        const detailsDiv = document.getElementById('details-content');
+    function buildNavigation() {
+        const nav = document.getElementById('nav-content');
+        if (!apiSpec || !apiSpec.paths) {
+            nav.innerHTML = '<p class="error-message">No endpoints found</p>';
+            return;
+        }
+
+        const pathsByTag = {};
+        Object.entries(apiSpec.paths).forEach(([path, methods]) => {
+            Object.entries(methods).forEach(([method, operation]) => {
+                const tag = (operation.tags && operation.tags[0]) || 'default';
+                if (!pathsByTag[tag]) pathsByTag[tag] = [];
+                pathsByTag[tag].push({ path, method, operation });
+            });
+        });
+
+        let html = '';
+        Object.keys(pathsByTag).sort().forEach(tag => {
+            html += `<details class="tag-group" open><summary>${tag}</summary><ul>`;
+            pathsByTag[tag].forEach(({ path, method, operation }) => {
+                html += `<li data-path="${path}" data-method="${method}" onclick="displayEndpoint('${path}', '${method}', this)">
+                    <span class="method method-${method}">${method.toUpperCase()}</span>
+                    <span class="endpoint-path">${path}</span>
+                </li>`;
+            });
+            html += `</ul></details>`;
+        });
+
+        nav.innerHTML = html;
+    }
+
+    function filterEndpoints() {
+        const query = document.getElementById('search-box').value.toLowerCase();
+        document.querySelectorAll('.tag-group li').forEach(li => {
+            const path = li.dataset.path || '';
+            const method = li.dataset.method || '';
+            const visible = (path + method).toLowerCase().includes(query);
+            li.classList.toggle('hidden', !visible);
+        });
+    }
+
+    async function loadApi() {
         try {
             const response = await fetch('/autodocer/api-docs');
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            const responseText = await response.text();
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-            try {
-                fullApiSpec = JSON.parse(responseText);
-            } catch (parseError) {
-                throw new Error(`Invalid JSON received from API: ${parseError.message}`);
-            }
+            apiSpec = await response.json();
+            console.log('Loaded API spec:', apiSpec);
 
-            console.log("Fetched and Parsed Spec:", fullApiSpec);
-            navContainer.innerHTML = '';
-
-            if (!fullApiSpec || !fullApiSpec.paths || Object.keys(fullApiSpec.paths).length === 0) {
-                navContainer.innerHTML = '<p class="error">No paths found.</p>';
-                detailsDiv.innerHTML = '<p class="initial-message">Could not load API specification or no endpoints defined.</p>';
-                return;
-            }
-
-            const pathsByTag = {};
-            Object.entries(fullApiSpec.paths).forEach(([pathKey, pathItem]) => {
-                Object.entries(pathItem).forEach(([method, operation]) => {
-                    const tag = (operation.tags && operation.tags.length > 0) ? operation.tags[0] : 'default';
-                    if (!pathsByTag[tag]) pathsByTag[tag] = [];
-                    pathsByTag[tag].push({ pathKey, method, operation, element: null });
-                });
-            });
-
-            const sortedTags = Object.keys(pathsByTag).sort();
-
-            sortedTags.forEach(tag => {
-                const detailsElement = document.createElement('details');
-                detailsElement.classList.add('controller-group');
-                detailsElement.open = true;
-
-                const summaryElement = document.createElement('summary');
-                summaryElement.classList.add('controller-name');
-                summaryElement.innerHTML = `<i class="fas fa-layer-group"></i> ${tag}`;
-                detailsElement.appendChild(summaryElement);
-
-                const ul = document.createElement('ul');
-                pathsByTag[tag].sort((a,b) => a.pathKey.localeCompare(b.pathKey) || a.method.localeCompare(b.method))
-                               .forEach((endpointData) => {
-                    const {pathKey, method, operation} = endpointData;
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<span class="method method-${method}">${method.toUpperCase()}</span> <span class="method-path">${pathKey}</span>`;
-                    listItem.title = operation.summary || pathKey;
-                    listItem.dataset.path = pathKey;
-                    listItem.dataset.method = method;
-                    listItem.dataset.tag = tag;
-
-                    listItem.addEventListener('click', (event) => displayDetails(pathKey, method, event.currentTarget));
-                    ul.appendChild(listItem);
-                    endpointData.element = listItem;
-                });
-                detailsElement.appendChild(ul);
-                navContainer.appendChild(detailsElement);
-            });
-
-            detailsDiv.innerHTML = '<p class="initial-message">👈 Select an endpoint from the left panel.</p>';
-
+            populateServers();
+            buildNavigation();
         } catch (error) {
-            console.error("Error loading API structure:", error);
-            navContainer.innerHTML = `<p class="error">Error loading data: ${error.message}</p>`;
-            detailsDiv.innerHTML = `<p class="error">Could not load API specification: ${error.message}</p>`
+            console.error('Error loading API:', error);
+            document.getElementById('nav-content').innerHTML =
+                `<p class="error-message">Error: ${error.message}</p>`;
         }
     }
 
-    function filterPaths() {
-        const filterText = document.getElementById('search-box').value.toLowerCase().trim();
-        const listItems = document.querySelectorAll('#navigation-list li');
-        const controllerGroups = document.querySelectorAll('#navigation-list .controller-group');
-        let hasVisibleItems = false;
-
-        listItems.forEach(item => {
-            const path = item.dataset.path || '';
-            const method = item.dataset.method || '';
-            const tag = item.dataset.tag || '';
-            const textContent = (tag + ' ' + method + ' ' + path).toLowerCase();
-            if (textContent.includes(filterText)) {
-                item.classList.remove('hidden');
-                hasVisibleItems = true;
-            } else {
-                item.classList.add('hidden');
-            }
-        });
-
-        let noResultsMsg = document.querySelector('#navigation-list .no-results');
-        controllerGroups.forEach(group => {
-            const visibleItems = group.querySelectorAll('li:not(.hidden)');
-            if (visibleItems.length === 0 && filterText !== '') {
-                group.style.display = 'none';
-            } else {
-                group.style.display = '';
-                if(filterText !== '' && visibleItems.length > 0) {
-                    group.open = true;
-                }
-            }
-        });
-
-        if (!hasVisibleItems && filterText !== '') {
-            if (!noResultsMsg) {
-                noResultsMsg = document.createElement('p');
-                noResultsMsg.className = 'error no-results';
-                noResultsMsg.style.paddingLeft = '20px';
-                noResultsMsg.textContent = 'No matching endpoints found.';
-                document.getElementById('navigation-list').appendChild(noResultsMsg);
-            }
-        } else if (noResultsMsg) {
-            noResultsMsg.remove();
-        }
-    }
-
-    window.onload = loadApiStructure;
+    window.onload = loadApi;
 </script>
 
 </body>

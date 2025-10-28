@@ -2,7 +2,11 @@ package com.autodocer.AiDescription;
 
 import com.autodocer.DTO.AiGenerationResult;
 import com.autodocer.DTO.EndpointContext; // Assuming this DTO/record exists
+import com.autodocer.DTO.EndpointInfo;
+import com.autodocer.DTO.ExampleInfo;
+
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * A placeholder implementation of the AI service.
@@ -39,5 +43,10 @@ public class PlaceholderAiDescriptionService implements AiDescriptionService {
         }
 
         return new AiGenerationResult(summary, description);
+    }
+
+    @Override
+    public List<ExampleInfo> generateExamples(EndpointInfo endpoint) {
+        return null;
     }
 }

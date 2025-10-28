@@ -1,5 +1,6 @@
 package com.autodocer;
 
+import com.autodocer.AiDescription.AiController;
 import com.autodocer.AiDescription.AiDescriptionService;
 import com.autodocer.AiDescription.GeminiAiDescriptionService;
 import com.autodocer.AiDescription.PlaceholderAiDescriptionService;
@@ -40,6 +41,14 @@ public class AutoDocerAutoConfiguration {
     public AiDescriptionService placeholderAiDescriptionService() {
         System.out.println("--- [AutoDocER] No 'gemini.api.key' found. Creating *Placeholder* AiDescriptionService bean ---");
         return new PlaceholderAiDescriptionService();
+    }
+
+
+    @Bean
+    public AiController aiController(AiDescriptionService aiService) {
+        // This controller uses the same AiService bean (Gemini or Placeholder)
+        System.out.println("--- [AutoDocER] Creating AiController bean ---");
+        return new AiController(aiService);
     }
 
     @Bean
