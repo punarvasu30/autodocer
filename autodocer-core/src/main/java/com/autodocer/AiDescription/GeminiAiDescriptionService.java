@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-// REMOVE: import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -14,16 +13,22 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    private final String apiKey; // <-- This will be injected
+    private final String apiKey;
 
-    private static final String GEMINI_API_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+    // Base URL without the key parameter (use v1, not v1beta)
+    private static final String GEMINI_BASE_URL =
+            "https://generativelanguage.googleapis.com/v1/models/";
 
-    // --- UPDATED CONSTRUCTOR ---
     public GeminiAiDescriptionService(String apiKey, WebClient.Builder webClientBuilder) {
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            throw new IllegalArgumentException("Gemini API key cannot be null or empty");
+        }
+
+        System.out.println("--- [AutoDocER] Initializing Gemini with API key: " +
+                apiKey.substring(0, Math.min(10, apiKey.length())) + "...");
+
         this.apiKey = apiKey;
-        // Use the builder to create a WebClient instance
-        this.webClient = webClientBuilder.baseUrl(GEMINI_API_URL).build();
+        this.webClient = webClientBuilder.baseUrl(GEMINI_BASE_URL).build();
         this.objectMapper = new ObjectMapper();
     }
 
@@ -33,11 +38,21 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
             String prompt = buildPrompt(context);
             String requestBody = buildGeminiRequest(prompt);
 
+            // Corrected URI construction with gemini-2.5-flash
             String jsonResponse = webClient.post()
-                    .uri("?key=" + apiKey) // URI is now relative to the base URL
+                    .uri(uriBuilder -> uriBuilder
+                            .path("gemini-2.5-flash:generateContent")
+                            .queryParam("key", apiKey)
+                            .build())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
                     .retrieve()
+                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
+                            clientResponse -> clientResponse.bodyToMono(String.class)
+                                    .flatMap(errorBody -> {
+                                        System.err.println("--- [AutoDocER] API Error Response: " + errorBody);
+                                        return clientResponse.createException();
+                                    }))
                     .bodyToMono(String.class)
                     .block();
 
@@ -45,6 +60,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
 
         } catch (Exception e) {
             System.err.println("--- [AutoDocER] ERROR calling AI service: " + e.getMessage());
+            e.printStackTrace(); // Add stack trace for debugging
             return new AiGenerationResult(
                     "Error generating summary",
                     "Could not generate AI description: " + e.getMessage()
@@ -52,11 +68,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
         }
     }
 
-    // ... buildPrompt, buildGeminiRequest, and parseGeminiResponse methods
-    // ... remain exactly the same ...
-
     private String buildPrompt(EndpointContext context) {
-        // ... (no changes) ...
         return String.format(
                 "You are an expert technical writer for API documentation. " +
                         "Your task is to generate a 'summary' and 'description' for a REST API endpoint. " +
@@ -79,35 +91,72 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
     }
 
     private String buildGeminiRequest(String prompt) {
-        // ... (no changes) ...
         ObjectNode requestBody = objectMapper.createObjectNode();
         ArrayNode contents = requestBody.putArray("contents");
-        ObjectNode parts = contents.addObject();
-        ArrayNode partsArray = parts.putArray("parts");
+        ObjectNode contentItem = contents.addObject();
+        ArrayNode partsArray = contentItem.putArray("parts");
         partsArray.addObject().put("text", prompt);
 
+        // Add generation config for JSON output
         ObjectNode generationConfig = requestBody.putObject("generationConfig");
-        generationConfig.put("responseMimeType", "application/json");
+        generationConfig.put("temperature", 0.2);
+        generationConfig.put("topP", 0.8);
+        generationConfig.put("topK", 40);
 
-        return requestBody.toString();
+        try {
+            String jsonRequest = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestBody);
+            System.out.println("--- [AutoDocER] Gemini Request Body: " + jsonRequest);
+            return jsonRequest;
+        } catch (Exception e) {
+            return requestBody.toString();
+        }
     }
 
     private AiGenerationResult parseGeminiResponse(String jsonResponse) throws Exception {
-        // ... (no changes) ...
+        System.out.println("--- [AutoDocER] Gemini Response: " + jsonResponse);
+
         JsonNode root = objectMapper.readTree(jsonResponse);
 
-        String text = root
-                .path("candidates").path(0)
-                .path("content").path("parts").path(0)
-                .path("text").asText();
-
-        if (text.isEmpty()) {
-            throw new Exception("AI response was empty or in an invalid format.");
+        // Navigate to the text content
+        JsonNode candidates = root.path("candidates");
+        if (candidates.isEmpty() || !candidates.isArray()) {
+            throw new Exception("No candidates in AI response");
         }
 
+        String text = candidates.path(0)
+                .path("content")
+                .path("parts")
+                .path(0)
+                .path("text")
+                .asText();
+
+        if (text.isEmpty()) {
+            throw new Exception("AI response text was empty");
+        }
+
+        // Clean up the text (remove markdown code blocks if present)
+        text = text.trim();
+        if (text.startsWith("```json")) {
+            text = text.substring(7);
+        }
+        if (text.startsWith("```")) {
+            text = text.substring(3);
+        }
+        if (text.endsWith("```")) {
+            text = text.substring(0, text.length() - 3);
+        }
+        text = text.trim();
+
+        System.out.println("--- [AutoDocER] Extracted text: " + text);
+
+        // Parse the JSON from the text
         JsonNode aiJson = objectMapper.readTree(text);
-        String summary = aiJson.path("summary").asText("Failed to parse summary");
-        String description = aiJson.path("description").asText("Failed to parse description");
+        String summary = aiJson.path("summary").asText("");
+        String description = aiJson.path("description").asText("");
+
+        if (summary.isEmpty() || description.isEmpty()) {
+            throw new Exception("Failed to extract summary or description from AI response");
+        }
 
         return new AiGenerationResult(summary, description);
     }

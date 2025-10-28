@@ -1,10 +1,6 @@
 package com.autodocer;
-
-// --- ADD THESE IMPORTS ---
 import com.autodocer.AiDescription.AiDescriptionService;
 import com.autodocer.DTO.AiGenerationResult;
-// -------------------------
-
 import com.autodocer.annotations.ApiServers;
 import com.autodocer.annotations.ServerInfo;
 import com.autodocer.DTO.*;
@@ -21,27 +17,20 @@ import java.util.stream.Collectors; // <-- ADD THIS IMPORT
 public class DocumentationParser {
 
     private final SchemaParser schemaParser;
-
-    // --- ADDED: AI Service Field ---
     private final AiDescriptionService aiService;
 
-    // --- UPDATED: Constructor to accept the AI Service ---
     public DocumentationParser(AiDescriptionService aiService) {
         this.schemaParser = new SchemaParser();
         this.aiService = aiService;
     }
 
-    /**
-     * DEFINITION: Wrapper class to hold both server info and controller info.
-     */
+    //Wrapper class to hold both server info and controller info.
     public record ApiDocumentationResult(
             List<ServerData> servers,
             List<ControllerInfo> controllers
     ) {}
 
-    /**
-     * Main parse method. No changes here.
-     */
+    // main parse method
     public ApiDocumentationResult parse(ApplicationContext context) {
         System.out.println("--- [AutoDocER] Starting Full Scan (Controllers + Config) ---");
 
@@ -78,9 +67,8 @@ public class DocumentationParser {
         return new ApiDocumentationResult(serverInfos, controllerInfos);
     }
 
-    // ... extractServerInfo method remains the same ...
     private List<ServerData> extractServerInfo(ApplicationContext context) {
-        // ... (no changes to this method) ...
+
         List<ServerData> servers = new ArrayList<>();
         Map<String, Object> mainAppBeans = context.getBeansWithAnnotation(SpringBootApplication.class);
 
@@ -116,7 +104,7 @@ public class DocumentationParser {
     }
 
 
-    // --- THIS IS THE MAINLY UPDATED METHOD ---
+
     private Optional<EndpointInfo> parseMethod(Method method, String basePath) {
         String httpMethod = null;
         String path = "";
@@ -176,12 +164,8 @@ public class DocumentationParser {
             parameterInfos.add(new ParameterInfo(parameter.getName(), paramType, sourceType, isRequired));
         }
 
-        // ... (responseType parsing remains the same) ...
         Object responseType = parseTypeWithGenerics(method.getGenericReturnType(), method.getReturnType());
 
-        // --- NEW: Build Context and Call AI Service ---
-
-        // 1. Format parameter types for the AI context
         List<String> paramContextStrings = parameterInfos.stream()
                 .map(p -> String.format("%s %s %s",
                         p.sourceType(),
@@ -189,10 +173,8 @@ public class DocumentationParser {
                         p.name()))
                 .collect(Collectors.toList());
 
-        // 2. Format response type for the AI context
         String responseContextString = formatTypeForContext(responseType);
 
-        // 3. Create the context DTO
         EndpointContext context = new EndpointContext(
                 method.getName(),
                 httpMethod,
@@ -201,11 +183,9 @@ public class DocumentationParser {
                 responseContextString
         );
 
-        // 4. Call the service
         System.out.println("--- [AutoDocER] Generating description for: " + method.getName());
         AiGenerationResult aiResult = aiService.generateDescription(context);
 
-        // 5. Create the EndpointInfo with the new summary and description
         EndpointInfo endpointInfo = new EndpointInfo(
                 method.getName(),
                 httpMethod,
@@ -219,11 +199,7 @@ public class DocumentationParser {
         return Optional.of(endpointInfo);
     }
 
-    /**
-     * --- NEW HELPER METHOD ---
-     * Formats the parsed type (String, SchemaInfo, ArraySchemaInfo) into a
-     * simple string for the AI context.
-     */
+
     private String formatTypeForContext(Object type) {
         if (type instanceof String typeName) {
             return typeName;
@@ -238,7 +214,6 @@ public class DocumentationParser {
         return "Object"; // Fallback
     }
 
-    // ... parseTypeWithGenerics method remains the same ...
     private Object parseTypeWithGenerics(Type genericType, Class<?> rawType) {
         // ... (no changes to this method) ...
         if (isSimpleType(rawType)) {
@@ -285,9 +260,8 @@ public class DocumentationParser {
         return schemaParser.parseSchema(genericType);
     }
 
-    // ... isSimpleType method remains the same ...
     private boolean isSimpleType(Class<?> type) {
-        // ... (no changes to this method) ...
+
         return type == null
                 || type.isPrimitive()
                 || type.getPackageName().equals("java.lang")
