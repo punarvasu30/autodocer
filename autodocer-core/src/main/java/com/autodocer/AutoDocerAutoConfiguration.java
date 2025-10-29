@@ -11,14 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext; // Required import
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.client.WebClient;
-// Removed ComponentScan import
 
-/**
- * The main auto-configuration class for the AutoDocER library.
- * It explicitly creates and registers all the necessary beans.
- */
 @AutoConfiguration
-// REMOVED: @ComponentScan(basePackages = "com.autodocer.Controller")
 public class AutoDocerAutoConfiguration {
 
     @Bean
