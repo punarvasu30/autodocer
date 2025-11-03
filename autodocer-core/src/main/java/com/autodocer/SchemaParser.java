@@ -1,6 +1,6 @@
 package com.autodocer;
 
-// Ensure correct import for your DTOs/API package
+
 import com.autodocer.DTO.ArraySchemaInfo;
 import com.autodocer.DTO.FieldInfo;
 import com.autodocer.DTO.SchemaInfo;
@@ -18,20 +18,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-// ------------------------------------------
+
 
 public class SchemaParser {
 
-    /**
-     * UPDATED: Main entry point. Accepts Type to handle generics.
-     */
     public Object parseSchema(Type type) {
         return parseSchemaRecursive(type, new HashSet<>());
     }
 
-    /**
-     * UPDATED: Recursive helper. Accepts Type.
-     */
     private Object parseSchemaRecursive(Type type, Set<Class<?>> visited) {
 
         // --- Handle ParameterizedType (like List<UserDto>) FIRST ---

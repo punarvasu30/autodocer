@@ -167,10 +167,10 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
     }
 
     @Override
-    public List<ExampleInfo> generateExamples(EndpointInfo endpoint) {
+    public List<ExampleInfo> generateExamples(EndpointInfo endpoint,String serverUrl) {
         try {
             // 1. Build the specific prompt for examples
-            String prompt = buildExamplePrompt(endpoint); // New helper
+            String prompt = buildExamplePrompt(endpoint,serverUrl); // New helper
 
             // 2. Build the standard Gemini request payload
             String requestBody = buildGeminiRequest(prompt); // Reuse your existing helper
@@ -211,7 +211,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
     }
 
     // --- NEW: Helper for Building Example Prompt ---
-    private String buildExamplePrompt(EndpointInfo endpoint) {
+    private String buildExamplePrompt(EndpointInfo endpoint,String serverUrl) {
         String httpMethod = endpoint.httpMethod().toUpperCase();
 
         // Prepare context strings for the prompt
@@ -270,7 +270,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
                             "6. ?age=25&city=NewYork\n" +
                             "7. ?name=John&age=25&city=NewYork\n\n" +
                             "Replace path variables (like {userId}) with realistic sample values (like 123).\n" +
-                            "Assume the API runs at http://localhost:8080.\n\n" +
+                            "Assume the API runs at " + serverUrl + ".\n\n" +
                             "Format your response as a JSON array with objects containing 'description' and 'command' fields.\n" +
                             "Example: [{\"description\": \"Filter by name only\", \"command\": \"curl -X GET 'http://localhost:8080/users?name=John'\"}]\n\n" +
                             "--- API Endpoint Details ---\n" +
@@ -301,7 +301,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
                             "  * For 'phone' fields: use valid formats like '+1-555-123-4567'\n" +
                             "  * For date/datetime fields: use ISO 8601 format\n" +
                             "- Replace path variables (like {id}) with sample values (like 123).\n" +
-                            "- Assume the API runs at http://localhost:8080.\n\n" +
+                            "- Assume the API runs at " + serverUrl + ".\n\n" +
                             "Format your response as a JSON array with objects containing 'description' and 'command' fields.\n" +
                             "The 'command' should be a complete cURL command with proper JSON escaping.\n" +
                             "Example: [{\"description\": \"Create a new user\", \"command\": \"curl -X POST 'http://localhost:8080/users' -H 'Content-Type: application/json' -d '{\\\"name\\\":\\\"John Doe\\\",\\\"email\\\":\\\"john@example.com\\\"}'\"}]\n\n" +
@@ -322,7 +322,7 @@ public class GeminiAiDescriptionService implements AiDescriptionService {
             prompt = String.format(
                     "You are an expert API documentation assistant. Generate a realistic cURL command example for a %s endpoint.\n\n" +
                             "- Replace path variables (like {userId}) with realistic sample values (like 123).\n" +
-                            "- Assume the API runs at http://localhost:8080.\n" +
+                            "- Assume the API runs at " + serverUrl +".\n" +
                             "- Keep it simple and straightforward.\n\n" +
                             "Format your response as a JSON array with one object containing 'description' and 'command' fields.\n" +
                             "Example: [{\"description\": \"Delete user by ID\", \"command\": \"curl -X DELETE 'http://localhost:8080/users/123'\"}]\n\n" +

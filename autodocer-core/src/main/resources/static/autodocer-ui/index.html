@@ -1,47 +1,3343 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>AutoDocER API Reference</title>-->
+
+<!--    &lt;!&ndash; Tailwind CSS CDN &ndash;&gt;-->
+<!--    <script src="https://cdn.tailwindcss.com"></script>-->
+<!--    <script>-->
+<!--        tailwind.config = {-->
+<!--            darkMode: 'class',-->
+<!--            theme: {-->
+<!--                extend: {-->
+<!--                    fontFamily: {-->
+<!--                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],-->
+<!--                        mono: ['JetBrains Mono', 'Consolas', 'monospace']-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; React &ndash;&gt;-->
+<!--    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>-->
+<!--    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>-->
+
+<!--    &lt;!&ndash; Babel Standalone &ndash;&gt;-->
+<!--    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>-->
+
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        body, html {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        #root {-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--        }-->
+
+<!--        /* Custom scrollbar */-->
+<!--        ::-webkit-scrollbar {-->
+<!--            width: 8px;-->
+<!--            height: 8px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-track {-->
+<!--            background: transparent;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb {-->
+<!--            background: #cbd5e1;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb:hover {-->
+<!--            background: #94a3b8;-->
+<!--        }-->
+
+<!--        .dark ::-webkit-scrollbar-thumb {-->
+<!--            background: #475569;-->
+<!--        }-->
+
+<!--        .dark ::-webkit-scrollbar-thumb:hover {-->
+<!--            background: #64748b;-->
+<!--        }-->
+
+<!--        /* Smooth scrolling */-->
+<!--        * {-->
+<!--            scroll-behavior: smooth;-->
+<!--        }-->
+
+<!--        /* Fix details/summary arrow rotation */-->
+<!--        details summary {-->
+<!--            list-style: none;-->
+<!--        }-->
+
+<!--        details summary::-webkit-details-marker {-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        details[open] summary svg {-->
+<!--            transform: rotate(90deg);-->
+<!--        }-->
+
+<!--        details summary svg {-->
+<!--            transition: transform 0.2s ease;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div id="root"></div>-->
+
+<!--<script type="text/babel">-->
+<!--    const { useState, useEffect, useMemo } = React;-->
+
+<!--    // Icon components using lucide-->
+<!--    const Search = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>;-->
+<!--    const Moon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>;-->
+<!--    const Sun = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>;-->
+<!--    const Copy = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>;-->
+<!--    const Check = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;-->
+<!--    const Loader = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" x2="12" y1="2" y2="6"></line><line x1="12" x2="12" y1="18" y2="22"></line><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"></line><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"></line><line x1="2" x2="6" y1="12" y2="12"></line><line x1="18" x2="22" y1="12" y2="12"></line><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"></line><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"></line></svg>;-->
+<!--    const AlertTriangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>;-->
+<!--    const Code = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>;-->
+<!--    const CheckCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;-->
+<!--    const Inbox = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>;-->
+<!--    const ChevronRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"></path></svg>;-->
+<!--    const Menu = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>;-->
+<!--    const X = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>;-->
+
+<!--    const AutoDocerUI = () => {-->
+<!--      const [apiSpec, setApiSpec] = useState(null);-->
+<!--      const [selectedServer, setSelectedServer] = useState(null);-->
+<!--      const [currentEndpoint, setCurrentEndpoint] = useState(null);-->
+<!--      const [searchQuery, setSearchQuery] = useState('');-->
+<!--      const [darkMode, setDarkMode] = useState(false);-->
+<!--      const [loading, setLoading] = useState(true);-->
+<!--      const [error, setError] = useState(null);-->
+<!--      const [generatingExamples, setGeneratingExamples] = useState(false);-->
+<!--      const [examples, setExamples] = useState([]);-->
+<!--      const [copiedIndex, setCopiedIndex] = useState(null);-->
+<!--      const [sidebarOpen, setSidebarOpen] = useState(true);-->
+
+<!--      useEffect(() => {-->
+<!--        loadApi();-->
+<!--        // Load saved theme-->
+<!--        const savedTheme = localStorage.getItem('autodoc-theme');-->
+<!--        if (savedTheme === 'dark') {-->
+<!--          setDarkMode(true);-->
+<!--        }-->
+<!--      }, []);-->
+
+<!--      useEffect(() => {-->
+<!--        if (darkMode) {-->
+<!--          document.documentElement.classList.add('dark');-->
+<!--          localStorage.setItem('autodoc-theme', 'dark');-->
+<!--        } else {-->
+<!--          document.documentElement.classList.remove('dark');-->
+<!--          localStorage.setItem('autodoc-theme', 'light');-->
+<!--        }-->
+<!--      }, [darkMode]);-->
+
+<!--      // Keyboard shortcuts-->
+<!--      useEffect(() => {-->
+<!--        const handleKeyDown = (e) => {-->
+<!--          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {-->
+<!--            e.preventDefault();-->
+<!--            document.querySelector('input[type="text"]')?.focus();-->
+<!--          }-->
+<!--          if ((e.ctrlKey || e.metaKey) && e.key === 'd') {-->
+<!--            e.preventDefault();-->
+<!--            setDarkMode(prev => !prev);-->
+<!--          }-->
+<!--          if (e.key === 'Escape' && sidebarOpen && window.innerWidth < 768) {-->
+<!--            setSidebarOpen(false);-->
+<!--          }-->
+<!--        };-->
+
+<!--        window.addEventListener('keydown', handleKeyDown);-->
+<!--        return () => window.removeEventListener('keydown', handleKeyDown);-->
+<!--      }, [sidebarOpen]);-->
+
+<!--      const loadApi = async () => {-->
+<!--        try {-->
+<!--          setLoading(true);-->
+<!--          const response = await fetch('/autodocer/api-docs');-->
+<!--          if (!response.ok) throw new Error(`HTTP ${response.status}`);-->
+
+<!--          const data = await response.json();-->
+<!--          setApiSpec(data);-->
+
+<!--          if (data.servers && data.servers.length > 0) {-->
+<!--            setSelectedServer(data.servers[0].url);-->
+<!--          } else {-->
+<!--            setSelectedServer('/');-->
+<!--          }-->
+
+<!--          setError(null);-->
+<!--        } catch (err) {-->
+<!--          console.error('Error loading API:', err);-->
+<!--          setError(err.message);-->
+<!--        } finally {-->
+<!--          setLoading(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const endpointsByTag = useMemo(() => {-->
+<!--        if (!apiSpec || !apiSpec.paths) return {};-->
+
+<!--        const grouped = {};-->
+<!--        Object.entries(apiSpec.paths).forEach(([path, methods]) => {-->
+<!--          Object.entries(methods).forEach(([method, operation]) => {-->
+<!--            const tag = (operation.tags && operation.tags[0]) || 'default';-->
+<!--            if (!grouped[tag]) grouped[tag] = [];-->
+<!--            grouped[tag].push({ path, method, operation });-->
+<!--          });-->
+<!--        });-->
+
+<!--        return grouped;-->
+<!--      }, [apiSpec]);-->
+
+<!--      const filteredEndpoints = useMemo(() => {-->
+<!--        if (!searchQuery.trim()) return endpointsByTag;-->
+
+<!--        const query = searchQuery.toLowerCase();-->
+<!--        const filtered = {};-->
+
+<!--        Object.entries(endpointsByTag).forEach(([tag, endpoints]) => {-->
+<!--          const matchingEndpoints = endpoints.filter(({ path, method, operation }) => {-->
+<!--            return (-->
+<!--              path.toLowerCase().includes(query) ||-->
+<!--              method.toLowerCase().includes(query) ||-->
+<!--              (operation.summary && operation.summary.toLowerCase().includes(query)) ||-->
+<!--              (operation.description && operation.description.toLowerCase().includes(query))-->
+<!--            );-->
+<!--          });-->
+
+<!--          if (matchingEndpoints.length > 0) {-->
+<!--            filtered[tag] = matchingEndpoints;-->
+<!--          }-->
+<!--        });-->
+
+<!--        return filtered;-->
+<!--      }, [endpointsByTag, searchQuery]);-->
+
+<!--      const buildEndpointInfo = (path, method, operation) => {-->
+<!--        const parameters = [];-->
+
+<!--        if (operation.parameters) {-->
+<!--          operation.parameters.forEach(param => {-->
+<!--            let sourceType = 'RequestParam';-->
+<!--            if (param.in === 'path') sourceType = 'PathVariable';-->
+<!--            else if (param.in === 'header') sourceType = 'RequestHeader';-->
+
+<!--            parameters.push({-->
+<!--              name: param.name,-->
+<!--              type: param.schema?.type || 'string',-->
+<!--              isRequired: param.required || false,-->
+<!--              sourceType: sourceType,-->
+<!--              description: param.description || null-->
+<!--            });-->
+<!--          });-->
+<!--        }-->
+
+<!--        if (operation.requestBody) {-->
+<!--          const content = operation.requestBody.content?.['application/json'];-->
+<!--          if (content && content.schema) {-->
+<!--            parameters.push({-->
+<!--              name: 'body',-->
+<!--              type: content.schema,-->
+<!--              isRequired: operation.requestBody.required || false,-->
+<!--              sourceType: 'RequestBody',-->
+<!--              description: operation.requestBody.description || null-->
+<!--            });-->
+<!--          }-->
+<!--        }-->
+
+<!--        return {-->
+<!--          path: path,-->
+<!--          httpMethod: method.toUpperCase(),-->
+<!--          summary: operation.summary || null,-->
+<!--          description: operation.description || null,-->
+<!--          parameters: parameters,-->
+<!--          responses: operation.responses || {}-->
+<!--        };-->
+<!--      };-->
+
+<!--      const generateExamples = async () => {-->
+<!--        if (!currentEndpoint) return;-->
+
+<!--        setGeneratingExamples(true);-->
+<!--        setExamples([]);-->
+
+<!--        try {-->
+<!--          const { path, method } = currentEndpoint;-->
+<!--          const operation = apiSpec.paths[path][method];-->
+<!--          const endpointInfo = buildEndpointInfo(path, method, operation);-->
+
+<!--          const response = await fetch('/autodocer/ai/generate-examples', {-->
+<!--            method: 'POST',-->
+<!--            headers: { 'Content-Type': 'application/json' },-->
+<!--            body: JSON.stringify(endpointInfo)-->
+<!--          });-->
+
+<!--          if (!response.ok) {-->
+<!--            throw new Error(`HTTP ${response.status}: ${response.statusText}`);-->
+<!--          }-->
+
+<!--          const data = await response.json();-->
+<!--          setExamples(data || []);-->
+<!--        } catch (err) {-->
+<!--          console.error('Error generating examples:', err);-->
+<!--          setExamples([{ error: err.message }]);-->
+<!--        } finally {-->
+<!--          setGeneratingExamples(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const copyToClipboard = async (text, index) => {-->
+<!--        try {-->
+<!--          await navigator.clipboard.writeText(text);-->
+<!--          setCopiedIndex(index);-->
+<!--          setTimeout(() => setCopiedIndex(null), 2000);-->
+<!--        } catch (err) {-->
+<!--          console.error('Failed to copy:', err);-->
+<!--          alert('Failed to copy to clipboard');-->
+<!--        }-->
+<!--      };-->
+
+<!--      const selectEndpoint = (path, method) => {-->
+<!--        setCurrentEndpoint({ path, method });-->
+<!--        setExamples([]);-->
+<!--        localStorage.setItem('autodoc-last-endpoint', JSON.stringify({ path, method }));-->
+
+<!--        if (window.innerWidth < 768) {-->
+<!--          setSidebarOpen(false);-->
+<!--          setTimeout(() => {-->
+<!--            window.scrollTo({ top: 0, behavior: 'smooth' });-->
+<!--          }, 300);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const methodColors = {-->
+<!--        get: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',-->
+<!--        post: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',-->
+<!--        put: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',-->
+<!--        delete: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',-->
+<!--        patch: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'-->
+<!--      };-->
+
+<!--      return (-->
+<!--        <div className="min-h-screen h-screen flex overflow-hidden bg-gray-50 dark:bg-gray-950">-->
+<!--          {/* Sidebar */}-->
+<!--          <aside className={`-->
+<!--            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}-->
+<!--            fixed md:static z-50 w-80 h-full-->
+<!--            bg-white dark:bg-gray-900-->
+<!--            border-r border-gray-200 dark:border-gray-700-->
+<!--            transition-transform duration-300 ease-in-out-->
+<!--            flex flex-col-->
+<!--          `}>-->
+<!--            {/* Header */}-->
+<!--            <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">-->
+<!--              <div className="flex items-center justify-between mb-4">-->
+<!--                <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">-->
+<!--                  📚 AutoDocER API-->
+<!--                </h1>-->
+<!--                <div className="flex items-center gap-2">-->
+<!--                  <button-->
+<!--                    onClick={() => setDarkMode(!darkMode)}-->
+<!--                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"-->
+<!--                    aria-label="Toggle dark mode"-->
+<!--                  >-->
+<!--                    {darkMode ? <Sun /> : <Moon />}-->
+<!--                  </button>-->
+<!--                  <button-->
+<!--                    onClick={() => setSidebarOpen(false)}-->
+<!--                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--                  >-->
+<!--                    <X />-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              {/* Server Selector */}-->
+<!--              {apiSpec && (-->
+<!--                <div className="mb-4">-->
+<!--                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">-->
+<!--                    Server-->
+<!--                  </label>-->
+<!--                  <select-->
+<!--                    value={selectedServer || ''}-->
+<!--                    onChange={(e) => setSelectedServer(e.target.value)}-->
+<!--                    className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"-->
+<!--                  >-->
+<!--                    {apiSpec.servers && apiSpec.servers.length > 0 ? (-->
+<!--                      apiSpec.servers.map((server, idx) => (-->
+<!--                        <option key={idx} value={server.url}>-->
+<!--                          {server.description || server.url}-->
+<!--                        </option>-->
+<!--                      ))-->
+<!--                    ) : (-->
+<!--                      <option value="/">Default Server (/)</option>-->
+<!--                    )}-->
+<!--                  </select>-->
+<!--                  <div className="mt-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-mono text-gray-600 dark:text-gray-400 break-all">-->
+<!--                    {selectedServer}-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              )}-->
+
+<!--              {/* Search */}-->
+<!--              <div className="relative">-->
+<!--                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">-->
+<!--                  <Search />-->
+<!--                </div>-->
+<!--                <input-->
+<!--                  type="text"-->
+<!--                  placeholder="Search endpoints... (⌘K)"-->
+<!--                  value={searchQuery}-->
+<!--                  onChange={(e) => setSearchQuery(e.target.value)}-->
+<!--                  className="w-full pl-10 pr-10 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"-->
+<!--                />-->
+<!--                {searchQuery && (-->
+<!--                  <button-->
+<!--                    onClick={() => setSearchQuery('')}-->
+<!--                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"-->
+<!--                  >-->
+<!--                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">-->
+<!--                      <path d="M18 6 6 18"></path>-->
+<!--                      <path d="m6 6 12 12"></path>-->
+<!--                    </svg>-->
+<!--                  </button>-->
+<!--                )}-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            {/* Navigation */}-->
+<!--            <nav className="flex-1 overflow-y-auto p-3 min-h-0">-->
+<!--              {loading ? (-->
+<!--                <div className="space-y-2">-->
+<!--                  {[1, 2, 3].map((i) => (-->
+<!--                    <div key={i} className="animate-pulse">-->
+<!--                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>-->
+<!--                      <div className="space-y-1 ml-4">-->
+<!--                        <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded"></div>-->
+<!--                        <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded"></div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  ))}-->
+<!--                </div>-->
+<!--              ) : error ? (-->
+<!--                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-sm">-->
+<!--                  <div className="flex items-start gap-2">-->
+<!--                    <AlertTriangle className="flex-shrink-0 mt-0.5" />-->
+<!--                    <span>Error: {error}</span>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              ) : Object.keys(filteredEndpoints).length === 0 ? (-->
+<!--                <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">-->
+<!--                  <div className="mb-2">🔍</div>-->
+<!--                  <div>No endpoints found matching <strong>"{searchQuery}"</strong></div>-->
+<!--                  <button-->
+<!--                    onClick={() => setSearchQuery('')}-->
+<!--                    className="mt-3 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs underline"-->
+<!--                  >-->
+<!--                    Clear search-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              ) : (-->
+<!--                Object.keys(filteredEndpoints).sort().map(tag => (-->
+<!--                  <details key={tag} open className="mb-2">-->
+<!--                    <summary className="px-3 py-2 cursor-pointer font-semibold text-sm text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 select-none">-->
+<!--                      <ChevronRight className="flex-shrink-0" />-->
+<!--                      <span className="truncate flex-1">{tag}</span>-->
+<!--                      <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">-->
+<!--                        {filteredEndpoints[tag].length}-->
+<!--                      </span>-->
+<!--                    </summary>-->
+<!--                    <ul className="mt-1 ml-2 space-y-1">-->
+<!--                      {filteredEndpoints[tag].map(({ path, method, operation }) => (-->
+<!--                        <li-->
+<!--                          key={`${method}-${path}`}-->
+<!--                          onClick={() => selectEndpoint(path, method)}-->
+<!--                          className={`-->
+<!--                            px-3 py-2 rounded-lg cursor-pointer text-sm flex items-center gap-2-->
+<!--                            transition-all hover:bg-gray-100 dark:hover:bg-gray-800-->
+<!--                            ${currentEndpoint?.path === path && currentEndpoint?.method === method-->
+<!--                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'-->
+<!--                              : 'text-gray-700 dark:text-gray-300'-->
+<!--                            }-->
+<!--                          `}-->
+<!--                        >-->
+<!--                          <span className={`px-2 py-1 rounded text-xs font-bold uppercase flex-shrink-0 ${methodColors[method]}`}>-->
+<!--                            {method}-->
+<!--                          </span>-->
+<!--                          <span className="font-mono text-xs truncate">{path}</span>-->
+<!--                        </li>-->
+<!--                      ))}-->
+<!--                    </ul>-->
+<!--                  </details>-->
+<!--                ))-->
+<!--              )}-->
+<!--            </nav>-->
+<!--          </aside>-->
+
+<!--          {/* Main Content */}-->
+<!--          <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950 h-full">-->
+<!--            {/* Mobile Header */}-->
+<!--            <div className="md:hidden sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">-->
+<!--              <button-->
+<!--                onClick={() => setSidebarOpen(true)}-->
+<!--                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--              >-->
+<!--                <Menu />-->
+<!--              </button>-->
+<!--              <h1 className="text-lg font-bold text-gray-900 dark:text-white">AutoDocER API</h1>-->
+<!--              <button-->
+<!--                onClick={() => setDarkMode(!darkMode)}-->
+<!--                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--              >-->
+<!--                {darkMode ? <Sun /> : <Moon />}-->
+<!--              </button>-->
+<!--            </div>-->
+
+<!--            <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-10">-->
+<!--              {!currentEndpoint ? (-->
+<!--                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-16 text-center min-h-[400px] flex items-center justify-center">-->
+<!--                  <div>-->
+<!--                    <div className="text-6xl mb-4">📚</div>-->
+<!--                    <div className="text-gray-400 dark:text-gray-600 text-base md:text-lg mb-2">-->
+<!--                      Welcome to AutoDocER API Documentation-->
+<!--                    </div>-->
+<!--                    <div className="text-gray-500 dark:text-gray-500 text-sm">-->
+<!--                      Select an endpoint from the sidebar to get started-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              ) : (-->
+<!--                <EndpointDetails-->
+<!--                  apiSpec={apiSpec}-->
+<!--                  currentEndpoint={currentEndpoint}-->
+<!--                  methodColors={methodColors}-->
+<!--                  generatingExamples={generatingExamples}-->
+<!--                  examples={examples}-->
+<!--                  generateExamples={generateExamples}-->
+<!--                  copyToClipboard={copyToClipboard}-->
+<!--                  copiedIndex={copiedIndex}-->
+<!--                  darkMode={darkMode}-->
+<!--                />-->
+<!--              )}-->
+<!--            </div>-->
+<!--          </main>-->
+
+<!--          {/* Overlay for mobile */}-->
+<!--          {sidebarOpen && (-->
+<!--            <div-->
+<!--              className="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"-->
+<!--              onClick={() => setSidebarOpen(false)}-->
+<!--            />-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    // Endpoint Details Component-->
+<!--    const EndpointDetails = ({-->
+<!--      apiSpec,-->
+<!--      currentEndpoint,-->
+<!--      methodColors,-->
+<!--      generatingExamples,-->
+<!--      examples,-->
+<!--      generateExamples,-->
+<!--      copyToClipboard,-->
+<!--      copiedIndex,-->
+<!--      darkMode-->
+<!--    }) => {-->
+<!--      const { path, method } = currentEndpoint;-->
+<!--      const operation = apiSpec.paths[path][method];-->
+
+<!--      return (-->
+<!--        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">-->
+<!--          {/* Header */}-->
+<!--          <div className="flex items-start md:items-center gap-3 flex-wrap">-->
+<!--            <span className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold uppercase flex-shrink-0 ${methodColors[method]}`}>-->
+<!--              {method}-->
+<!--            </span>-->
+<!--            <span className="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white font-mono break-all">-->
+<!--              {path}-->
+<!--            </span>-->
+<!--          </div>-->
+
+<!--          {operation.summary && (-->
+<!--            <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 font-medium">{operation.summary}</p>-->
+<!--          )}-->
+<!--          {operation.description && (-->
+<!--            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">{operation.description}</p>-->
+<!--          )}-->
+
+<!--          {/* Parameters */}-->
+<!--          <Section title="Parameters">-->
+<!--            {operation.parameters && operation.parameters.length > 0 ? (-->
+<!--              <div className="space-y-3">-->
+<!--                {operation.parameters.map((param, idx) => (-->
+<!--                  <ParameterCard key={idx} param={param} darkMode={darkMode} />-->
+<!--                ))}-->
+<!--              </div>-->
+<!--            ) : (-->
+<!--              <div className="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg">-->
+<!--                <div className="flex justify-center mb-2"><Inbox /></div>-->
+<!--                No parameters required for this endpoint-->
+<!--              </div>-->
+<!--            )}-->
+<!--          </Section>-->
+
+<!--          {/* Request Body */}-->
+<!--          {operation.requestBody && (-->
+<!--            <Section title="Request Body">-->
+<!--              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">-->
+<!--                <div className="flex items-center gap-2">-->
+<!--                  {operation.requestBody.required ? (-->
+<!--                    <span className="px-3 py-1 text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded">-->
+<!--                      REQUIRED-->
+<!--                    </span>-->
+<!--                  ) : (-->
+<!--                    <span className="px-3 py-1 text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded">-->
+<!--                      OPTIONAL-->
+<!--                    </span>-->
+<!--                  )}-->
+<!--                  <span className="px-3 py-1 text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">-->
+<!--                    application/json-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              {operation.requestBody.content?.['application/json']?.schema && (-->
+<!--                <SchemaDisplay schema={operation.requestBody.content['application/json'].schema} darkMode={darkMode} />-->
+<!--              )}-->
+<!--            </Section>-->
+<!--          )}-->
+
+<!--          {/* Responses */}-->
+<!--          {operation.responses && (-->
+<!--            <Section title="Responses">-->
+<!--              <div className="space-y-4">-->
+<!--                {Object.entries(operation.responses).map(([code, response]) => (-->
+<!--                  <ResponseBlock key={code} code={code} response={response} darkMode={darkMode} />-->
+<!--                ))}-->
+<!--              </div>-->
+<!--            </Section>-->
+<!--          )}-->
+
+<!--          {/* Try It Out */}-->
+<!--          <div className="pt-6 border-t-2 border-gray-200 dark:border-gray-700 text-center space-y-4">-->
+<!--            <button-->
+<!--              onClick={generateExamples}-->
+<!--              disabled={generatingExamples}-->
+<!--              className="inline-flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm md:text-base font-semibold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"-->
+<!--            >-->
+<!--              {generatingExamples ? (-->
+<!--                <>-->
+<!--                  <Loader />-->
+<!--                  <span>Generating examples...</span>-->
+<!--                </>-->
+<!--              ) : (-->
+<!--                <>-->
+<!--                  <Code />-->
+<!--                  <span>Try It Out</span>-->
+<!--                </>-->
+<!--              )}-->
+<!--            </button>-->
+
+<!--            {/* Examples Display */}-->
+<!--            {examples.length > 0 && (-->
+<!--              <div className="space-y-4 text-left">-->
+<!--                {examples.map((example, idx) => (-->
+<!--                  example.error ? (-->
+<!--                    <div key={idx} className="p-3 md:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-sm">-->
+<!--                      <div className="flex items-start gap-2">-->
+<!--                        <AlertTriangle className="flex-shrink-0 mt-0.5" />-->
+<!--                        <span>Error: {example.error}</span>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  ) : (-->
+<!--                    <div key={idx} className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">-->
+<!--                      <div className="flex items-start md:items-center justify-between mb-3 gap-2">-->
+<!--                        <span className="font-semibold text-sm md:text-base text-gray-900 dark:text-white flex items-center gap-2 flex-1 min-w-0">-->
+<!--                          <Code className="flex-shrink-0" />-->
+<!--                          <span className="truncate">{example.description || `Example ${idx + 1}`}</span>-->
+<!--                        </span>-->
+<!--                        <button-->
+<!--                          onClick={() => copyToClipboard(example.command, idx)}-->
+<!--                          className={`flex items-center gap-2 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors flex-shrink-0 ${-->
+<!--                            copiedIndex === idx-->
+<!--                              ? 'bg-green-500 text-white'-->
+<!--                              : 'bg-blue-500 text-white hover:bg-blue-600'-->
+<!--                          }`}-->
+<!--                        >-->
+<!--                          {copiedIndex === idx ? (-->
+<!--                            <>-->
+<!--                              <Check />-->
+<!--                              <span className="hidden sm:inline">Copied!</span>-->
+<!--                            </>-->
+<!--                          ) : (-->
+<!--                            <>-->
+<!--                              <Copy />-->
+<!--                              <span className="hidden sm:inline">Copy</span>-->
+<!--                            </>-->
+<!--                          )}-->
+<!--                        </button>-->
+<!--                      </div>-->
+<!--                      <pre className="bg-gray-900 text-gray-100 p-3 md:p-4 rounded-lg text-xs md:text-sm overflow-x-auto font-mono">-->
+<!--                        {example.command}-->
+<!--                      </pre>-->
+<!--                    </div>-->
+<!--                  )-->
+<!--                ))}-->
+<!--              </div>-->
+<!--            )}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    const Section = ({ title, children }) => (-->
+<!--      <div>-->
+<!--        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">-->
+<!--          {title}-->
+<!--        </h2>-->
+<!--        {children}-->
+<!--      </div>-->
+<!--    );-->
+
+<!--    const ParameterCard = ({ param, darkMode }) => (-->
+<!--      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">-->
+<!--        <div className="flex items-start md:items-center justify-between flex-wrap gap-2 mb-2">-->
+<!--          <div className="flex items-center gap-2 min-w-0 flex-1">-->
+<!--            <span className="font-mono font-semibold text-sm md:text-base text-blue-600 dark:text-blue-400 truncate">{param.name}</span>-->
+<!--            <span className="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded border border-gray-300 dark:border-gray-600 flex-shrink-0">-->
+<!--              {param.in}-->
+<!--            </span>-->
+<!--          </div>-->
+<!--          <div className="flex items-center gap-2 flex-shrink-0">-->
+<!--            <span className="font-mono text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">-->
+<!--              {param.schema?.type || 'any'}-->
+<!--            </span>-->
+<!--            {param.required ? (-->
+<!--              <span className="px-2 py-1 text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded">-->
+<!--                REQUIRED-->
+<!--              </span>-->
+<!--            ) : (-->
+<!--              <span className="px-2 py-1 text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded">-->
+<!--                OPTIONAL-->
+<!--              </span>-->
+<!--            )}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        {param.description && (-->
+<!--          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-2">{param.description}</p>-->
+<!--        )}-->
+<!--        {param.schema && <ConstraintsDisplay schema={param.schema} />}-->
+<!--      </div>-->
+<!--    );-->
+
+<!--    const ConstraintsDisplay = ({ schema }) => {-->
+<!--      const constraints = [];-->
+<!--      if (schema.minLength !== undefined) constraints.push(`Min Length: ${schema.minLength}`);-->
+<!--      if (schema.maxLength !== undefined) constraints.push(`Max Length: ${schema.maxLength}`);-->
+<!--      if (schema.minimum !== undefined) constraints.push(`Min: ${schema.minimum}`);-->
+<!--      if (schema.maximum !== undefined) constraints.push(`Max: ${schema.maximum}`);-->
+<!--      if (schema.pattern) constraints.push(`Pattern: ${schema.pattern}`);-->
+<!--      if (schema.enum) constraints.push(`Enum: [${schema.enum.join(', ')}]`);-->
+
+<!--      if (constraints.length === 0) return null;-->
+
+<!--      return (-->
+<!--        <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded border-l-4 border-orange-500 text-xs text-gray-600 dark:text-gray-400">-->
+<!--          <div className="flex flex-wrap gap-2">-->
+<!--            {constraints.map((c, i) => (-->
+<!--              <span key={i} className="inline-flex items-center gap-1">-->
+<!--                <span className="text-orange-600 dark:text-orange-400">•</span>-->
+<!--                {c}-->
+<!--              </span>-->
+<!--            ))}-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    const SchemaDisplay = ({ schema, depth = 0 }) => {-->
+<!--      const [showJson, setShowJson] = React.useState(false);-->
+<!--      const [copied, setCopied] = React.useState(false);-->
+
+<!--      if (!schema) return <span className="text-gray-500">No schema</span>;-->
+
+<!--      const generateSampleJson = (schema, depth = 0) => {-->
+<!--        if (depth > 10) return '...'; // Prevent infinite recursion-->
+
+<!--        if (!schema || !schema.type) return null;-->
+
+<!--        switch (schema.type) {-->
+<!--          case 'object':-->
+<!--            if (!schema.properties) return {};-->
+<!--            const obj = {};-->
+<!--            Object.entries(schema.properties).forEach(([key, prop]) => {-->
+<!--              obj[key] = generateSampleJson(prop, depth + 1);-->
+<!--            });-->
+<!--            return obj;-->
+
+<!--          case 'array':-->
+<!--            if (!schema.items) return [];-->
+<!--            return [generateSampleJson(schema.items, depth + 1)];-->
+
+<!--          case 'string':-->
+<!--            if (schema.enum) return schema.enum[0];-->
+<!--            if (schema.pattern) return 'string matching pattern';-->
+<!--            if (schema.format === 'email') return 'user@example.com';-->
+<!--            if (schema.format === 'date') return '2024-01-01';-->
+<!--            if (schema.format === 'date-time') return '2024-01-01T00:00:00Z';-->
+<!--            return 'string';-->
+
+<!--          case 'integer':-->
+<!--            return schema.minimum || 0;-->
+
+<!--          case 'number':-->
+<!--            return schema.minimum || 0.0;-->
+
+<!--          case 'boolean':-->
+<!--            return true;-->
+
+<!--          default:-->
+<!--            return null;-->
+<!--        }-->
+<!--      };-->
+
+<!--      const copyJsonExample = async () => {-->
+<!--        const example = generateSampleJson(schema);-->
+<!--        const jsonString = JSON.stringify(example, null, 2);-->
+
+<!--        try {-->
+<!--          await navigator.clipboard.writeText(jsonString);-->
+<!--          setCopied(true);-->
+<!--          setTimeout(() => setCopied(false), 2000);-->
+<!--        } catch (err) {-->
+<!--          console.error('Failed to copy:', err);-->
+<!--        }-->
+<!--      };-->
+
+<!--      return (-->
+<!--        <div className="space-y-2">-->
+<!--          <div className="flex items-center gap-2 justify-end">-->
+<!--            <button-->
+<!--              onClick={() => setShowJson(!showJson)}-->
+<!--              className="px-3 py-1.5 text-xs font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded transition-colors flex items-center gap-1"-->
+<!--            >-->
+<!--              <Code className="w-3 h-3" />-->
+<!--              {showJson ? 'Show Structure' : 'Show JSON'}-->
+<!--            </button>-->
+<!--            <button-->
+<!--              onClick={copyJsonExample}-->
+<!--              className={`px-3 py-1.5 text-xs font-medium rounded transition-colors flex items-center gap-1 ${-->
+<!--                copied-->
+<!--                  ? 'bg-green-500 text-white'-->
+<!--                  : 'bg-blue-500 hover:bg-blue-600 text-white'-->
+<!--              }`}-->
+<!--            >-->
+<!--              {copied ? (-->
+<!--                <>-->
+<!--                  <Check className="w-3 h-3" />-->
+<!--                  Copied!-->
+<!--                </>-->
+<!--              ) : (-->
+<!--                <>-->
+<!--                  <Copy className="w-3 h-3" />-->
+<!--                  Copy Example-->
+<!--                </>-->
+<!--              )}-->
+<!--            </button>-->
+<!--          </div>-->
+
+<!--          {showJson ? (-->
+<!--            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs font-mono overflow-x-auto">-->
+<!--              {JSON.stringify(generateSampleJson(schema), null, 2)}-->
+<!--            </pre>-->
+<!--          ) : (-->
+<!--            <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">-->
+<!--              {renderSchemaTree(schema, depth)}-->
+<!--            </div>-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    const renderSchemaTree = (schema, depth = 0, required = [], parentKey = '') => {-->
+<!--      if (!schema) return null;-->
+
+<!--      const requiredFields = schema.required || required;-->
+
+<!--      if (schema.type === 'object' && schema.properties) {-->
+<!--        return (-->
+<!--          <div className={depth === 0 ? '' : 'ml-6 border-l-2 border-gray-300 dark:border-gray-600'}>-->
+<!--            {Object.entries(schema.properties).map(([name, prop], idx) => (-->
+<!--              <SchemaField-->
+<!--                key={`${parentKey}-${name}-${idx}`}-->
+<!--                name={name}-->
+<!--                schema={prop}-->
+<!--                isRequired={requiredFields.includes(name)}-->
+<!--                depth={depth}-->
+<!--                parentKey={`${parentKey}-${name}`}-->
+<!--                requiredFields={prop.required || []}-->
+<!--              />-->
+<!--            ))}-->
+<!--          </div>-->
+<!--        );-->
+<!--      } else if (schema.type === 'array' && schema.items) {-->
+<!--        return (-->
+<!--          <div className="ml-6 border-l-2 border-purple-300 dark:border-purple-600">-->
+<!--            <div className="pl-4 py-2 text-xs text-purple-600 dark:text-purple-400 font-semibold">-->
+<!--              Array Items:-->
+<!--            </div>-->
+<!--            {renderSchemaTree(schema.items, depth, [], `${parentKey}-items`)}-->
+<!--          </div>-->
+<!--        );-->
+<!--      }-->
+
+<!--      return null;-->
+<!--    };-->
+
+<!--    const SchemaField = ({ name, schema, isRequired, depth, parentKey, requiredFields }) => {-->
+<!--      const [isExpanded, setIsExpanded] = React.useState(depth < 2);-->
+
+<!--      const hasChildren = (schema.type === 'object' && schema.properties) ||-->
+<!--                          (schema.type === 'array' && schema.items);-->
+
+<!--      const getTypeColor = (type) => {-->
+<!--        const colors = {-->
+<!--          string: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20',-->
+<!--          integer: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',-->
+<!--          number: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',-->
+<!--          boolean: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20',-->
+<!--          array: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20',-->
+<!--          object: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20',-->
+<!--        };-->
+<!--        return colors[type] || 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20';-->
+<!--      };-->
+
+<!--      const constraints = [];-->
+<!--      if (schema.minLength !== undefined) constraints.push({ label: 'Min Length', value: schema.minLength, color: 'text-amber-600 dark:text-amber-400' });-->
+<!--      if (schema.maxLength !== undefined) constraints.push({ label: 'Max Length', value: schema.maxLength, color: 'text-amber-600 dark:text-amber-400' });-->
+<!--      if (schema.minimum !== undefined) constraints.push({ label: 'Min', value: schema.minimum, color: 'text-cyan-600 dark:text-cyan-400' });-->
+<!--      if (schema.maximum !== undefined) constraints.push({ label: 'Max', value: schema.maximum, color: 'text-cyan-600 dark:text-cyan-400' });-->
+<!--      if (schema.pattern) constraints.push({ label: 'Pattern', value: schema.pattern, color: 'text-pink-600 dark:text-pink-400' });-->
+<!--      if (schema.format) constraints.push({ label: 'Format', value: schema.format, color: 'text-violet-600 dark:text-violet-400' });-->
+<!--      if (schema.enum) constraints.push({ label: 'Enum', value: `[${schema.enum.join(', ')}]`, color: 'text-rose-600 dark:text-rose-400' });-->
+
+<!--      return (-->
+<!--        <div className="border-b border-gray-200 dark:border-gray-700 last:border-b-0">-->
+<!--          <div className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">-->
+<!--            <div className="flex items-start gap-2 flex-wrap">-->
+<!--              {/* Expand/Collapse Button */}-->
+<!--              {hasChildren && (-->
+<!--                <button-->
+<!--                  onClick={() => setIsExpanded(!isExpanded)}-->
+<!--                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors flex-shrink-0"-->
+<!--                >-->
+<!--                  <svg-->
+<!--                    className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}-->
+<!--                    viewBox="0 0 24 24"-->
+<!--                    fill="none"-->
+<!--                    stroke="currentColor"-->
+<!--                    strokeWidth="2"-->
+<!--                  >-->
+<!--                    <path d="m9 18 6-6-6-6" />-->
+<!--                  </svg>-->
+<!--                </button>-->
+<!--              )}-->
+<!--              {!hasChildren && <div className="w-6"></div>}-->
+
+<!--              {/* Field Name */}-->
+<!--              <div className="flex items-center gap-2 flex-1 min-w-0">-->
+<!--                <span className="font-mono font-semibold text-sm text-gray-900 dark:text-white truncate">-->
+<!--                  {name}-->
+<!--                </span>-->
+
+<!--                {/* Required Badge */}-->
+<!--                {isRequired && (-->
+<!--                  <span className="px-2 py-0.5 text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded flex-shrink-0">-->
+<!--                    REQUIRED-->
+<!--                  </span>-->
+<!--                )}-->
+<!--              </div>-->
+
+<!--              {/* Type Badge */}-->
+<!--              <span className={`px-2 py-1 text-xs font-semibold rounded flex-shrink-0 ${getTypeColor(schema.type)}`}>-->
+<!--                {schema.type || 'any'}-->
+<!--              </span>-->
+<!--            </div>-->
+
+<!--            {/* Constraints */}-->
+<!--            {constraints.length > 0 && (-->
+<!--              <div className="mt-2 ml-6 flex flex-wrap gap-2">-->
+<!--                {constraints.map((constraint, idx) => (-->
+<!--                  <div-->
+<!--                    key={idx}-->
+<!--                    className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded text-xs"-->
+<!--                  >-->
+<!--                    <span className={`font-semibold ${constraint.color}`}>-->
+<!--                      {constraint.label}:-->
+<!--                    </span>-->
+<!--                    <span className="font-mono text-gray-700 dark:text-gray-300">-->
+<!--                      {constraint.value}-->
+<!--                    </span>-->
+<!--                  </div>-->
+<!--                ))}-->
+<!--              </div>-->
+<!--            )}-->
+
+<!--            {/* Description if exists */}-->
+<!--            {schema.description && (-->
+<!--              <div className="mt-2 ml-6 text-xs text-gray-600 dark:text-gray-400 italic">-->
+<!--                {schema.description}-->
+<!--              </div>-->
+<!--            )}-->
+<!--          </div>-->
+
+<!--          {/* Nested Fields */}-->
+<!--          {hasChildren && isExpanded && (-->
+<!--            <div className="bg-gray-50 dark:bg-gray-800/50">-->
+<!--              {renderSchemaTree(schema, depth + 1, requiredFields, parentKey)}-->
+<!--            </div>-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    const ResponseBlock = ({ code, response, darkMode }) => {-->
+<!--      const getStatusColor = (code) => {-->
+<!--        if (code.startsWith('2')) return 'text-green-600 dark:text-green-400';-->
+<!--        if (code.startsWith('3')) return 'text-blue-600 dark:text-blue-400';-->
+<!--        if (code.startsWith('4')) return 'text-orange-600 dark:text-orange-400';-->
+<!--        if (code.startsWith('5')) return 'text-red-600 dark:text-red-400';-->
+<!--        return 'text-gray-600 dark:text-gray-400';-->
+<!--      };-->
+
+<!--      const getStatusBg = (code) => {-->
+<!--        if (code.startsWith('2')) return 'bg-green-50 dark:bg-green-900/20';-->
+<!--        if (code.startsWith('3')) return 'bg-blue-50 dark:bg-blue-900/20';-->
+<!--        if (code.startsWith('4')) return 'bg-orange-50 dark:bg-orange-900/20';-->
+<!--        if (code.startsWith('5')) return 'bg-red-50 dark:bg-red-900/20';-->
+<!--        return 'bg-gray-50 dark:bg-gray-900/20';-->
+<!--      };-->
+
+<!--      return (-->
+<!--        <div className={`border-l-4 rounded-lg overflow-hidden ${-->
+<!--          code.startsWith('2') ? 'border-green-500' :-->
+<!--          code.startsWith('3') ? 'border-blue-500' :-->
+<!--          code.startsWith('4') ? 'border-orange-500' :-->
+<!--          code.startsWith('5') ? 'border-red-500' : 'border-gray-500'-->
+<!--        }`}>-->
+<!--          <div className={`p-4 ${getStatusBg(code)}`}>-->
+<!--            <div className="flex items-center gap-2 mb-2">-->
+<!--              <CheckCircle className={`flex-shrink-0 ${getStatusColor(code)}`} />-->
+<!--              <h3 className={`font-bold text-base ${getStatusColor(code)}`}>-->
+<!--                HTTP {code}-->
+<!--              </h3>-->
+<!--              {response.content?.['application/json'] && (-->
+<!--                <span className="ml-auto px-2 py-1 text-xs font-semibold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded border border-gray-300 dark:border-gray-600">-->
+<!--                  application/json-->
+<!--                </span>-->
+<!--              )}-->
+<!--            </div>-->
+<!--            <p className="text-sm text-gray-700 dark:text-gray-300">-->
+<!--              {response.description || 'No description'}-->
+<!--            </p>-->
+<!--          </div>-->
+
+<!--          {response.content?.['application/json']?.schema && (-->
+<!--            <SchemaDisplay schema={response.content['application/json'].schema} />-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    // Render the app-->
+<!--    const root = ReactDOM.createRoot(document.getElementById('root'));-->
+<!--    root.render(<AutoDocerUI />);-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>AutoDocER API Reference - Enhanced</title>-->
+
+<!--    &lt;!&ndash; Tailwind CSS CDN &ndash;&gt;-->
+<!--    <script src="https://cdn.tailwindcss.com"></script>-->
+<!--    <script>-->
+<!--        tailwind.config = {-->
+<!--            darkMode: 'class',-->
+<!--            theme: {-->
+<!--                extend: {-->
+<!--                    fontFamily: {-->
+<!--                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],-->
+<!--                        mono: ['JetBrains Mono', 'Consolas', 'monospace']-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+<!--    </script>-->
+
+<!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">-->
+
+<!--    &lt;!&ndash; React &ndash;&gt;-->
+<!--    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>-->
+<!--    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>-->
+
+<!--    &lt;!&ndash; Babel Standalone &ndash;&gt;-->
+<!--    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>-->
+
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        body, html {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+
+<!--        #root {-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--        }-->
+
+<!--        /* Custom scrollbar */-->
+<!--        ::-webkit-scrollbar {-->
+<!--            width: 8px;-->
+<!--            height: 8px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-track {-->
+<!--            background: transparent;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb {-->
+<!--            background: #cbd5e1;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
+
+<!--        ::-webkit-scrollbar-thumb:hover {-->
+<!--            background: #94a3b8;-->
+<!--        }-->
+
+<!--        .dark ::-webkit-scrollbar-thumb {-->
+<!--            background: #475569;-->
+<!--        }-->
+
+<!--        .dark ::-webkit-scrollbar-thumb:hover {-->
+<!--            background: #64748b;-->
+<!--        }-->
+
+<!--        /* Smooth scrolling */-->
+<!--        * {-->
+<!--            scroll-behavior: smooth;-->
+<!--        }-->
+
+<!--        /* Fix details/summary arrow rotation */-->
+<!--        details summary {-->
+<!--            list-style: none;-->
+<!--        }-->
+
+<!--        details summary::-webkit-details-marker {-->
+<!--            display: none;-->
+<!--        }-->
+
+<!--        details[open] summary svg {-->
+<!--            transform: rotate(90deg);-->
+<!--        }-->
+
+<!--        details summary svg {-->
+<!--            transition: transform 0.2s ease;-->
+<!--        }-->
+
+<!--        /* Pulse animation for executing state */-->
+<!--        @keyframes pulse {-->
+<!--            0%, 100% { opacity: 1; }-->
+<!--            50% { opacity: 0.5; }-->
+<!--        }-->
+
+<!--        .animate-pulse-custom {-->
+<!--            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div id="root"></div>-->
+
+<!--<script type="text/babel">-->
+<!--    const { useState, useEffect, useMemo } = React;-->
+
+<!--    // Icon components-->
+<!--    const Search = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>;-->
+<!--    const Moon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>;-->
+<!--    const Sun = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>;-->
+<!--    const Copy = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>;-->
+<!--    const Check = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;-->
+<!--    const Loader = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" x2="12" y1="2" y2="6"></line><line x1="12" x2="12" y1="18" y2="22"></line><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"></line><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"></line><line x1="2" x2="6" y1="12" y2="12"></line><line x1="18" x2="22" y1="12" y2="12"></line><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"></line><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"></line></svg>;-->
+<!--    const AlertTriangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>;-->
+<!--    const Code = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>;-->
+<!--    const CheckCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;-->
+<!--    const ChevronRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"></path></svg>;-->
+<!--    const Menu = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>;-->
+<!--    const X = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>;-->
+<!--    const Play = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;-->
+<!--    const Edit = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;-->
+<!--    const Save = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>;-->
+<!--    const XCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>;-->
+
+<!--    // NEW: Parse cURL command to extract request details-->
+<!--    const parseCurlCommand = (curlCommand) => {-->
+<!--      try {-->
+<!--        // Extract URL-->
+<!--        const urlMatch = curlCommand.match(/'([^']+)'|"([^"]+)"/);-->
+<!--        const url = urlMatch ? (urlMatch[1] || urlMatch[2]) : '';-->
+
+<!--        // Extract method-->
+<!--        const methodMatch = curlCommand.match(/-X\s+(\w+)/i);-->
+<!--        const method = methodMatch ? methodMatch[1].toUpperCase() : 'GET';-->
+
+<!--        // Extract headers-->
+<!--        const headers = {};-->
+<!--        const headerMatches = curlCommand.matchAll(/-H\s+['"]([^:]+):\s*([^'"]+)['"]/g);-->
+<!--        for (const match of headerMatches) {-->
+<!--          headers[match[1]] = match[2];-->
+<!--        }-->
+
+<!--        // Extract body (for POST/PUT/PATCH)-->
+<!--        let body = null;-->
+<!--        const bodyMatch = curlCommand.match(/-d\s+'([^']+)'|-d\s+"([^"]+)"/);-->
+<!--        if (bodyMatch) {-->
+<!--          const bodyStr = bodyMatch[1] || bodyMatch[2];-->
+<!--          // Unescape JSON-->
+<!--          const unescaped = bodyStr.replace(/\\"/g, '"').replace(/\\\\/g, '\\');-->
+<!--          try {-->
+<!--            body = JSON.parse(unescaped);-->
+<!--          } catch (e) {-->
+<!--            body = unescaped; // If not JSON, keep as string-->
+<!--          }-->
+<!--        }-->
+
+<!--        return { url, method, headers, body };-->
+<!--      } catch (error) {-->
+<!--        console.error('Error parsing cURL:', error);-->
+<!--        return null;-->
+<!--      }-->
+<!--    };-->
+
+<!--    // NEW: ExecutableExample Component - Renders each example with Execute and Edit-->
+<!--    const ExecutableExample = ({ example, index, copiedIndex, setCopiedIndex, darkMode }) => {-->
+<!--      const [isEditing, setIsEditing] = useState(false);-->
+<!--      const [editedCommand, setEditedCommand] = useState(example.command);-->
+<!--      const [isExecuting, setIsExecuting] = useState(false);-->
+<!--      const [response, setResponse] = useState(null);-->
+<!--      const [showResponse, setShowResponse] = useState(false);-->
+
+<!--      const copyToClipboard = async (text, idx) => {-->
+<!--        try {-->
+<!--          await navigator.clipboard.writeText(text);-->
+<!--          setCopiedIndex(idx);-->
+<!--          setTimeout(() => setCopiedIndex(null), 2000);-->
+<!--        } catch (err) {-->
+<!--          console.error('Failed to copy:', err);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const handleEdit = () => {-->
+<!--        setIsEditing(true);-->
+<!--      };-->
+
+<!--      const handleSave = () => {-->
+<!--        setIsEditing(false);-->
+<!--        // Reset response when command changes-->
+<!--        setResponse(null);-->
+<!--        setShowResponse(false);-->
+<!--      };-->
+
+<!--      const handleCancel = () => {-->
+<!--        setEditedCommand(example.command);-->
+<!--        setIsEditing(false);-->
+<!--      };-->
+
+<!--      const executeRequest = async () => {-->
+<!--        const parsed = parseCurlCommand(editedCommand);-->
+
+<!--        if (!parsed || !parsed.url) {-->
+<!--          setResponse({-->
+<!--            error: true,-->
+<!--            message: 'Could not parse cURL command. Please check the format.'-->
+<!--          });-->
+<!--          setShowResponse(true);-->
+<!--          return;-->
+<!--        }-->
+
+<!--        setIsExecuting(true);-->
+<!--        setResponse(null);-->
+<!--        setShowResponse(true);-->
+
+<!--        try {-->
+<!--          const startTime = Date.now();-->
+
+<!--          const fetchOptions = {-->
+<!--            method: parsed.method,-->
+<!--            headers: parsed.headers || {}-->
+<!--          };-->
+
+<!--          // Add body for POST/PUT/PATCH-->
+<!--          if (parsed.body && ['POST', 'PUT', 'PATCH'].includes(parsed.method)) {-->
+<!--            fetchOptions.body = typeof parsed.body === 'string'-->
+<!--              ? parsed.body-->
+<!--              : JSON.stringify(parsed.body);-->
+<!--          }-->
+
+<!--          const res = await fetch(parsed.url, fetchOptions);-->
+<!--          const duration = Date.now() - startTime;-->
+
+<!--          // Try to parse as JSON, fallback to text-->
+<!--          let responseBody;-->
+<!--          const contentType = res.headers.get('content-type');-->
+
+<!--          if (contentType && contentType.includes('application/json')) {-->
+<!--            try {-->
+<!--              responseBody = await res.json();-->
+<!--            } catch (e) {-->
+<!--              responseBody = await res.text();-->
+<!--            }-->
+<!--          } else {-->
+<!--            responseBody = await res.text();-->
+<!--          }-->
+
+<!--          // Extract headers-->
+<!--          const responseHeaders = {};-->
+<!--          res.headers.forEach((value, key) => {-->
+<!--            responseHeaders[key] = value;-->
+<!--          });-->
+
+<!--          setResponse({-->
+<!--            status: res.status,-->
+<!--            statusText: res.statusText,-->
+<!--            headers: responseHeaders,-->
+<!--            body: responseBody,-->
+<!--            duration,-->
+<!--            error: false-->
+<!--          });-->
+
+<!--        } catch (error) {-->
+<!--          setResponse({-->
+<!--            error: true,-->
+<!--            message: error.message,-->
+<!--            details: 'Network error or CORS issue. Make sure the API server is running and CORS is enabled.'-->
+<!--          });-->
+<!--        } finally {-->
+<!--          setIsExecuting(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      return (-->
+<!--        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">-->
+<!--          {/* Header with title and action buttons */}-->
+<!--          <div className="flex items-start md:items-center justify-between mb-3 gap-2 flex-wrap">-->
+<!--            <span className="font-semibold text-sm md:text-base text-gray-900 dark:text-white flex items-center gap-2 flex-1 min-w-0">-->
+<!--              <Code className="flex-shrink-0" />-->
+<!--              <span className="truncate">{example.description || `Example ${index + 1}`}</span>-->
+<!--            </span>-->
+
+<!--            <div className="flex items-center gap-2 flex-shrink-0">-->
+<!--              {/* Edit/Save/Cancel buttons */}-->
+<!--              {!isEditing ? (-->
+<!--                <button-->
+<!--                  onClick={handleEdit}-->
+<!--                  className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gray-500 text-white hover:bg-gray-600"-->
+<!--                  title="Edit command"-->
+<!--                >-->
+<!--                  <Edit />-->
+<!--                  <span className="hidden sm:inline">Edit</span>-->
+<!--                </button>-->
+<!--              ) : (-->
+<!--                <>-->
+<!--                  <button-->
+<!--                    onClick={handleSave}-->
+<!--                    className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-green-500 text-white hover:bg-green-600"-->
+<!--                    title="Save changes"-->
+<!--                  >-->
+<!--                    <Save />-->
+<!--                    <span className="hidden sm:inline">Save</span>-->
+<!--                  </button>-->
+<!--                  <button-->
+<!--                    onClick={handleCancel}-->
+<!--                    className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gray-500 text-white hover:bg-gray-600"-->
+<!--                    title="Cancel editing"-->
+<!--                  >-->
+<!--                    <XCircle />-->
+<!--                    <span className="hidden sm:inline">Cancel</span>-->
+<!--                  </button>-->
+<!--                </>-->
+<!--              )}-->
+
+<!--              {/* Copy button */}-->
+<!--              <button-->
+<!--                onClick={() => copyToClipboard(editedCommand, index)}-->
+<!--                className={`flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors ${-->
+<!--                  copiedIndex === index-->
+<!--                    ? 'bg-green-500 text-white'-->
+<!--                    : 'bg-blue-500 text-white hover:bg-blue-600'-->
+<!--                }`}-->
+<!--                title="Copy to clipboard"-->
+<!--              >-->
+<!--                {copiedIndex === index ? (-->
+<!--                  <>-->
+<!--                    <Check />-->
+<!--                    <span className="hidden sm:inline">Copied!</span>-->
+<!--                  </>-->
+<!--                ) : (-->
+<!--                  <>-->
+<!--                    <Copy />-->
+<!--                    <span className="hidden sm:inline">Copy</span>-->
+<!--                  </>-->
+<!--                )}-->
+<!--              </button>-->
+
+<!--              {/* Execute button */}-->
+<!--              <button-->
+<!--                onClick={executeRequest}-->
+<!--                disabled={isExecuting || isEditing}-->
+<!--                className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"-->
+<!--                title="Execute request"-->
+<!--              >-->
+<!--                {isExecuting ? (-->
+<!--                  <>-->
+<!--                    <Loader />-->
+<!--                    <span className="hidden sm:inline">Running...</span>-->
+<!--                  </>-->
+<!--                ) : (-->
+<!--                  <>-->
+<!--                    <Play />-->
+<!--                    <span className="hidden sm:inline">Execute</span>-->
+<!--                  </>-->
+<!--                )}-->
+<!--              </button>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          {/* cURL Command Display/Edit */}-->
+<!--          {isEditing ? (-->
+<!--            <textarea-->
+<!--              value={editedCommand}-->
+<!--              onChange={(e) => setEditedCommand(e.target.value)}-->
+<!--              className="w-full bg-gray-900 text-gray-100 p-3 md:p-4 rounded-lg text-xs md:text-sm font-mono border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"-->
+<!--              rows="4"-->
+<!--            />-->
+<!--          ) : (-->
+<!--            <pre className="bg-gray-900 text-gray-100 p-3 md:p-4 rounded-lg text-xs md:text-sm overflow-x-auto font-mono">-->
+<!--              {editedCommand}-->
+<!--            </pre>-->
+<!--          )}-->
+
+<!--          {/* Response Display */}-->
+<!--          {showResponse && response && (-->
+<!--            <div className="mt-4 border-t-2 border-gray-300 dark:border-gray-600 pt-4">-->
+<!--              {response.error ? (-->
+<!--                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">-->
+<!--                  <div className="flex items-start gap-2 mb-2">-->
+<!--                    <AlertTriangle className="flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400" />-->
+<!--                    <div className="flex-1">-->
+<!--                      <h4 className="font-semibold text-red-800 dark:text-red-300 mb-1">Error</h4>-->
+<!--                      <p className="text-sm text-red-700 dark:text-red-400">{response.message}</p>-->
+<!--                      {response.details && (-->
+<!--                        <p className="text-xs text-red-600 dark:text-red-500 mt-2">{response.details}</p>-->
+<!--                      )}-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              ) : (-->
+<!--                <div className="space-y-3">-->
+<!--                  {/* Status and Duration */}-->
+<!--                  <div className="flex items-center gap-3 flex-wrap">-->
+<!--                    <div className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${-->
+<!--                      response.status >= 200 && response.status < 300-->
+<!--                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'-->
+<!--                        : response.status >= 400 && response.status < 500-->
+<!--                        ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300'-->
+<!--                        : response.status >= 500-->
+<!--                        ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'-->
+<!--                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'-->
+<!--                    }`}>-->
+<!--                      <CheckCircle className="inline mr-1" />-->
+<!--                      {response.status} {response.statusText}-->
+<!--                    </div>-->
+<!--                    <div className="text-xs text-gray-600 dark:text-gray-400">-->
+<!--                      ⏱️ <strong>{response.duration}ms</strong>-->
+<!--                    </div>-->
+<!--                  </div>-->
+
+<!--                  {/* Response Headers */}-->
+<!--                  <details className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">-->
+<!--                    <summary className="px-4 py-2 cursor-pointer font-semibold text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-2">-->
+<!--                      <ChevronRight className="flex-shrink-0" />-->
+<!--                      Response Headers ({Object.keys(response.headers).length})-->
+<!--                    </summary>-->
+<!--                    <div className="px-4 py-3 space-y-1 border-t border-gray-200 dark:border-gray-700">-->
+<!--                      {Object.entries(response.headers).map(([key, value]) => (-->
+<!--                        <div key={key} className="flex gap-2 text-xs">-->
+<!--                          <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">{key}:</span>-->
+<!--                          <span className="font-mono text-gray-700 dark:text-gray-300 break-all">{value}</span>-->
+<!--                        </div>-->
+<!--                      ))}-->
+<!--                    </div>-->
+<!--                  </details>-->
+
+<!--                  {/* Response Body */}-->
+<!--                  <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">-->
+<!--                    <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">-->
+<!--                      <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Response Body</h4>-->
+<!--                    </div>-->
+<!--                    <pre className="p-4 overflow-x-auto text-xs font-mono text-gray-800 dark:text-gray-200 max-h-96 overflow-y-auto">-->
+<!--                      {typeof response.body === 'object'-->
+<!--                        ? JSON.stringify(response.body, null, 2)-->
+<!--                        : response.body}-->
+<!--                    </pre>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              )}-->
+<!--            </div>-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    // Main App Component (keeping your existing structure, just replacing the example rendering)-->
+<!--    const AutoDocerUI = () => {-->
+<!--      const [apiSpec, setApiSpec] = useState(null);-->
+<!--      const [selectedServer, setSelectedServer] = useState(null);-->
+<!--      const [currentEndpoint, setCurrentEndpoint] = useState(null);-->
+<!--      const [searchQuery, setSearchQuery] = useState('');-->
+<!--      const [darkMode, setDarkMode] = useState(false);-->
+<!--      const [loading, setLoading] = useState(true);-->
+<!--      const [error, setError] = useState(null);-->
+<!--      const [generatingExamples, setGeneratingExamples] = useState(false);-->
+<!--      const [examples, setExamples] = useState([]);-->
+<!--      const [copiedIndex, setCopiedIndex] = useState(null);-->
+<!--      const [sidebarOpen, setSidebarOpen] = useState(true);-->
+
+<!--      useEffect(() => {-->
+<!--        loadApi();-->
+<!--        const savedTheme = localStorage.getItem('autodoc-theme');-->
+<!--        if (savedTheme === 'dark') {-->
+<!--          setDarkMode(true);-->
+<!--        }-->
+<!--      }, []);-->
+
+<!--      useEffect(() => {-->
+<!--        if (darkMode) {-->
+<!--          document.documentElement.classList.add('dark');-->
+<!--          localStorage.setItem('autodoc-theme', 'dark');-->
+<!--        } else {-->
+<!--          document.documentElement.classList.remove('dark');-->
+<!--          localStorage.setItem('autodoc-theme', 'light');-->
+<!--        }-->
+<!--      }, [darkMode]);-->
+
+<!--      const loadApi = async () => {-->
+<!--        try {-->
+<!--          setLoading(true);-->
+<!--          const response = await fetch('/autodocer/api-docs');-->
+<!--          if (!response.ok) throw new Error(`HTTP ${response.status}`);-->
+
+<!--          const data = await response.json();-->
+<!--          setApiSpec(data);-->
+
+<!--          if (data.servers && data.servers.length > 0) {-->
+<!--            setSelectedServer(data.servers[0].url);-->
+<!--          } else {-->
+<!--            setSelectedServer('/');-->
+<!--          }-->
+
+<!--          setError(null);-->
+<!--        } catch (err) {-->
+<!--          console.error('Error loading API:', err);-->
+<!--          setError(err.message);-->
+<!--        } finally {-->
+<!--          setLoading(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const endpointsByTag = useMemo(() => {-->
+<!--        if (!apiSpec || !apiSpec.paths) return {};-->
+
+<!--        const grouped = {};-->
+<!--        Object.entries(apiSpec.paths).forEach(([path, methods]) => {-->
+<!--          Object.entries(methods).forEach(([method, operation]) => {-->
+<!--            const tag = (operation.tags && operation.tags[0]) || 'default';-->
+<!--            if (!grouped[tag]) grouped[tag] = [];-->
+<!--            grouped[tag].push({ path, method, operation });-->
+<!--          });-->
+<!--        });-->
+
+<!--        return grouped;-->
+<!--      }, [apiSpec]);-->
+
+<!--      const filteredEndpoints = useMemo(() => {-->
+<!--        if (!searchQuery.trim()) return endpointsByTag;-->
+
+<!--        const query = searchQuery.toLowerCase();-->
+<!--        const filtered = {};-->
+
+<!--        Object.entries(endpointsByTag).forEach(([tag, endpoints]) => {-->
+<!--          const matchingEndpoints = endpoints.filter(({ path, method, operation }) => {-->
+<!--            return (-->
+<!--              path.toLowerCase().includes(query) ||-->
+<!--              method.toLowerCase().includes(query) ||-->
+<!--              (operation.summary && operation.summary.toLowerCase().includes(query)) ||-->
+<!--              (operation.description && operation.description.toLowerCase().includes(query))-->
+<!--            );-->
+<!--          });-->
+
+<!--          if (matchingEndpoints.length > 0) {-->
+<!--            filtered[tag] = matchingEndpoints;-->
+<!--          }-->
+<!--        });-->
+
+<!--        return filtered;-->
+<!--      }, [endpointsByTag, searchQuery]);-->
+
+<!--      const buildEndpointInfo = (path, method, operation) => {-->
+<!--        const parameters = [];-->
+
+<!--        if (operation.parameters) {-->
+<!--          operation.parameters.forEach(param => {-->
+<!--            let sourceType = 'RequestParam';-->
+<!--            if (param.in === 'path') sourceType = 'PathVariable';-->
+<!--            else if (param.in === 'header') sourceType = 'RequestHeader';-->
+
+<!--            parameters.push({-->
+<!--              name: param.name,-->
+<!--              type: param.schema?.type || 'string',-->
+<!--              isRequired: param.required || false,-->
+<!--              sourceType: sourceType,-->
+<!--              description: param.description || null-->
+<!--            });-->
+<!--          });-->
+<!--        }-->
+
+<!--        if (operation.requestBody) {-->
+<!--          const content = operation.requestBody.content?.['application/json'];-->
+<!--          if (content && content.schema) {-->
+<!--            parameters.push({-->
+<!--              name: 'body',-->
+<!--              type: content.schema,-->
+<!--              isRequired: operation.requestBody.required || false,-->
+<!--              sourceType: 'RequestBody',-->
+<!--              description: operation.requestBody.description || null-->
+<!--            });-->
+<!--          }-->
+<!--        }-->
+
+<!--        return {-->
+<!--          path: path,-->
+<!--          httpMethod: method.toUpperCase(),-->
+<!--          summary: operation.summary || null,-->
+<!--          description: operation.description || null,-->
+<!--          parameters: parameters,-->
+<!--          responses: operation.responses || {}-->
+<!--        };-->
+<!--      };-->
+
+<!--      const generateExamples = async () => {-->
+<!--        if (!currentEndpoint) return;-->
+
+<!--        setGeneratingExamples(true);-->
+<!--        setExamples([]);-->
+
+<!--        try {-->
+<!--          const { path, method } = currentEndpoint;-->
+<!--          const operation = apiSpec.paths[path][method];-->
+<!--          const endpointInfo = buildEndpointInfo(path, method, operation);-->
+
+<!--          const response = await fetch('/autodocer/ai/generate-examples', {-->
+<!--            method: 'POST',-->
+<!--            headers: { 'Content-Type': 'application/json' },-->
+<!--            body: JSON.stringify(endpointInfo)-->
+<!--          });-->
+
+<!--          if (!response.ok) {-->
+<!--            throw new Error(`HTTP ${response.status}: ${response.statusText}`);-->
+<!--          }-->
+
+<!--          const data = await response.json();-->
+<!--          setExamples(data || []);-->
+<!--        } catch (err) {-->
+<!--          console.error('Error generating examples:', err);-->
+<!--          setExamples([{ error: err.message }]);-->
+<!--        } finally {-->
+<!--          setGeneratingExamples(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const selectEndpoint = (path, method) => {-->
+<!--        setCurrentEndpoint({ path, method });-->
+<!--        setExamples([]);-->
+<!--        localStorage.setItem('autodoc-last-endpoint', JSON.stringify({ path, method }));-->
+
+<!--        if (window.innerWidth < 768) {-->
+<!--          setSidebarOpen(false);-->
+<!--        }-->
+<!--      };-->
+
+<!--      const methodColors = {-->
+<!--        get: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',-->
+<!--        post: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',-->
+<!--        put: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',-->
+<!--        delete: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',-->
+<!--        patch: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'-->
+<!--      };-->
+
+<!--      return (-->
+<!--        <div className="min-h-screen h-screen flex overflow-hidden bg-gray-50 dark:bg-gray-950">-->
+<!--          {/* Sidebar - keeping your existing sidebar code */}-->
+<!--          <aside className={`-->
+<!--            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}-->
+<!--            fixed md:static z-50 w-80 h-full-->
+<!--            bg-white dark:bg-gray-900-->
+<!--            border-r border-gray-200 dark:border-gray-700-->
+<!--            transition-transform duration-300 ease-in-out-->
+<!--            flex flex-col-->
+<!--          `}>-->
+<!--            {/* Your existing sidebar content */}-->
+<!--            <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">-->
+<!--              <div className="flex items-center justify-between mb-4">-->
+<!--                <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">-->
+<!--                  📚 AutoDocER API-->
+<!--                </h1>-->
+<!--                <div className="flex items-center gap-2">-->
+<!--                  <button-->
+<!--                    onClick={() => setDarkMode(!darkMode)}-->
+<!--                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"-->
+<!--                  >-->
+<!--                    {darkMode ? <Sun /> : <Moon />}-->
+<!--                  </button>-->
+<!--                  <button-->
+<!--                    onClick={() => setSidebarOpen(false)}-->
+<!--                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--                  >-->
+<!--                    <X />-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              {apiSpec && (-->
+<!--                <div className="mb-4">-->
+<!--                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">-->
+<!--                    Server-->
+<!--                  </label>-->
+<!--                  <select-->
+<!--                    value={selectedServer || ''}-->
+<!--                    onChange={(e) => setSelectedServer(e.target.value)}-->
+<!--                    className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"-->
+<!--                  >-->
+<!--                    {apiSpec.servers && apiSpec.servers.length > 0 ? (-->
+<!--                      apiSpec.servers.map((server, idx) => (-->
+<!--                        <option key={idx} value={server.url}>-->
+<!--                          {server.description || server.url}-->
+<!--                        </option>-->
+<!--                      ))-->
+<!--                    ) : (-->
+<!--                      <option value="/">Default Server (/)</option>-->
+<!--                    )}-->
+<!--                  </select>-->
+<!--                  <div className="mt-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-mono text-gray-600 dark:text-gray-400 break-all">-->
+<!--                    {selectedServer}-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              )}-->
+
+<!--              <div className="relative">-->
+<!--                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">-->
+<!--                  <Search />-->
+<!--                </div>-->
+<!--                <input-->
+<!--                  type="text"-->
+<!--                  placeholder="Search endpoints..."-->
+<!--                  value={searchQuery}-->
+<!--                  onChange={(e) => setSearchQuery(e.target.value)}-->
+<!--                  className="w-full pl-10 pr-10 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <nav className="flex-1 overflow-y-auto p-3 min-h-0">-->
+<!--              {loading ? (-->
+<!--                <div className="space-y-2">-->
+<!--                  {[1, 2, 3].map((i) => (-->
+<!--                    <div key={i} className="animate-pulse">-->
+<!--                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>-->
+<!--                    </div>-->
+<!--                  ))}-->
+<!--                </div>-->
+<!--              ) : (-->
+<!--                Object.keys(filteredEndpoints).sort().map(tag => (-->
+<!--                  <details key={tag} open className="mb-2">-->
+<!--                    <summary className="px-3 py-2 cursor-pointer font-semibold text-sm text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 select-none">-->
+<!--                      <ChevronRight className="flex-shrink-0" />-->
+<!--                      <span className="truncate flex-1">{tag}</span>-->
+<!--                    </summary>-->
+<!--                    <ul className="mt-1 ml-2 space-y-1">-->
+<!--                      {filteredEndpoints[tag].map(({ path, method, operation }) => (-->
+<!--                        <li-->
+<!--                          key={`${method}-${path}`}-->
+<!--                          onClick={() => selectEndpoint(path, method)}-->
+<!--                          className={`-->
+<!--                            px-3 py-2 rounded-lg cursor-pointer text-sm flex items-center gap-2-->
+<!--                            transition-all hover:bg-gray-100 dark:hover:bg-gray-800-->
+<!--                            ${currentEndpoint?.path === path && currentEndpoint?.method === method-->
+<!--                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'-->
+<!--                              : 'text-gray-700 dark:text-gray-300'-->
+<!--                            }-->
+<!--                          `}-->
+<!--                        >-->
+<!--                          <span className={`px-2 py-1 rounded text-xs font-bold uppercase flex-shrink-0 ${methodColors[method]}`}>-->
+<!--                            {method}-->
+<!--                          </span>-->
+<!--                          <span className="font-mono text-xs truncate">{path}</span>-->
+<!--                        </li>-->
+<!--                      ))}-->
+<!--                    </ul>-->
+<!--                  </details>-->
+<!--                ))-->
+<!--              )}-->
+<!--            </nav>-->
+<!--          </aside>-->
+
+<!--          {/* Main Content */}-->
+<!--          <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950 h-full">-->
+<!--            <div className="md:hidden sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">-->
+<!--              <button-->
+<!--                onClick={() => setSidebarOpen(true)}-->
+<!--                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--              >-->
+<!--                <Menu />-->
+<!--              </button>-->
+<!--              <h1 className="text-lg font-bold text-gray-900 dark:text-white">AutoDocER API</h1>-->
+<!--              <button-->
+<!--                onClick={() => setDarkMode(!darkMode)}-->
+<!--                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"-->
+<!--              >-->
+<!--                {darkMode ? <Sun /> : <Moon />}-->
+<!--              </button>-->
+<!--            </div>-->
+
+<!--            <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-10">-->
+<!--              {!currentEndpoint ? (-->
+<!--                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-16 text-center min-h-[400px] flex items-center justify-center">-->
+<!--                  <div>-->
+<!--                    <div className="text-6xl mb-4">📚</div>-->
+<!--                    <div className="text-gray-400 dark:text-gray-600 text-base md:text-lg mb-2">-->
+<!--                      Welcome to AutoDocER API Documentation-->
+<!--                    </div>-->
+<!--                    <div className="text-gray-500 dark:text-gray-500 text-sm">-->
+<!--                      Select an endpoint from the sidebar to get started-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              ) : (-->
+<!--                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">-->
+<!--                  <div className="flex items-start md:items-center gap-3 flex-wrap">-->
+<!--                    <span className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold uppercase flex-shrink-0 ${methodColors[currentEndpoint.method]}`}>-->
+<!--                      {currentEndpoint.method}-->
+<!--                    </span>-->
+<!--                    <span className="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white font-mono break-all">-->
+<!--                      {currentEndpoint.path}-->
+<!--                    </span>-->
+<!--                  </div>-->
+
+<!--                  {/* Try It Out Section */}-->
+<!--                  <div className="pt-6 border-t-2 border-gray-200 dark:border-gray-700 space-y-4">-->
+<!--                    <div className="text-center">-->
+<!--                      <button-->
+<!--                        onClick={generateExamples}-->
+<!--                        disabled={generatingExamples}-->
+<!--                        className="inline-flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm md:text-base font-semibold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"-->
+<!--                      >-->
+<!--                        {generatingExamples ? (-->
+<!--                          <>-->
+<!--                            <Loader />-->
+<!--                            <span>Generating examples...</span>-->
+<!--                          </>-->
+<!--                        ) : (-->
+<!--                          <>-->
+<!--                            <Code />-->
+<!--                            <span>Generate cURL Examples</span>-->
+<!--                          </>-->
+<!--                        )}-->
+<!--                      </button>-->
+<!--                    </div>-->
+
+<!--                    {/* NEW: Render ExecutableExample components */}-->
+<!--                    {examples.length > 0 && (-->
+<!--                      <div className="space-y-4 text-left">-->
+<!--                        {examples.map((example, idx) => (-->
+<!--                          example.error ? (-->
+<!--                            <div key={idx} className="p-3 md:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-sm">-->
+<!--                              <div className="flex items-start gap-2">-->
+<!--                                <AlertTriangle className="flex-shrink-0 mt-0.5" />-->
+<!--                                <span>Error: {example.error}</span>-->
+<!--                              </div>-->
+<!--                            </div>-->
+<!--                          ) : (-->
+<!--                            <ExecutableExample-->
+<!--                              key={idx}-->
+<!--                              example={example}-->
+<!--                              index={idx}-->
+<!--                              copiedIndex={copiedIndex}-->
+<!--                              setCopiedIndex={setCopiedIndex}-->
+<!--                              darkMode={darkMode}-->
+<!--                            />-->
+<!--                          )-->
+<!--                        ))}-->
+<!--                      </div>-->
+<!--                    )}-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              )}-->
+<!--            </div>-->
+<!--          </main>-->
+
+<!--          {sidebarOpen && (-->
+<!--            <div-->
+<!--              className="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"-->
+<!--              onClick={() => setSidebarOpen(false)}-->
+<!--            />-->
+<!--          )}-->
+<!--        </div>-->
+<!--      );-->
+<!--    };-->
+
+<!--    // Render the app-->
+<!--    const root = ReactDOM.createRoot(document.getElementById('root'));-->
+<!--    root.render(<AutoDocerUI />);-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AutoDocER UI</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.11.8/swagger-ui.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDocER API Reference - Enhanced</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        html {
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            overflow: -moz-scrollbars-vertical;
-            overflow-y: scroll;
         }
-        *, *:before, *:after {
-            box-sizing: inherit;
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
-        body {
-            margin:0;
-            background: #fafafa;
+
+        #root {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Smooth scrolling */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        /* Fix details/summary arrow rotation */
+        details summary {
+            list-style: none;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details[open] summary svg {
+            transform: rotate(90deg);
+        }
+
+        details summary svg {
+            transition: transform 0.2s ease;
+        }
+
+        /* Pulse animation for executing state */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .animate-pulse-custom {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
 <body>
-<div id="swagger-ui"></div>
-<script src="https://unpkg.com/swagger-ui-dist@5.11.8/swagger-ui-bundle.js"></script>
-<script src="https://unpkg.com/swagger-ui-dist@5.11.8/swagger-ui-standalone-preset.js"></script>
-<script>
-    window.onload = function() {
-        // The SwaggerUIBundle is the main object for configuring the UI
-        const ui = SwaggerUIBundle({
-            // THE MOST IMPORTANT PART: Tell the UI where to find your JSON
-            url: "/autodocer/api-docs",
-            dom_id: '#swagger-ui',
-            deepLinking: true,
-            presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIStandalonePreset
-            ],
-            plugins: [
-                SwaggerUIBundle.plugins.DownloadUrl
-            ],
-            layout: "StandaloneLayout"
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // Icon components
+    const Search = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>;
+    const Moon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>;
+    const Sun = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>;
+    const Copy = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>;
+    const Check = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
+    const Loader = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin"><line x1="12" x2="12" y1="2" y2="6"></line><line x1="12" x2="12" y1="18" y2="22"></line><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"></line><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"></line><line x1="2" x2="6" y1="12" y2="12"></line><line x1="18" x2="22" y1="12" y2="12"></line><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"></line><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"></line></svg>;
+    const AlertTriangle = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>;
+    const Code = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>;
+    const CheckCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>;
+    const Inbox = () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>;
+    const ChevronRight = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"></path></svg>;
+    const Menu = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>;
+    const X = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>;
+    const Play = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
+    const Edit = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
+    const Save = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>;
+    const XCircle = () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m15 9-6 6"></path><path d="m9 9 6 6"></path></svg>;
+
+    // Parse cURL command to extract request details
+    const parseCurlCommand = (curlCommand) => {
+      try {
+        // Extract URL
+        const urlMatch = curlCommand.match(/'([^']+)'|"([^"]+)"/);
+        const url = urlMatch ? (urlMatch[1] || urlMatch[2]) : '';
+
+        // Extract method
+        const methodMatch = curlCommand.match(/-X\s+(\w+)/i);
+        const method = methodMatch ? methodMatch[1].toUpperCase() : 'GET';
+
+        // Extract headers
+        const headers = {};
+        const headerMatches = curlCommand.matchAll(/-H\s+['"]([^:]+):\s*([^'"]+)['"]/g);
+        for (const match of headerMatches) {
+          headers[match[1]] = match[2];
+        }
+
+        // Extract body (for POST/PUT/PATCH)
+        let body = null;
+        const bodyMatch = curlCommand.match(/-d\s+'([^']+)'|-d\s+"([^"]+)"/);
+        if (bodyMatch) {
+          const bodyStr = bodyMatch[1] || bodyMatch[2];
+          // Unescape JSON
+          const unescaped = bodyStr.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+          try {
+            body = JSON.parse(unescaped);
+          } catch (e) {
+            body = unescaped; // If not JSON, keep as string
+          }
+        }
+
+        return { url, method, headers, body };
+      } catch (error) {
+        console.error('Error parsing cURL:', error);
+        return null;
+      }
+    };
+
+    // ExecutableExample Component
+    const ExecutableExample = ({ example, index, copiedIndex, setCopiedIndex, darkMode }) => {
+      const [isEditing, setIsEditing] = useState(false);
+      const [editedCommand, setEditedCommand] = useState(example.command);
+      const [isExecuting, setIsExecuting] = useState(false);
+      const [response, setResponse] = useState(null);
+      const [showResponse, setShowResponse] = useState(false);
+
+      const copyToClipboard = async (text, idx) => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setCopiedIndex(idx);
+          setTimeout(() => setCopiedIndex(null), 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      };
+
+      const handleEdit = () => {
+        setIsEditing(true);
+      };
+
+      const handleSave = () => {
+        setIsEditing(false);
+        setResponse(null);
+        setShowResponse(false);
+      };
+
+      const handleCancel = () => {
+        setEditedCommand(example.command);
+        setIsEditing(false);
+      };
+
+      const executeRequest = async () => {
+        const parsed = parseCurlCommand(editedCommand);
+
+        if (!parsed || !parsed.url) {
+          setResponse({
+            error: true,
+            message: 'Could not parse cURL command. Please check the format.'
+          });
+          setShowResponse(true);
+          return;
+        }
+
+        setIsExecuting(true);
+        setResponse(null);
+        setShowResponse(true);
+
+        try {
+          const startTime = Date.now();
+
+          const fetchOptions = {
+            method: parsed.method,
+            headers: parsed.headers || {}
+          };
+
+          if (parsed.body && ['POST', 'PUT', 'PATCH'].includes(parsed.method)) {
+            fetchOptions.body = typeof parsed.body === 'string'
+              ? parsed.body
+              : JSON.stringify(parsed.body);
+          }
+
+          const res = await fetch(parsed.url, fetchOptions);
+          const duration = Date.now() - startTime;
+
+          let responseBody;
+          const contentType = res.headers.get('content-type');
+
+          if (contentType && contentType.includes('application/json')) {
+            try {
+              responseBody = await res.json();
+            } catch (e) {
+              responseBody = await res.text();
+            }
+          } else {
+            responseBody = await res.text();
+          }
+
+          const responseHeaders = {};
+          res.headers.forEach((value, key) => {
+            responseHeaders[key] = value;
+          });
+
+          setResponse({
+            status: res.status,
+            statusText: res.statusText,
+            headers: responseHeaders,
+            body: responseBody,
+            duration,
+            error: false
+          });
+
+        } catch (error) {
+          setResponse({
+            error: true,
+            message: error.message,
+            details: 'Network error or CORS issue. Make sure the API server is running and CORS is enabled.'
+          });
+        } finally {
+          setIsExecuting(false);
+        }
+      };
+
+      return (
+        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+          <div className="flex items-start md:items-center justify-between mb-3 gap-2 flex-wrap">
+            <span className="font-semibold text-sm md:text-base text-gray-900 dark:text-white flex items-center gap-2 flex-1 min-w-0">
+              <Code className="flex-shrink-0" />
+              <span className="truncate">{example.description || `Example ${index + 1}`}</span>
+            </span>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {!isEditing ? (
+                <button
+                  onClick={handleEdit}
+                  className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gray-500 text-white hover:bg-gray-600"
+                  title="Edit command"
+                >
+                  <Edit />
+                  <span className="hidden sm:inline">Edit</span>
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={handleSave}
+                    className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-green-500 text-white hover:bg-green-600"
+                    title="Save changes"
+                  >
+                    <Save />
+                    <span className="hidden sm:inline">Save</span>
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gray-500 text-white hover:bg-gray-600"
+                    title="Cancel editing"
+                  >
+                    <XCircle />
+                    <span className="hidden sm:inline">Cancel</span>
+                  </button>
+                </>
+              )}
+
+              <button
+                onClick={() => copyToClipboard(editedCommand, index)}
+                className={`flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors ${
+                  copiedIndex === index
+                    ? 'bg-green-500 text-white'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+                title="Copy to clipboard"
+              >
+                {copiedIndex === index ? (
+                  <>
+                    <Check />
+                    <span className="hidden sm:inline">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy />
+                    <span className="hidden sm:inline">Copy</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={executeRequest}
+                disabled={isExecuting || isEditing}
+                className="flex items-center gap-1 px-2.5 md:px-3 py-1.5 rounded text-xs md:text-sm font-medium transition-colors bg-gradient-to-r from-purple-500 to-purple-600 text-white hover:from-purple-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                title="Execute request"
+              >
+                {isExecuting ? (
+                  <>
+                    <Loader />
+                    <span className="hidden sm:inline">Running...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play />
+                    <span className="hidden sm:inline">Execute</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {isEditing ? (
+            <textarea
+              value={editedCommand}
+              onChange={(e) => setEditedCommand(e.target.value)}
+              className="w-full bg-gray-900 text-gray-100 p-3 md:p-4 rounded-lg text-xs md:text-sm font-mono border-2 border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="4"
+            />
+          ) : (
+            <pre className="bg-gray-900 text-gray-100 p-3 md:p-4 rounded-lg text-xs md:text-sm overflow-x-auto font-mono">
+              {editedCommand}
+            </pre>
+          )}
+
+          {showResponse && response && (
+            <div className="mt-4 border-t-2 border-gray-300 dark:border-gray-600 pt-4">
+              {response.error ? (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                  <div className="flex items-start gap-2 mb-2">
+                    <AlertTriangle className="flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-red-800 dark:text-red-300 mb-1">Error</h4>
+                      <p className="text-sm text-red-700 dark:text-red-400">{response.message}</p>
+                      {response.details && (
+                        <p className="text-xs text-red-600 dark:text-red-500 mt-2">{response.details}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${
+                      response.status >= 200 && response.status < 300
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+                        : response.status >= 400 && response.status < 500
+                        ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300'
+                        : response.status >= 500
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+                    }`}>
+                      <CheckCircle className="inline mr-1" />
+                      {response.status} {response.statusText}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      ⏱️ <strong>{response.duration}ms</strong>
+                    </div>
+                  </div>
+
+                  <details className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <summary className="px-4 py-2 cursor-pointer font-semibold text-sm text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-2">
+                      <ChevronRight className="flex-shrink-0" />
+                      Response Headers ({Object.keys(response.headers).length})
+                    </summary>
+                    <div className="px-4 py-3 space-y-1 border-t border-gray-200 dark:border-gray-700">
+                      {Object.entries(response.headers).map(([key, value]) => (
+                        <div key={key} className="flex gap-2 text-xs">
+                          <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">{key}:</span>
+                          <span className="font-mono text-gray-700 dark:text-gray-300 break-all">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+
+                  <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                    <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                      <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Response Body</h4>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs font-mono text-gray-800 dark:text-gray-200 max-h-96 overflow-y-auto">
+                      {typeof response.body === 'object'
+                        ? JSON.stringify(response.body, null, 2)
+                        : response.body}
+                    </pre>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // Main App Component
+    const AutoDocerUI = () => {
+      const [apiSpec, setApiSpec] = useState(null);
+      const [selectedServer, setSelectedServer] = useState(null);
+      const [selectedServerForExamples, setSelectedServerForExamples] = useState(null);
+      const [currentEndpoint, setCurrentEndpoint] = useState(null);
+      const [searchQuery, setSearchQuery] = useState('');
+      const [darkMode, setDarkMode] = useState(false);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      const [generatingExamples, setGeneratingExamples] = useState(false);
+      const [examples, setExamples] = useState([]);
+      const [copiedIndex, setCopiedIndex] = useState(null);
+      const [sidebarOpen, setSidebarOpen] = useState(true);
+
+      useEffect(() => {
+        loadApi();
+        const savedTheme = localStorage.getItem('autodoc-theme');
+        if (savedTheme === 'dark') {
+          setDarkMode(true);
+        }
+      }, []);
+
+      useEffect(() => {
+        if (darkMode) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('autodoc-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('autodoc-theme', 'light');
+        }
+      }, [darkMode]);
+
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            document.querySelector('input[type="text"]')?.focus();
+          }
+          if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+            e.preventDefault();
+            setDarkMode(prev => !prev);
+          }
+          if (e.key === 'Escape' && sidebarOpen && window.innerWidth < 768) {
+            setSidebarOpen(false);
+          }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [sidebarOpen]);
+
+      const loadApi = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch('/autodocer/api-docs');
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const data = await response.json();
+          setApiSpec(data);
+
+          if (data.servers && data.servers.length > 0) {
+            setSelectedServer(data.servers[0].url);
+            setSelectedServerForExamples(data.servers[0].url);
+          } else {
+            setSelectedServer('http://localhost:8080');
+            setSelectedServerForExamples('http://localhost:8080');
+          }
+
+          setError(null);
+        } catch (err) {
+          console.error('Error loading API:', err);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const endpointsByTag = useMemo(() => {
+        if (!apiSpec || !apiSpec.paths) return {};
+
+        const grouped = {};
+        Object.entries(apiSpec.paths).forEach(([path, methods]) => {
+          Object.entries(methods).forEach(([method, operation]) => {
+            const tag = (operation.tags && operation.tags[0]) || 'default';
+            if (!grouped[tag]) grouped[tag] = [];
+            grouped[tag].push({ path, method, operation });
+          });
         });
-        window.ui = ui;
-    }
+
+        return grouped;
+      }, [apiSpec]);
+
+      const filteredEndpoints = useMemo(() => {
+        if (!searchQuery.trim()) return endpointsByTag;
+
+        const query = searchQuery.toLowerCase();
+        const filtered = {};
+
+        Object.entries(endpointsByTag).forEach(([tag, endpoints]) => {
+          const matchingEndpoints = endpoints.filter(({ path, method, operation }) => {
+            return (
+              path.toLowerCase().includes(query) ||
+              method.toLowerCase().includes(query) ||
+              (operation.summary && operation.summary.toLowerCase().includes(query)) ||
+              (operation.description && operation.description.toLowerCase().includes(query))
+            );
+          });
+
+          if (matchingEndpoints.length > 0) {
+            filtered[tag] = matchingEndpoints;
+          }
+        });
+
+        return filtered;
+      }, [endpointsByTag, searchQuery]);
+
+      const buildEndpointInfo = (path, method, operation) => {
+        const parameters = [];
+
+        if (operation.parameters) {
+          operation.parameters.forEach(param => {
+            let sourceType = 'RequestParam';
+            if (param.in === 'path') sourceType = 'PathVariable';
+            else if (param.in === 'header') sourceType = 'RequestHeader';
+
+            parameters.push({
+              name: param.name,
+              type: param.schema?.type || 'string',
+              isRequired: param.required || false,
+              sourceType: sourceType,
+              description: param.description || null
+            });
+          });
+        }
+
+        if (operation.requestBody) {
+          const content = operation.requestBody.content?.['application/json'];
+          if (content && content.schema) {
+            parameters.push({
+              name: 'body',
+              type: content.schema,
+              isRequired: operation.requestBody.required || false,
+              sourceType: 'RequestBody',
+              description: operation.requestBody.description || null
+            });
+          }
+        }
+
+        return {
+          path: path,
+          httpMethod: method.toUpperCase(),
+          summary: operation.summary || null,
+          description: operation.description || null,
+          parameters: parameters,
+          responses: operation.responses || {}
+        };
+      };
+
+      const generateExamples = async () => {
+        if (!currentEndpoint) return;
+
+        setGeneratingExamples(true);
+        setExamples([]);
+
+        try {
+          const { path, method } = currentEndpoint;
+          const operation = apiSpec.paths[path][method];
+          const endpointInfo = buildEndpointInfo(path, method, operation);
+
+          // Send serverUrl as query parameter
+          const url = `/autodocer/ai/generate-examples?serverUrl=${encodeURIComponent(selectedServerForExamples)}`;
+
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(endpointInfo)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          setExamples(data || []);
+        } catch (err) {
+          console.error('Error generating examples:', err);
+          setExamples([{ error: err.message }]);
+        } finally {
+          setGeneratingExamples(false);
+        }
+      };
+
+      const selectEndpoint = (path, method) => {
+        setCurrentEndpoint({ path, method });
+        setExamples([]);
+        localStorage.setItem('autodoc-last-endpoint', JSON.stringify({ path, method }));
+
+        if (window.innerWidth < 768) {
+          setSidebarOpen(false);
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 300);
+        }
+      };
+
+      const methodColors = {
+        get: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+        post: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+        put: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+        delete: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+        patch: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+      };
+
+      const availableServers = useMemo(() => {
+        if (apiSpec && apiSpec.servers && apiSpec.servers.length > 0) {
+          return apiSpec.servers;
+        }
+        return [{ url: 'http://localhost:8080', description: 'Default Server (localhost:8080)' }];
+      }, [apiSpec]);
+
+      return (
+        <div className="min-h-screen h-screen flex overflow-hidden bg-gray-50 dark:bg-gray-950">
+          {/* Sidebar */}
+          <aside className={`
+            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            fixed md:static z-50 w-80 h-full
+            bg-white dark:bg-gray-900
+            border-r border-gray-200 dark:border-gray-700
+            transition-transform duration-300 ease-in-out
+            flex flex-col
+          `}>
+            <div className="p-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  📚 AutoDocER API
+                </h1>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    aria-label="Toggle dark mode"
+                  >
+                    {darkMode ? <Sun /> : <Moon />}
+                  </button>
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    <X />
+                  </button>
+                </div>
+              </div>
+
+              {apiSpec && (
+                <div className="mb-4">
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                    Server
+                  </label>
+                  <select
+                    value={selectedServer || ''}
+                    onChange={(e) => setSelectedServer(e.target.value)}
+                    className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                  >
+                    {availableServers.map((server, idx) => (
+                      <option key={idx} value={server.url}>
+                        {server.description || server.url}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="mt-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-mono text-gray-600 dark:text-gray-400 break-all">
+                    {selectedServer}
+                  </div>
+                </div>
+              )}
+
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <Search />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search endpoints... (⌘K)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 6 6 18"></path>
+                      <path d="m6 6 12 12"></path>
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <nav className="flex-1 overflow-y-auto p-3 min-h-0">
+              {loading ? (
+                <div className="space-y-2">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="animate-pulse">
+                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                      <div className="space-y-1 ml-4">
+                        <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                        <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-sm">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="flex-shrink-0 mt-0.5" />
+                    <span>Error: {error}</span>
+                  </div>
+                </div>
+              ) : Object.keys(filteredEndpoints).length === 0 ? (
+                <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">
+                  <div className="mb-2">🔍</div>
+                  <div>No endpoints found matching <strong>"{searchQuery}"</strong></div>
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="mt-3 text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 text-xs underline"
+                  >
+                    Clear search
+                  </button>
+                </div>
+              ) : (
+                Object.keys(filteredEndpoints).sort().map(tag => (
+                  <details key={tag} open className="mb-2">
+                    <summary className="px-3 py-2 cursor-pointer font-semibold text-sm text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2 select-none">
+                      <ChevronRight className="flex-shrink-0" />
+                      <span className="truncate flex-1">{tag}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                        {filteredEndpoints[tag].length}
+                      </span>
+                    </summary>
+                    <ul className="mt-1 ml-2 space-y-1">
+                      {filteredEndpoints[tag].map(({ path, method, operation }) => (
+                        <li
+                          key={`${method}-${path}`}
+                          onClick={() => selectEndpoint(path, method)}
+                          className={`
+                            px-3 py-2 rounded-lg cursor-pointer text-sm flex items-center gap-2
+                            transition-all hover:bg-gray-100 dark:hover:bg-gray-800
+                            ${currentEndpoint?.path === path && currentEndpoint?.method === method
+                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium'
+                              : 'text-gray-700 dark:text-gray-300'
+                            }
+                          `}
+                        >
+                          <span className={`px-2 py-1 rounded text-xs font-bold uppercase flex-shrink-0 ${methodColors[method]}`}>
+                            {method}
+                          </span>
+                          <span className="font-mono text-xs truncate">{path}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))
+              )}
+            </nav>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-950 h-full">
+            <div className="md:hidden sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <Menu />
+              </button>
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">AutoDocER API</h1>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                {darkMode ? <Sun /> : <Moon />}
+              </button>
+            </div>
+
+            <div className="max-w-5xl mx-auto p-4 md:p-6 lg:p-10">
+              {!currentEndpoint ? (
+                <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-8 md:p-16 text-center min-h-[400px] flex items-center justify-center">
+                  <div>
+                    <div className="text-6xl mb-4">📚</div>
+                    <div className="text-gray-400 dark:text-gray-600 text-base md:text-lg mb-2">
+                      Welcome to AutoDocER API Documentation
+                    </div>
+                    <div className="text-gray-500 dark:text-gray-500 text-sm">
+                      Select an endpoint from the sidebar to get started
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <EndpointDetails
+                  apiSpec={apiSpec}
+                  currentEndpoint={currentEndpoint}
+                  methodColors={methodColors}
+                  generatingExamples={generatingExamples}
+                  examples={examples}
+                  generateExamples={generateExamples}
+                  copiedIndex={copiedIndex}
+                  setCopiedIndex={setCopiedIndex}
+                  darkMode={darkMode}
+                  availableServers={availableServers}
+                  selectedServerForExamples={selectedServerForExamples}
+                  setSelectedServerForExamples={setSelectedServerForExamples}
+                />
+              )}
+            </div>
+          </main>
+
+          {sidebarOpen && (
+            <div
+              className="md:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+        </div>
+      );
+    };
+
+    // Endpoint Details Component
+    const EndpointDetails = ({
+      apiSpec,
+      currentEndpoint,
+      methodColors,
+      generatingExamples,
+      examples,
+      generateExamples,
+      copiedIndex,
+      setCopiedIndex,
+      darkMode,
+      availableServers,
+      selectedServerForExamples,
+      setSelectedServerForExamples
+    }) => {
+      const { path, method } = currentEndpoint;
+      const operation = apiSpec.paths[path][method];
+
+      return (
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 md:p-6 lg:p-8 space-y-6 md:space-y-8">
+          <div className="flex items-start md:items-center gap-3 flex-wrap">
+            <span className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold uppercase flex-shrink-0 ${methodColors[method]}`}>
+              {method}
+            </span>
+            <span className="text-lg md:text-2xl font-semibold text-gray-900 dark:text-white font-mono break-all">
+              {path}
+            </span>
+          </div>
+
+          {operation.summary && (
+            <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 font-medium">{operation.summary}</p>
+          )}
+          {operation.description && (
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">{operation.description}</p>
+          )}
+
+          {/* Parameters */}
+          <Section title="Parameters">
+            {operation.parameters && operation.parameters.length > 0 ? (
+              <div className="space-y-3">
+                {operation.parameters.map((param, idx) => (
+                  <ParameterCard key={idx} param={param} darkMode={darkMode} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="flex justify-center mb-2"><Inbox /></div>
+                No parameters required for this endpoint
+              </div>
+            )}
+          </Section>
+
+          {/* Request Body */}
+          {operation.requestBody && (
+            <Section title="Request Body">
+              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  {operation.requestBody.required ? (
+                    <span className="px-3 py-1 text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded">
+                      REQUIRED
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded">
+                      OPTIONAL
+                    </span>
+                  )}
+                  <span className="px-3 py-1 text-xs font-semibold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
+                    application/json
+                  </span>
+                </div>
+              </div>
+              {operation.requestBody.content?.['application/json']?.schema && (
+                <SchemaDisplay schema={operation.requestBody.content['application/json'].schema} darkMode={darkMode} />
+              )}
+            </Section>
+          )}
+
+          {/* Responses */}
+          {operation.responses && (
+            <Section title="Responses">
+              <div className="space-y-4">
+                {Object.entries(operation.responses).map(([code, response]) => (
+                  <ResponseBlock key={code} code={code} response={response} darkMode={darkMode} />
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* Try It Out */}
+          <div className="pt-6 border-t-2 border-gray-200 dark:border-gray-700 space-y-4">
+            <div className="space-y-3">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Select Server URL for Examples
+              </label>
+              <select
+                value={selectedServerForExamples || ''}
+                onChange={(e) => setSelectedServerForExamples(e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+              >
+                {availableServers.map((server, idx) => (
+                  <option key={idx} value={server.url}>
+                    {server.description || server.url}
+                  </option>
+                ))}
+              </select>
+              <div className="text-xs text-gray-500 dark:text-gray-400 italic">
+                This URL will be used in generated cURL commands
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button
+                onClick={generateExamples}
+                disabled={generatingExamples}
+                className="inline-flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm md:text-base font-semibold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {generatingExamples ? (
+                  <>
+                    <Loader />
+                    <span>Generating examples...</span>
+                  </>
+                ) : (
+                  <>
+                    <Code />
+                    <span>Generate Examples</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {examples.length > 0 && (
+              <div className="space-y-4 text-left">
+                {examples.map((example, idx) => (
+                  example.error ? (
+                    <div key={idx} className="p-3 md:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300 text-sm">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="flex-shrink-0 mt-0.5" />
+                        <span>Error: {example.error}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <ExecutableExample
+                      key={idx}
+                      example={example}
+                      index={idx}
+                      copiedIndex={copiedIndex}
+                      setCopiedIndex={setCopiedIndex}
+                      darkMode={darkMode}
+                    />
+                  )
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const Section = ({ title, children }) => (
+      <div>
+        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-3 md:mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+          {title}
+        </h2>
+        {children}
+      </div>
+    );
+
+    const ParameterCard = ({ param, darkMode }) => (
+      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 md:p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+        <div className="flex items-start md:items-center justify-between flex-wrap gap-2 mb-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="font-mono font-semibold text-sm md:text-base text-blue-600 dark:text-blue-400 truncate">{param.name}</span>
+            <span className="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded border border-gray-300 dark:border-gray-600 flex-shrink-0">
+              {param.in}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="font-mono text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">
+              {param.schema?.type || 'any'}
+            </span>
+            {param.required ? (
+              <span className="px-2 py-1 text-xs font-semibold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded">
+                REQUIRED
+              </span>
+            ) : (
+              <span className="px-2 py-1 text-xs font-semibold bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 rounded">
+                OPTIONAL
+              </span>
+            )}
+          </div>
+        </div>
+        {param.description && (
+          <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-2">{param.description}</p>
+        )}
+        {param.schema && <ConstraintsDisplay schema={param.schema} />}
+      </div>
+    );
+
+    const ConstraintsDisplay = ({ schema }) => {
+      const constraints = [];
+      if (schema.minLength !== undefined) constraints.push(`Min Length: ${schema.minLength}`);
+      if (schema.maxLength !== undefined) constraints.push(`Max Length: ${schema.maxLength}`);
+      if (schema.minimum !== undefined) constraints.push(`Min: ${schema.minimum}`);
+      if (schema.maximum !== undefined) constraints.push(`Max: ${schema.maximum}`);
+      if (schema.pattern) constraints.push(`Pattern: ${schema.pattern}`);
+      if (schema.enum) constraints.push(`Enum: [${schema.enum.join(', ')}]`);
+
+      if (constraints.length === 0) return null;
+
+      return (
+        <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded border-l-4 border-orange-500 text-xs text-gray-600 dark:text-gray-400">
+          <div className="flex flex-wrap gap-2">
+            {constraints.map((c, i) => (
+              <span key={i} className="inline-flex items-center gap-1">
+                <span className="text-orange-600 dark:text-orange-400">•</span>
+                {c}
+              </span>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    const SchemaDisplay = ({ schema, depth = 0 }) => {
+      const [showJson, setShowJson] = React.useState(false);
+      const [copied, setCopied] = React.useState(false);
+
+      if (!schema) return <span className="text-gray-500">No schema</span>;
+
+      const generateSampleJson = (schema, depth = 0) => {
+        if (depth > 10) return '...';
+
+        if (!schema || !schema.type) return null;
+
+        switch (schema.type) {
+          case 'object':
+            if (!schema.properties) return {};
+            const obj = {};
+            Object.entries(schema.properties).forEach(([key, prop]) => {
+              obj[key] = generateSampleJson(prop, depth + 1);
+            });
+            return obj;
+
+          case 'array':
+            if (!schema.items) return [];
+            return [generateSampleJson(schema.items, depth + 1)];
+
+          case 'string':
+            if (schema.enum) return schema.enum[0];
+            if (schema.pattern) return 'string matching pattern';
+            if (schema.format === 'email') return 'user@example.com';
+            if (schema.format === 'date') return '2024-01-01';
+            if (schema.format === 'date-time') return '2024-01-01T00:00:00Z';
+            return 'string';
+
+          case 'integer':
+            return schema.minimum || 0;
+
+          case 'number':
+            return schema.minimum || 0.0;
+
+          case 'boolean':
+            return true;
+
+          default:
+            return null;
+        }
+      };
+
+      const copyJsonExample = async () => {
+        const example = generateSampleJson(schema);
+        const jsonString = JSON.stringify(example, null, 2);
+
+        try {
+          await navigator.clipboard.writeText(jsonString);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      };
+
+      return (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 justify-end">
+            <button
+              onClick={() => setShowJson(!showJson)}
+              className="px-3 py-1.5 text-xs font-medium bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded transition-colors flex items-center gap-1"
+            >
+              <Code className="w-3 h-3" />
+              {showJson ? 'Show Structure' : 'Show JSON'}
+            </button>
+            <button
+              onClick={copyJsonExample}
+              className={`px-3 py-1.5 text-xs font-medium rounded transition-colors flex items-center gap-1 ${
+                copied
+                  ? 'bg-green-500 text-white'
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              {copied ? (
+                <>
+                  <Check className="w-3 h-3" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3" />
+                  Copy Example
+                </>
+              )}
+            </button>
+          </div>
+
+          {showJson ? (
+            <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs font-mono overflow-x-auto">
+              {JSON.stringify(generateSampleJson(schema), null, 2)}
+            </pre>
+          ) : (
+            <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+              {renderSchemaTree(schema, depth)}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const renderSchemaTree = (schema, depth = 0, required = [], parentKey = '') => {
+      if (!schema) return null;
+
+      const requiredFields = schema.required || required;
+
+      if (schema.type === 'object' && schema.properties) {
+        return (
+          <div className={depth === 0 ? '' : 'ml-6 border-l-2 border-gray-300 dark:border-gray-600'}>
+            {Object.entries(schema.properties).map(([name, prop], idx) => (
+              <SchemaField
+                key={`${parentKey}-${name}-${idx}`}
+                name={name}
+                schema={prop}
+                isRequired={requiredFields.includes(name)}
+                depth={depth}
+                parentKey={`${parentKey}-${name}`}
+                requiredFields={prop.required || []}
+              />
+            ))}
+          </div>
+        );
+      } else if (schema.type === 'array' && schema.items) {
+        return (
+          <div className="ml-6 border-l-2 border-purple-300 dark:border-purple-600">
+            <div className="pl-4 py-2 text-xs text-purple-600 dark:text-purple-400 font-semibold">
+              Array Items:
+            </div>
+            {renderSchemaTree(schema.items, depth, [], `${parentKey}-items`)}
+          </div>
+        );
+      }
+
+      return null;
+    };
+
+    const SchemaField = ({ name, schema, isRequired, depth, parentKey, requiredFields }) => {
+      const [isExpanded, setIsExpanded] = React.useState(depth < 2);
+
+      const hasChildren = (schema.type === 'object' && schema.properties) ||
+                          (schema.type === 'array' && schema.items);
+
+      const getTypeColor = (type) => {
+        const colors = {
+          string: 'text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20',
+          integer: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
+          number: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20',
+          boolean: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20',
+          array: 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20',
+          object: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20',
+        };
+        return colors[type] || 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/20';
+      };
+
+      const constraints = [];
+      if (schema.minLength !== undefined) constraints.push({ label: 'Min Length', value: schema.minLength, color: 'text-amber-600 dark:text-amber-400' });
+      if (schema.maxLength !== undefined) constraints.push({ label: 'Max Length', value: schema.maxLength, color: 'text-amber-600 dark:text-amber-400' });
+      if (schema.minimum !== undefined) constraints.push({ label: 'Min', value: schema.minimum, color: 'text-cyan-600 dark:text-cyan-400' });
+      if (schema.maximum !== undefined) constraints.push({ label: 'Max', value: schema.maximum, color: 'text-cyan-600 dark:text-cyan-400' });
+      if (schema.pattern) constraints.push({ label: 'Pattern', value: schema.pattern, color: 'text-pink-600 dark:text-pink-400' });
+      if (schema.format) constraints.push({ label: 'Format', value: schema.format, color: 'text-violet-600 dark:text-violet-400' });
+      if (schema.enum) constraints.push({ label: 'Enum', value: `[${schema.enum.join(', ')}]`, color: 'text-rose-600 dark:text-rose-400' });
+
+      return (
+        <div className="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+          <div className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors">
+            <div className="flex items-start gap-2 flex-wrap">
+              {hasChildren && (
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors flex-shrink-0"
+                >
+                  <svg
+                    className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+              )}
+              {!hasChildren && <div className="w-6"></div>}
+
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <span className="font-mono font-semibold text-sm text-gray-900 dark:text-white truncate">
+                  {name}
+                </span>
+
+                {isRequired && (
+                  <span className="px-2 py-0.5 text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded flex-shrink-0">
+                    REQUIRED
+                  </span>
+                )}
+              </div>
+
+              <span className={`px-2 py-1 text-xs font-semibold rounded flex-shrink-0 ${getTypeColor(schema.type)}`}>
+                {schema.type || 'any'}
+              </span>
+            </div>
+
+            {constraints.length > 0 && (
+              <div className="mt-2 ml-6 flex flex-wrap gap-2">
+                {constraints.map((constraint, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded text-xs"
+                  >
+                    <span className={`font-semibold ${constraint.color}`}>
+                      {constraint.label}:
+                    </span>
+                    <span className="font-mono text-gray-700 dark:text-gray-300">
+                      {constraint.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {schema.description && (
+              <div className="mt-2 ml-6 text-xs text-gray-600 dark:text-gray-400 italic">
+                {schema.description}
+              </div>
+            )}
+          </div>
+
+          {hasChildren && isExpanded && (
+            <div className="bg-gray-50 dark:bg-gray-800/50">
+              {renderSchemaTree(schema, depth + 1, requiredFields, parentKey)}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const ResponseBlock = ({ code, response, darkMode }) => {
+      const getStatusColor = (code) => {
+        if (code.startsWith('2')) return 'text-green-600 dark:text-green-400';
+        if (code.startsWith('3')) return 'text-blue-600 dark:text-blue-400';
+        if (code.startsWith('4')) return 'text-orange-600 dark:text-orange-400';
+        if (code.startsWith('5')) return 'text-red-600 dark:text-red-400';
+        return 'text-gray-600 dark:text-gray-400';
+      };
+
+      const getStatusBg = (code) => {
+        if (code.startsWith('2')) return 'bg-green-50 dark:bg-green-900/20';
+        if (code.startsWith('3')) return 'bg-blue-50 dark:bg-blue-900/20';
+        if (code.startsWith('4')) return 'bg-orange-50 dark:bg-orange-900/20';
+        if (code.startsWith('5')) return 'bg-red-50 dark:bg-red-900/20';
+        return 'bg-gray-50 dark:bg-gray-900/20';
+      };
+
+      return (
+        <div className={`border-l-4 rounded-lg overflow-hidden ${
+          code.startsWith('2') ? 'border-green-500' :
+          code.startsWith('3') ? 'border-blue-500' :
+          code.startsWith('4') ? 'border-orange-500' :
+          code.startsWith('5') ? 'border-red-500' : 'border-gray-500'
+        }`}>
+          <div className={`p-4 ${getStatusBg(code)}`}>
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className={`flex-shrink-0 ${getStatusColor(code)}`} />
+              <h3 className={`font-bold text-base ${getStatusColor(code)}`}>
+                HTTP {code}
+              </h3>
+              {response.content?.['application/json'] && (
+                <span className="ml-auto px-2 py-1 text-xs font-semibold bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded border border-gray-300 dark:border-gray-600">
+                  application/json
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {response.description || 'No description'}
+            </p>
+          </div>
+
+          {response.content?.['application/json']?.schema && (
+            <SchemaDisplay schema={response.content['application/json'].schema} />
+          )}
+        </div>
+      );
+    };
+
+    // Render the app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AutoDocerUI />);
 </script>
 </body>
 </html>

@@ -480,8 +480,6 @@ public class AggregatorDataController {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    // Structure to hold both merged and individual specs
-    // NOTE: This record definition MUST exist, either here or in a separate file.
     public record AggregatedDefinitionsResult(JsonNode unifiedSpec, Map<String, JsonNode> individualSpecs) {}
 
 

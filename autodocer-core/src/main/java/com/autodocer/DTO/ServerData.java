@@ -1,5 +1,4 @@
-package com.autodocer.DTO; // Or com.autodocer.DTO
-
+package com.autodocer.DTO;
 /**
  * Simple record to hold the extracted server information.
  */

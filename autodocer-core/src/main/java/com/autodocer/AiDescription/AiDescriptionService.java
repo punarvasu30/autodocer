@@ -11,5 +11,5 @@ public interface AiDescriptionService {
 
     AiGenerationResult generateDescription(EndpointContext context) ;
 
-    List<ExampleInfo> generateExamples(EndpointInfo endpoint);
+    List<ExampleInfo> generateExamples(EndpointInfo endpoint,String serverUrl);
 }

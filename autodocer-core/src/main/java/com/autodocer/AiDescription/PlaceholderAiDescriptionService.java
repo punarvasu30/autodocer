@@ -8,11 +8,6 @@ import com.autodocer.DTO.ExampleInfo;
 import java.lang.reflect.Method;
 import java.util.List;
 
-/**
- * A placeholder implementation of the AI service.
- * It does not call a real LLM, but instead generates simple, rule-based
- * descriptions based on the method name. This is for testing the integration.
- */
 public class PlaceholderAiDescriptionService implements AiDescriptionService {
 
     @Override
@@ -46,7 +41,7 @@ public class PlaceholderAiDescriptionService implements AiDescriptionService {
     }
 
     @Override
-    public List<ExampleInfo> generateExamples(EndpointInfo endpoint) {
+    public List<ExampleInfo> generateExamples(EndpointInfo endpoint,String serverUrl) {
         return null;
     }
 }

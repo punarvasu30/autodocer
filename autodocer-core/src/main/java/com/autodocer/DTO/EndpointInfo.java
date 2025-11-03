@@ -8,7 +8,6 @@ public record EndpointInfo(
         String path,
         List<ParameterInfo> parameters,
         Object responseType,
-        // ADDED: Fields for summary and description (can be null for now)
         String summary,
         String description
 ) {}

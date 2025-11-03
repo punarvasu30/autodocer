@@ -14,10 +14,6 @@ import java.util.List;
 
 /**
  * Holds information about a complex object schema.
- *
- * @param className The simple name of the class.
- * @param fields A list of fields in this schema.
- * @param requiredFields A list of field names that are marked as required (e.g., @NotNull).
  */
 public record SchemaInfo(
         String className,

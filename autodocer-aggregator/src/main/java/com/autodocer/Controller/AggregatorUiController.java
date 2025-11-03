@@ -7,17 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * Controller to serve the main HTML page for the Aggregator UI.
- */
 @Controller
 public class AggregatorUiController {
-
-    /**
-     * Serves the index.html page for the aggregator dashboard.
-     * Spring Boot will look for this file in 'src/main/resources/static/aggregator-ui/index.html'.
-     * @return The path to the HTML view file.
-     */
 
     @GetMapping("/autodocer-aggregator/ui")
     public ResponseEntity<Resource> getAggregatorUi() {

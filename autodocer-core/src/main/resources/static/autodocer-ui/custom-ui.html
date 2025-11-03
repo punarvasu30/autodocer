@@ -275,7 +275,6 @@
 <!--            margin-bottom: 16px;-->
 <!--        }-->
 
-<!--        /* Parameter Card Layout */-->
 <!--        .param-list {-->
 <!--            display: flex;-->
 <!--            flex-direction: column;-->
@@ -373,7 +372,6 @@
 <!--            font-style: italic;-->
 <!--        }-->
 
-<!--        /* Schema Display */-->
 <!--        .schema-box {-->
 <!--            background: var(&#45;&#45;code-bg);-->
 <!--            border: 1px solid var(&#45;&#45;border);-->
@@ -416,7 +414,7 @@
 <!--            color: var(&#45;&#45;text);-->
 <!--        }-->
 
-<!--        /* Try It Out Button */-->
+<!--        /* Try It Out Section */-->
 <!--        .try-it-section {-->
 <!--            margin-top: 40px;-->
 <!--            padding-top: 24px;-->
@@ -447,6 +445,93 @@
 
 <!--        .try-it-btn:active {-->
 <!--            transform: translateY(0);-->
+<!--        }-->
+
+<!--        .try-it-btn:disabled {-->
+<!--            opacity: 0.6;-->
+<!--            cursor: not-allowed;-->
+<!--            transform: none;-->
+<!--        }-->
+
+<!--        /* Examples Display */-->
+<!--        .examples-container {-->
+<!--            margin-top: 24px;-->
+<!--            text-align: left;-->
+<!--        }-->
+
+<!--        .example-item {-->
+<!--            background: var(&#45;&#45;code-bg);-->
+<!--            border: 1px solid var(&#45;&#45;border);-->
+<!--            border-radius: 8px;-->
+<!--            padding: 16px;-->
+<!--            margin-bottom: 16px;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+
+<!--        .example-item:hover {-->
+<!--            border-color: var(&#45;&#45;primary);-->
+<!--            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);-->
+<!--        }-->
+
+<!--        .example-header {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: space-between;-->
+<!--            margin-bottom: 12px;-->
+<!--        }-->
+
+<!--        .example-description {-->
+<!--            font-weight: 600;-->
+<!--            color: var(&#45;&#45;text);-->
+<!--            font-size: 14px;-->
+<!--        }-->
+
+<!--        .copy-btn {-->
+<!--            padding: 6px 12px;-->
+<!--            background: var(&#45;&#45;primary);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 4px;-->
+<!--            font-size: 12px;-->
+<!--            cursor: pointer;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 6px;-->
+<!--            transition: all 0.2s;-->
+<!--        }-->
+
+<!--        .copy-btn:hover {-->
+<!--            background: var(&#45;&#45;primary-dark);-->
+<!--        }-->
+
+<!--        .copy-btn.copied {-->
+<!--            background: var(&#45;&#45;green);-->
+<!--        }-->
+
+<!--        .example-command {-->
+<!--            background: #1f2937;-->
+<!--            color: #e5e7eb;-->
+<!--            padding: 16px;-->
+<!--            border-radius: 6px;-->
+<!--            font-family: 'JetBrains Mono', monospace;-->
+<!--            font-size: 12px;-->
+<!--            overflow-x: auto;-->
+<!--            white-space: pre-wrap;-->
+<!--            word-break: break-all;-->
+<!--        }-->
+
+<!--        .loading-spinner {-->
+<!--            display: inline-block;-->
+<!--            width: 16px;-->
+<!--            height: 16px;-->
+<!--            border: 2px solid rgba(255, 255, 255, 0.3);-->
+<!--            border-top-color: white;-->
+<!--            border-radius: 50%;-->
+<!--            animation: spin 0.6s linear infinite;-->
+<!--        }-->
+
+<!--        @keyframes spin {-->
+<!--            to { transform: rotate(360deg); }-->
 <!--        }-->
 
 <!--        .initial-message {-->
@@ -515,6 +600,7 @@
 <!--<script>-->
 <!--    let apiSpec = null;-->
 <!--    let selectedServer = null;-->
+<!--    let currentEndpoint = null;-->
 
 <!--    function populateServers() {-->
 <!--        const select = document.getElementById('server-select');-->
@@ -605,9 +691,166 @@
 <!--        return html;-->
 <!--    }-->
 
+<!--    // NEW: Convert OpenAPI operation to EndpointInfo DTO format-->
+<!--    function buildEndpointInfo(path, method, operation) {-->
+<!--        const parameters = [];-->
+
+<!--        // Add regular parameters (query, path, header)-->
+<!--        if (operation.parameters) {-->
+<!--            operation.parameters.forEach(param => {-->
+<!--                let sourceType = 'RequestParam'; // default-->
+<!--                if (param.in === 'path') sourceType = 'PathVariable';-->
+<!--                else if (param.in === 'header') sourceType = 'RequestHeader';-->
+
+<!--                parameters.push({-->
+<!--                    name: param.name,-->
+<!--                    type: param.schema?.type || 'string',-->
+<!--                    isRequired: param.required || false,-->
+<!--                    sourceType: sourceType,-->
+<!--                    description: param.description || null-->
+<!--                });-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Add request body as a parameter if present-->
+<!--        if (operation.requestBody) {-->
+<!--            const content = operation.requestBody.content?.['application/json'];-->
+<!--            if (content && content.schema) {-->
+<!--                parameters.push({-->
+<!--                    name: 'body',-->
+<!--                    type: content.schema, // Pass the full schema-->
+<!--                    isRequired: operation.requestBody.required || false,-->
+<!--                    sourceType: 'RequestBody',-->
+<!--                    description: operation.requestBody.description || null-->
+<!--                });-->
+<!--            }-->
+<!--        }-->
+
+<!--        return {-->
+<!--            path: path,-->
+<!--            httpMethod: method.toUpperCase(),-->
+<!--            summary: operation.summary || null,-->
+<!--            description: operation.description || null,-->
+<!--            parameters: parameters,-->
+<!--            responses: operation.responses || {}-->
+<!--        };-->
+<!--    }-->
+
+<!--    // NEW: Generate examples via AI-->
+<!--    async function generateExamples(path, method) {-->
+<!--        const btn = document.getElementById('try-it-btn');-->
+<!--        const container = document.getElementById('examples-container');-->
+
+<!--        // Disable button and show loading-->
+<!--        btn.disabled = true;-->
+<!--        btn.innerHTML = '<span class="loading-spinner"></span> Generating examples...';-->
+
+<!--        // Clear previous examples-->
+<!--        container.innerHTML = '<p class="loading"><i class="fas fa-spinner fa-spin"></i> AI is generating examples...</p>';-->
+
+<!--        try {-->
+<!--            // Build the endpoint info-->
+<!--            const operation = apiSpec.paths[path][method];-->
+<!--            const endpointInfo = buildEndpointInfo(path, method, operation);-->
+
+<!--            console.log('Sending to AI:', endpointInfo);-->
+
+<!--            // Call backend endpoint-->
+<!--            const response = await fetch('/autodocer/ai/generate-examples', {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json'-->
+<!--                },-->
+<!--                body: JSON.stringify(endpointInfo)-->
+<!--            });-->
+
+<!--            if (!response.ok) {-->
+<!--                throw new Error(`HTTP ${response.status}: ${response.statusText}`);-->
+<!--            }-->
+
+<!--            const examples = await response.json();-->
+<!--            console.log('Received examples:', examples);-->
+
+<!--            // Display examples-->
+<!--            displayExamples(examples);-->
+
+<!--        } catch (error) {-->
+<!--            console.error('Error generating examples:', error);-->
+<!--            container.innerHTML = `-->
+<!--                <div class="error-message">-->
+<!--                    <i class="fas fa-exclamation-triangle"></i>-->
+<!--                    <strong>Error:</strong> ${error.message}-->
+<!--                </div>-->
+<!--            `;-->
+<!--        } finally {-->
+<!--            // Re-enable button-->
+<!--            btn.disabled = false;-->
+<!--            btn.innerHTML = '<i class="fas fa-magic"></i> Try It Out';-->
+<!--        }-->
+<!--    }-->
+
+<!--    // NEW: Display examples in UI-->
+<!--    function displayExamples(examples) {-->
+<!--        const container = document.getElementById('examples-container');-->
+
+<!--        if (!examples || examples.length === 0) {-->
+<!--            container.innerHTML = '<p class="no-data">No examples generated</p>';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        let html = '';-->
+<!--        examples.forEach((example, idx) => {-->
+<!--            html += `-->
+<!--                <div class="example-item">-->
+<!--                    <div class="example-header">-->
+<!--                        <span class="example-description">-->
+<!--                            <i class="fas fa-code"></i> ${example.description || 'Example ' + (idx + 1)}-->
+<!--                        </span>-->
+<!--                        <button class="copy-btn" onclick="copyToClipboard('${escapeHtml(example.command)}', this)">-->
+<!--                            <i class="fas fa-copy"></i> Copy-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="example-command">${escapeHtml(example.command)}</div>-->
+<!--                </div>-->
+<!--            `;-->
+<!--        });-->
+
+<!--        container.innerHTML = html;-->
+<!--    }-->
+
+<!--    // NEW: Copy to clipboard functionality-->
+<!--    async function copyToClipboard(text, button) {-->
+<!--        try {-->
+<!--            await navigator.clipboard.writeText(text);-->
+
+<!--            // Visual feedback-->
+<!--            const originalHTML = button.innerHTML;-->
+<!--            button.innerHTML = '<i class="fas fa-check"></i> Copied!';-->
+<!--            button.classList.add('copied');-->
+
+<!--            setTimeout(() => {-->
+<!--                button.innerHTML = originalHTML;-->
+<!--                button.classList.remove('copied');-->
+<!--            }, 2000);-->
+<!--        } catch (error) {-->
+<!--            console.error('Failed to copy:', error);-->
+<!--            alert('Failed to copy to clipboard');-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Helper: Escape HTML-->
+<!--    function escapeHtml(text) {-->
+<!--        const div = document.createElement('div');-->
+<!--        div.textContent = text;-->
+<!--        return div.innerHTML;-->
+<!--    }-->
+
 <!--    function displayEndpoint(path, method, li) {-->
 <!--        document.querySelectorAll('.tag-group li.selected').forEach(el => el.classList.remove('selected'));-->
 <!--        if (li) li.classList.add('selected');-->
+
+<!--        // Store current endpoint-->
+<!--        currentEndpoint = { path, method };-->
 
 <!--        const operation = apiSpec.paths[path][method];-->
 <!--        const methodUpper = method.toUpperCase();-->
@@ -685,13 +928,14 @@
 <!--            });-->
 <!--        }-->
 
-<!--        // Try It Out Section-->
+<!--        // Try It Out Section with Examples Container-->
 <!--        html += `-->
 <!--            <div class="try-it-section">-->
-<!--                <button class="try-it-btn" onclick="alert('Try It Out functionality coming soon!')">-->
-<!--                    <i class="fas fa-play"></i>-->
+<!--                <button id="try-it-btn" class="try-it-btn" onclick="generateExamples('${path}', '${method}')">-->
+<!--                    <i class="fas fa-magic"></i>-->
 <!--                    Try It Out-->
 <!--                </button>-->
+<!--                <div id="examples-container" class="examples-container"></div>-->
 <!--            </div>-->
 <!--        `;-->
 
@@ -764,1012 +1008,57 @@
 <!--</html>-->
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoDocER API Reference</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --bg: #fafafa;
-            --sidebar-bg: #ffffff;
-            --content-bg: #ffffff;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --hover: #f3f4f6;
-            --code-bg: #f9fafb;
-            --green: #10b981;
-            --blue: #3b82f6;
-            --yellow: #f59e0b;
-            --red: #ef4444;
-            --orange: #f97316;
-            --purple: #8b5cf6;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex;
-            height: 100vh;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 14px;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-        /* Sidebar */
-        #sidebar {
-            width: 300px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        #sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            background: #fff;
-        }
-
-        h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 16px;
-        }
-
-        .server-selector {
-            margin-top: 12px;
-        }
-
-        .server-selector label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        #server-select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
-            background: var(--bg);
-            color: var(--text);
-            cursor: pointer;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        #server-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .server-url {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: var(--code-bg);
-            border-radius: 6px;
-            font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-light);
-            word-break: break-all;
-        }
-
-        #search-box {
-            width: 100%;
-            padding: 10px 12px 10px 36px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
-            background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;
-            margin-top: 16px;
-        }
-
-        #search-box:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        #nav-content {
-            padding: 12px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .tag-group {
-            margin-bottom: 8px;
-        }
-
-        .tag-group summary {
-            padding: 8px 12px;
-            cursor: pointer;
-            list-style: none;
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--text);
-            border-radius: 6px;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tag-group summary:hover { background: var(--hover); }
-
-        .tag-group summary::before {
-            content: '▶';
-            font-size: 10px;
-            transition: transform 0.2s;
-            color: var(--text-light);
-        }
-
-        .tag-group[open] summary::before { transform: rotate(90deg); }
-
-        .tag-group ul {
-            list-style: none;
-            padding-left: 8px;
-            margin-top: 4px;
-        }
-
-        .tag-group li {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 13px;
-            border-radius: 6px;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.15s;
-        }
-
-        .tag-group li:hover { background: var(--hover); }
-
-        .tag-group li.selected {
-            background: #eff6ff;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .tag-group li.hidden { display: none; }
-
-        .method {
-            display: inline-block;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            flex-shrink: 0;
-            min-width: 45px;
-            text-align: center;
-        }
-
-        .method-get { background: #d1fae5; color: #065f46; }
-        .method-post { background: #dbeafe; color: #1e40af; }
-        .method-put { background: #fef3c7; color: #92400e; }
-        .method-delete { background: #fee2e2; color: #991b1b; }
-        .method-patch { background: #f3e8ff; color: #6b21a8; }
-
-        .endpoint-path {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: var(--text);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* Main Content */
-        #main-content {
-            flex: 1;
-            overflow-y: auto;
-            background: var(--bg);
-        }
-
-        #content-wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        .content-card {
-            background: var(--content-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-
-        .endpoint-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .endpoint-header .method {
-            font-size: 12px;
-            padding: 6px 12px;
-        }
-
-        .endpoint-header .path {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        h2 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-top: 32px;
-            margin-bottom: 16px;
-            color: var(--text);
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        h2:first-of-type { margin-top: 0; }
-
-        .description {
-            color: var(--text-light);
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-
-        .param-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 16px 0;
-        }
-
-        .param-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 16px;
-            transition: all 0.2s;
-        }
-
-        .param-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
-        }
-
-        .param-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .param-name-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .param-name {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .param-badges {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-required { background: #fee2e2; color: #991b1b; }
-        .badge-optional { background: #e0e7ff; color: #3730a3; }
-        .badge-in { background: var(--code-bg); color: var(--text-light); border: 1px solid var(--border); }
-
-        .param-type {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--green);
-            font-weight: 500;
-        }
-
-        .param-constraints {
-            margin-top: 8px;
-            padding: 8px 12px;
-            background: #fff;
-            border-radius: 4px;
-            border-left: 3px solid var(--orange);
-            font-size: 12px;
-        }
-
-        .constraint-item {
-            display: inline-block;
-            margin-right: 12px;
-            color: var(--text-light);
-        }
-
-        .constraint-label {
-            font-weight: 600;
-            color: var(--orange);
-        }
-
-        .no-data {
-            padding: 24px;
-            text-align: center;
-            color: var(--text-light);
-            background: var(--bg);
-            border-radius: 6px;
-            font-style: italic;
-        }
-
-        .schema-box {
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            margin: 12px 0;
-            overflow-x: auto;
-        }
-
-        .schema-property {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-
-        .schema-property-name { color: var(--primary); font-weight: 600; }
-        .schema-property-type { color: var(--green); margin-left: 8px; }
-        .schema-property-required { color: var(--red); font-size: 10px; margin-left: 4px; }
-        .schema-property-format { color: var(--purple); margin-left: 4px; }
-
-        .schema-constraints {
-            margin-left: 8px;
-            color: var(--orange);
-            font-size: 11px;
-        }
-
-        .response-block {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 16px;
-            margin: 12px 0;
-        }
-
-        .response-block h3 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text);
-        }
-
-        /* Try It Out Section */
-        .try-it-section {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 2px solid var(--border);
-            text-align: center;
-        }
-
-        .try-it-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-        }
-
-        .try-it-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-        }
-
-        .try-it-btn:active {
-            transform: translateY(0);
-        }
-
-        .try-it-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Examples Display */
-        .examples-container {
-            margin-top: 24px;
-            text-align: left;
-        }
-
-        .example-item {
-            background: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: all 0.2s;
-        }
-
-        .example-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
-        }
-
-        .example-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .example-description {
-            font-weight: 600;
-            color: var(--text);
-            font-size: 14px;
-        }
-
-        .copy-btn {
-            padding: 6px 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .copy-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .copy-btn.copied {
-            background: var(--green);
-        }
-
-        .example-command {
-            background: #1f2937;
-            color: #e5e7eb;
-            padding: 16px;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .initial-message {
-            text-align: center;
-            padding: 80px 40px;
-            color: var(--text-light);
-            font-size: 15px;
-        }
-
-        .loading {
-            padding: 20px;
-            text-align: center;
-            color: var(--text-light);
-        }
-
-        .error-message {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin: 16px 0;
-        }
-
-        code {
-            background: var(--code-bg);
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            color: #e11d48;
         }
     </style>
 </head>
 <body>
-
-<div id="sidebar">
-    <div id="sidebar-header">
-        <h1>📚 AutoDocER API</h1>
-
-        <div class="server-selector">
-            <label for="server-select">Server</label>
-            <select id="server-select">
-                <option value="">Loading servers...</option>
-            </select>
-            <div class="server-url" id="server-url-display">Select a server</div>
-        </div>
-
-        <input type="text" id="search-box" placeholder="Search endpoints..." onkeyup="filterEndpoints()">
-    </div>
-    <div id="nav-content">
-        <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</p>
-    </div>
-</div>
-
-<div id="main-content">
-    <div id="content-wrapper">
-        <div class="content-card">
-            <div class="initial-message">
-                👈 Select an endpoint from the sidebar to view its documentation
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    let apiSpec = null;
-    let selectedServer = null;
-    let currentEndpoint = null;
-
-    function populateServers() {
-        const select = document.getElementById('server-select');
-        const urlDisplay = document.getElementById('server-url-display');
-
-        if (!apiSpec || !apiSpec.servers || apiSpec.servers.length === 0) {
-            select.innerHTML = '<option value="/">Default Server (/)</option>';
-            selectedServer = '/';
-            urlDisplay.textContent = '/';
-            return;
-        }
-
-        select.innerHTML = apiSpec.servers.map((server, idx) =>
-            `<option value="${idx}">${server.description || server.url}</option>`
-        ).join('');
-
-        select.addEventListener('change', (e) => {
-            const idx = e.target.value;
-            selectedServer = apiSpec.servers[idx].url;
-            urlDisplay.textContent = selectedServer;
-        });
-
-        selectedServer = apiSpec.servers[0].url;
-        urlDisplay.textContent = selectedServer;
-    }
-
-    function renderConstraints(schema) {
-        const constraints = [];
-
-        if (schema.minLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min Length:</span> ${schema.minLength}</span>`);
-        if (schema.maxLength !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max Length:</span> ${schema.maxLength}</span>`);
-        if (schema.minimum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Min:</span> ${schema.minimum}</span>`);
-        if (schema.maximum !== undefined) constraints.push(`<span class="constraint-item"><span class="constraint-label">Max:</span> ${schema.maximum}</span>`);
-        if (schema.pattern) constraints.push(`<span class="constraint-item"><span class="constraint-label">Pattern:</span> <code>${schema.pattern}</code></span>`);
-        if (schema.enum && schema.enum.length > 0) constraints.push(`<span class="constraint-item"><span class="constraint-label">Enum:</span> [${schema.enum.join(', ')}]</span>`);
-
-        return constraints.length > 0 ? `<div class="param-constraints">${constraints.join('')}</div>` : '';
-    }
-
-    function renderSchema(schema, depth = 0, required = []) {
-        if (!schema) return '<span style="color: #6b7280;">No schema</span>';
-
-        let html = '';
-        const indent = '&nbsp;'.repeat(depth * 4);
-
-        if (schema.type === 'object' && schema.properties) {
-            html += '<div class="schema-object">';
-            html += `${indent}{<br>`;
-            const props = Object.entries(schema.properties);
-            const requiredFields = schema.required || required;
-
-            props.forEach(([name, prop], idx) => {
-                const isRequired = requiredFields.includes(name);
-                const reqMark = isRequired ? '<span class="schema-property-required">*</span>' : '';
-                html += `${indent}&nbsp;&nbsp;<span class="schema-property-name">"${name}"</span>${reqMark}: `;
-
-                if (prop.type && prop.type !== 'object' && prop.type !== 'array') {
-                    html += `<span class="schema-property-type">${prop.type}</span>`;
-                    if (prop.format) html += `<span class="schema-property-format">&lt;${prop.format}&gt;</span>`;
-
-                    const constraints = [];
-                    if (prop.minLength) constraints.push(`minLen:${prop.minLength}`);
-                    if (prop.maxLength) constraints.push(`maxLen:${prop.maxLength}`);
-                    if (prop.minimum) constraints.push(`min:${prop.minimum}`);
-                    if (prop.maximum) constraints.push(`max:${prop.maximum}`);
-                    if (prop.pattern) constraints.push(`pattern:${prop.pattern}`);
-                    if (constraints.length > 0) {
-                        html += `<span class="schema-constraints"> [${constraints.join(', ')}]</span>`;
-                    }
-                } else {
-                    html += renderSchema(prop, depth + 1, requiredFields);
-                }
-
-                if (idx < props.length - 1) html += ',';
-                html += '<br>';
-            });
-            html += `${indent}}`;
-            html += '</div>';
-        } else if (schema.type === 'array' && schema.items) {
-            html += `[<br>${indent}&nbsp;&nbsp;`;
-            html += renderSchema(schema.items, depth + 1);
-            html += `<br>${indent}]`;
-        } else {
-            html += `<span class="schema-property-type">${schema.type || 'any'}</span>`;
-            if (schema.format) html += `<span class="schema-property-format">&lt;${schema.format}&gt;</span>`;
-        }
-
-        return html;
-    }
-
-    // NEW: Convert OpenAPI operation to EndpointInfo DTO format
-    function buildEndpointInfo(path, method, operation) {
-        const parameters = [];
-
-        // Add regular parameters (query, path, header)
-        if (operation.parameters) {
-            operation.parameters.forEach(param => {
-                let sourceType = 'RequestParam'; // default
-                if (param.in === 'path') sourceType = 'PathVariable';
-                else if (param.in === 'header') sourceType = 'RequestHeader';
-
-                parameters.push({
-                    name: param.name,
-                    type: param.schema?.type || 'string',
-                    isRequired: param.required || false,
-                    sourceType: sourceType,
-                    description: param.description || null
-                });
-            });
-        }
-
-        // Add request body as a parameter if present
-        if (operation.requestBody) {
-            const content = operation.requestBody.content?.['application/json'];
-            if (content && content.schema) {
-                parameters.push({
-                    name: 'body',
-                    type: content.schema, // Pass the full schema
-                    isRequired: operation.requestBody.required || false,
-                    sourceType: 'RequestBody',
-                    description: operation.requestBody.description || null
-                });
-            }
-        }
-
-        return {
-            path: path,
-            httpMethod: method.toUpperCase(),
-            summary: operation.summary || null,
-            description: operation.description || null,
-            parameters: parameters,
-            responses: operation.responses || {}
-        };
-    }
-
-    // NEW: Generate examples via AI
-    async function generateExamples(path, method) {
-        const btn = document.getElementById('try-it-btn');
-        const container = document.getElementById('examples-container');
-
-        // Disable button and show loading
-        btn.disabled = true;
-        btn.innerHTML = '<span class="loading-spinner"></span> Generating examples...';
-
-        // Clear previous examples
-        container.innerHTML = '<p class="loading"><i class="fas fa-spinner fa-spin"></i> AI is generating examples...</p>';
-
-        try {
-            // Build the endpoint info
-            const operation = apiSpec.paths[path][method];
-            const endpointInfo = buildEndpointInfo(path, method, operation);
-
-            console.log('Sending to AI:', endpointInfo);
-
-            // Call backend endpoint
-            const response = await fetch('/autodocer/ai/generate-examples', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(endpointInfo)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const examples = await response.json();
-            console.log('Received examples:', examples);
-
-            // Display examples
-            displayExamples(examples);
-
-        } catch (error) {
-            console.error('Error generating examples:', error);
-            container.innerHTML = `
-                <div class="error-message">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>Error:</strong> ${error.message}
-                </div>
-            `;
-        } finally {
-            // Re-enable button
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-magic"></i> Try It Out';
-        }
-    }
-
-    // NEW: Display examples in UI
-    function displayExamples(examples) {
-        const container = document.getElementById('examples-container');
-
-        if (!examples || examples.length === 0) {
-            container.innerHTML = '<p class="no-data">No examples generated</p>';
-            return;
-        }
-
-        let html = '';
-        examples.forEach((example, idx) => {
-            html += `
-                <div class="example-item">
-                    <div class="example-header">
-                        <span class="example-description">
-                            <i class="fas fa-code"></i> ${example.description || 'Example ' + (idx + 1)}
-                        </span>
-                        <button class="copy-btn" onclick="copyToClipboard('${escapeHtml(example.command)}', this)">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <div class="example-command">${escapeHtml(example.command)}</div>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-    }
-
-    // NEW: Copy to clipboard functionality
-    async function copyToClipboard(text, button) {
-        try {
-            await navigator.clipboard.writeText(text);
-
-            // Visual feedback
-            const originalHTML = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            button.classList.add('copied');
-
-            setTimeout(() => {
-                button.innerHTML = originalHTML;
-                button.classList.remove('copied');
-            }, 2000);
-        } catch (error) {
-            console.error('Failed to copy:', error);
-            alert('Failed to copy to clipboard');
-        }
-    }
-
-    // Helper: Escape HTML
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function displayEndpoint(path, method, li) {
-        document.querySelectorAll('.tag-group li.selected').forEach(el => el.classList.remove('selected'));
-        if (li) li.classList.add('selected');
-
-        // Store current endpoint
-        currentEndpoint = { path, method };
-
-        const operation = apiSpec.paths[path][method];
-        const methodUpper = method.toUpperCase();
-
-        let html = `
-            <div class="content-card">
-                <div class="endpoint-header">
-                    <span class="method method-${method}">${methodUpper}</span>
-                    <span class="path">${path}</span>
-                </div>`;
-
-        if (operation.summary) html += `<p class="description"><strong>${operation.summary}</strong></p>`;
-        if (operation.description) html += `<p class="description">${operation.description}</p>`;
-
-        // Parameters
-        html += `<h2>Parameters</h2>`;
-        if (operation.parameters && operation.parameters.length > 0) {
-            html += `<div class="param-list">`;
-            operation.parameters.forEach(param => {
-                const badge = param.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
-                const type = param.schema ? param.schema.type || 'any' : 'any';
-
-                html += `<div class="param-card">
-                    <div class="param-header">
-                        <div class="param-name-section">
-                            <span class="param-name">${param.name}</span>
-                            <span class="badge badge-in">${param.in}</span>
-                        </div>
-                        <div class="param-badges">
-                            <span class="param-type">${type}</span>
-                            ${badge}
-                        </div>
-                    </div>`;
-
-                if (param.description) {
-                    html += `<p style="color: var(--text-light); font-size: 13px; margin-top: 8px;">${param.description}</p>`;
-                }
-
-                if (param.schema) {
-                    html += renderConstraints(param.schema);
-                }
-
-                html += `</div>`;
-            });
-            html += `</div>`;
-        } else {
-            html += `<div class="no-data"><i class="fas fa-inbox"></i> No parameters required for this endpoint</div>`;
-        }
-
-        // Request Body
-        if (operation.requestBody) {
-            html += `<h2>Request Body</h2>`;
-            const badge = operation.requestBody.required ? '<span class="badge badge-required">Required</span>' : '<span class="badge badge-optional">Optional</span>';
-            html += `<p style="margin-bottom: 12px;">${badge}</p>`;
-
-            if (operation.requestBody.content && operation.requestBody.content['application/json']) {
-                const schema = operation.requestBody.content['application/json'].schema;
-                html += `<div class="schema-box">${renderSchema(schema)}</div>`;
-            }
-        }
-
-        // Responses
-        if (operation.responses) {
-            html += `<h2>Responses</h2>`;
-            Object.entries(operation.responses).forEach(([code, response]) => {
-                html += `<div class="response-block">
-                    <h3><i class="fas fa-check-circle" style="color: var(--green);"></i> Status ${code}</h3>
-                    <p style="color: var(--text-light);">${response.description || 'No description'}</p>`;
-
-                if (response.content && response.content['application/json']) {
-                    const schema = response.content['application/json'].schema;
-                    html += `<div class="schema-box">${renderSchema(schema)}</div>`;
-                }
-                html += `</div>`;
-            });
-        }
-
-        // Try It Out Section with Examples Container
-        html += `
-            <div class="try-it-section">
-                <button id="try-it-btn" class="try-it-btn" onclick="generateExamples('${path}', '${method}')">
-                    <i class="fas fa-magic"></i>
-                    Try It Out
-                </button>
-                <div id="examples-container" class="examples-container"></div>
-            </div>
-        `;
-
-        html += `</div>`;
-        document.getElementById('content-wrapper').innerHTML = html;
-    }
-
-    function buildNavigation() {
-        const nav = document.getElementById('nav-content');
-        if (!apiSpec || !apiSpec.paths) {
-            nav.innerHTML = '<p class="error-message">No endpoints found</p>';
-            return;
-        }
-
-        const pathsByTag = {};
-        Object.entries(apiSpec.paths).forEach(([path, methods]) => {
-            Object.entries(methods).forEach(([method, operation]) => {
-                const tag = (operation.tags && operation.tags[0]) || 'default';
-                if (!pathsByTag[tag]) pathsByTag[tag] = [];
-                pathsByTag[tag].push({ path, method, operation });
-            });
-        });
-
-        let html = '';
-        Object.keys(pathsByTag).sort().forEach(tag => {
-            html += `<details class="tag-group" open><summary>${tag}</summary><ul>`;
-            pathsByTag[tag].forEach(({ path, method, operation }) => {
-                html += `<li data-path="${path}" data-method="${method}" onclick="displayEndpoint('${path}', '${method}', this)">
-                    <span class="method method-${method}">${method.toUpperCase()}</span>
-                    <span class="endpoint-path">${path}</span>
-                </li>`;
-            });
-            html += `</ul></details>`;
-        });
-
-        nav.innerHTML = html;
-    }
-
-    function filterEndpoints() {
-        const query = document.getElementById('search-box').value.toLowerCase();
-        document.querySelectorAll('.tag-group li').forEach(li => {
-            const path = li.dataset.path || '';
-            const method = li.dataset.method || '';
-            const visible = (path + method).toLowerCase().includes(query);
-            li.classList.toggle('hidden', !visible);
-        });
-    }
-
-    async function loadApi() {
-        try {
-            const response = await fetch('/autodocer/api-docs');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-            apiSpec = await response.json();
-            console.log('Loaded API spec:', apiSpec);
-
-            populateServers();
-            buildNavigation();
-        } catch (error) {
-            console.error('Error loading API:', error);
-            document.getElementById('nav-content').innerHTML =
-                `<p class="error-message">Error: ${error.message}</p>`;
-        }
-    }
-
-    window.onload = loadApi;
+<div id="root"></div>
+
+<!-- Your React Component -->
+<script type="text/babel" src="AutoDocerUI.jsx"></script>
+
+<!-- Mount the component -->
+<script type="text/babel">
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AutoDocerUI />);
 </script>
-
 </body>
 </html>

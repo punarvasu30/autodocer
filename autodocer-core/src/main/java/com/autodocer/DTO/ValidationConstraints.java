@@ -12,6 +12,4 @@ public record ValidationConstraints(
         String pattern,
         String format // e.g., "email", "date-time", etc.
 ) {
-    // We can add a "builder" style static method for convenience if we want,
-    // but for now, a direct constructor is fine.
 }

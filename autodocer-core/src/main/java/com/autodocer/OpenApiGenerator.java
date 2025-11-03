@@ -11,10 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.List;
 
-/**
- * Responsible for converting the parsed API information into a valid
- * OpenAPI 3.0 JSON specification.
- */
+
 public class OpenApiGenerator {
 
     private final ObjectMapper objectMapper;
@@ -23,11 +20,7 @@ public class OpenApiGenerator {
         this.objectMapper = new ObjectMapper();
     }
 
-    /**
-     * UPDATED: Generates the OpenAPI JSON string.
-     * @param documentationResult The combined result containing server and controller info.
-     * @return A string containing the OpenAPI 3.0 specification in JSON format.
-     */
+
     public String generate(ApiDocumentationResult documentationResult) {
         ObjectNode root = objectMapper.createObjectNode();
 
@@ -123,9 +116,6 @@ public class OpenApiGenerator {
         paramNode.put("required", param.isRequired());
         paramNode.set("schema", buildSchemaNode(param.type()));
 
-        // NOTE: We could extend this later to read validation annotations
-        // from parameters (e.g., @RequestParam @Size) not just schema fields.
-        // For now, this is outside the scope of the SchemaParser change.
     }
 
     private void buildRequestBodyNode(ObjectNode requestBodyNode, ParameterInfo param) {
@@ -135,10 +125,6 @@ public class OpenApiGenerator {
         contentNode.set("schema", buildSchemaNode(param.type()));
     }
 
-    /**
-     * UPDATED: Builds OpenAPI schema nodes with better handling for arrays/collections
-     * AND includes validation constraints.
-     */
     private ObjectNode buildSchemaNode(Object type) {
         ObjectNode schemaNode = objectMapper.createObjectNode();
 

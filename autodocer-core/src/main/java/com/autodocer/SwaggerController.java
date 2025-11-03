@@ -10,13 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SwaggerController {
 
-    /**
-     * This endpoint now manually loads the index.html file from the classpath
-     * and serves it directly. This is a robust method that does not rely on
-     * Spring's view resolver.
-     *
-     * The file must be located at: 'src/main/resources/static/autodocer-ui/index.html'
-     */
     @GetMapping("/autodocer/ui")
     public ResponseEntity<Resource> getSwaggerUi() {
         // Load the HTML file as a resource from the classpath.

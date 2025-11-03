@@ -25,11 +25,6 @@ public class AutoDocerAutoConfiguration {
         return new GeminiAiDescriptionService(apiKey, webClientBuilder);
     }
 
-    // --- BEAN 2: The FALLBACK Placeholder Service ---
-    /**
-     * This bean is only created if no other bean of type 'AiDescriptionService'
-     * (like the one above) has been created.
-     */
     @Bean
     @ConditionalOnMissingBean(AiDescriptionService.class)
     public AiDescriptionService placeholderAiDescriptionService() {
@@ -58,21 +53,12 @@ public class AutoDocerAutoConfiguration {
         return new OpenApiGenerator();
     }
 
-    /**
-     * THE FIX: Explicitly create the DocumentationController as a bean.
-     * Spring will automatically provide the other beans this method needs
-     * (context, parser, generator) because they are also defined here.
-     */
     @Bean
     public DocumentationController documentationController(ApplicationContext context, DocumentationParser parser, OpenApiGenerator generator) {
         System.out.println("--- [AutoDocER] Creating DocumentationController bean ---"); // Added debug
         return new DocumentationController(context, parser, generator);
     }
 
-    /**
-     * THE FIX: Explicitly create the SwaggerController as a bean.
-     * This ensures the /autodocer/ui endpoint is always registered.
-     */
     @Bean
     public SwaggerController swaggerController() {
         System.out.println("--- [AutoDocER] Creating SwaggerController bean ---"); // Added debug
