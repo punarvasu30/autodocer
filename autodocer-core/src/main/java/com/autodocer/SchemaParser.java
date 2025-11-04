@@ -4,12 +4,12 @@ package com.autodocer;
 import com.autodocer.DTO.ArraySchemaInfo;
 import com.autodocer.DTO.FieldInfo;
 import com.autodocer.DTO.SchemaInfo;
-import com.autodocer.DTO.ValidationConstraints; // <-- ADDED
+import com.autodocer.DTO.ValidationConstraints;
 
 import java.lang.reflect.*;
 import java.util.*;
 
-// --- ADDED VALIDATION IMPORTS (JAKARTA) ---
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -41,36 +41,28 @@ public class SchemaParser {
                         // Assuming ArraySchemaInfo exists and takes the item schema
                         return new ArraySchemaInfo(itemSchema);
                     } else {
-                        // List without a specified generic type (e.g., List) - treat as List<Object> or simple type
-                        return rawClass.getSimpleName(); // Or potentially ArraySchemaInfo("Object")
+
+                        return rawClass.getSimpleName();
                     }
                 }
-                // Handle Map<K,V> similarly if needed later
+
             }
-            // Fall through to treat the raw type if not a collection recognized above
-            type = rawType; // Continue processing with the raw class (e.g., List)
+            type = rawType;
         }
 
-        // --- Handle Raw Class<?> ---
-        // This part handles simple types and complex DTOs/Entities
         if (type instanceof Class<?> clazz) {
-            // THE GATEKEEPER: If it's simple, return name
             if (isSimpleType(clazz)) {
                 return clazz.getSimpleName();
             }
 
-            // Infinite Loop Prevention
             if (visited.contains(clazz)) {
-                // Return a simple string or a specific marker for circular refs
                 return "Circular Reference to " + clazz.getSimpleName();
             }
-            visited.add(clazz); // Mark this class as visited for the current path
+            visited.add(clazz);
 
-            // --- START OF VALIDATION LOGIC ---
             List<FieldInfo> fields = new ArrayList<>();
             List<String> requiredFields = new ArrayList<>(); // <-- ADDED
 
-            // Use getDeclaredFields to get only fields directly declared in this class
             for (Field field : clazz.getDeclaredFields()) {
                 // Initialize constraint holders
                 Integer minLength = null;
@@ -158,7 +150,6 @@ public class SchemaParser {
     }
 
 
-    // --- isSimpleType method remains the same ---
     private static final Set<Class<?>> SIMPLE_TYPES = Set.of(
             String.class, Object.class, // Treat Object as simple for schema
             Integer.class, Long.class, Short.class, Byte.class,
@@ -176,8 +167,7 @@ public class SchemaParser {
                 || type.equals(Void.TYPE)
                 || SIMPLE_TYPES.contains(type)
                 || type.isEnum()
-                || type.getPackageName().startsWith("java.time") // Treat all java.time as simple
-                // An array of simple types is NOT a simple type itself
+                || type.getPackageName().startsWith("java.time")
                 || (type.isArray() && isSimpleType(type.getComponentType()));
     }
 }

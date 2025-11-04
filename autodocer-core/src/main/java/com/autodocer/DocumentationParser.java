@@ -74,10 +74,8 @@ public class DocumentationParser {
             String mainAppBeanName = mainAppBeans.keySet().iterator().next();
             Object mainAppBean = mainAppBeans.get(mainAppBeanName);
 
-            // Get the actual class, not the proxy
             Class<?> mainAppClass = org.springframework.aop.support.AopUtils.getTargetClass(mainAppBean);
 
-            // If it's still a CGLIB proxy, get the superclass
             if (mainAppClass.getName().contains("$$")) {
                 mainAppClass = mainAppClass.getSuperclass();
             }
